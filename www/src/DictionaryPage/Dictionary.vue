@@ -72,7 +72,7 @@ nav {
 main {
     min-height: 100vh;
     width: 100%;
-    background: linear-gradient(180deg, #ff8800, #ffcf76);
+    background: linear-gradient(180deg, #ff7c24, #ffb45f);
 }
 
 #bottom-bar {
