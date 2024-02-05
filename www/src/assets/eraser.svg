@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Created with Vectornator (http://vectornator.io/) -->
+<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" version="1.1" viewBox="0 0 1000 1000" width="100%" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:vectornator="http://vectornator.io" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs/>
+<g id="Ebene-1" vectornator:layerName="Ebene 1">
+<path d="M133.887 653.99C102.411 622.766 102.331 571.9 133.709 540.577L458.833 216.017L785.248 539.82L461.442 866.239C430.326 897.606 379.673 897.809 348.306 866.693L133.887 653.99Z" fill="#ff9a00" fill-rule="nonzero" opacity="1" stroke="#000000" stroke-linecap="butt" stroke-linejoin="round" stroke-width="9.19555" vectornator:layerName="Kurve 1"/>
+<path d="M483.44 191.212L569.427 104.531C584.529 89.3074 609.112 89.2086 624.336 104.311L895.621 373.425C910.845 388.527 910.944 413.111 895.842 428.334L809.855 515.015L483.44 191.212Z" fill="#ffffff" fill-rule="nonzero" opacity="1" stroke="#000000" stroke-linecap="butt" stroke-linejoin="round" stroke-width="9.19555" vectornator:layerName="Kurve 2"/>
+</g>
+</svg>

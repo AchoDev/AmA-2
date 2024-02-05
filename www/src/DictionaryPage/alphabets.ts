@@ -1,4 +1,6 @@
-export default {
+
+
+const alphabets: {[key: string]: Array<string>} = {
     "german": [
         "A", "Ä", "B", "C", "D", "E", "F", "G", "H", "I", "J",
         "K", "L", "M", "N", "O", "Ö", "P", "Q", "R", "S", "T",
@@ -68,3 +70,5 @@ export default {
         "る", "れ", "ろ", "わ", "を", "ん"
     ],
 }
+
+export default alphabets
