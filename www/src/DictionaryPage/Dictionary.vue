@@ -35,6 +35,20 @@
                         </div>
                     </div>
 
+                    <center>
+                        <hr>
+                    </center>
+
+                    <Word 
+                        v-for="word in words" 
+                        :mainLangWord="word.mainLang" 
+                        :secondLangWord="word.secondLang" 
+                        :notes="word.notes"
+                        :sizes="wordSizes"
+
+                        @onWordEdit="onWordEdit" 
+                    />
+
                     <!-- <center>
                         <DrawingArea width="750px" height="500px"/>
                     </center> -->
@@ -62,7 +76,8 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-const fs = require('fs')
+import Word from './Word.vue';
+// const fs = require('fs')
 
 // import DrawingArea from '../components/DrawingArea.vue';
 
@@ -80,21 +95,72 @@ const totalPages = ref<number>(1)
 
 const currentAlphabet = ref(alphabets[props.mainLang])
 
+interface Note {
+    color: string,
+    points: number[][]
+}
 
+const words = ref([
+    {
+        mainLang: 'hola',
+        secondLang: 'hallo',
+        notes: <Note[]>[
+            {
+                color: 'black',
+                points: [
+                    [10, 10],
+                    [20, 10],
+                    [40, 40],
+                ]
+            }
+        ]
+    },
+    {
+        mainLang: 'como estas',
+        secondLang: 'wie gehts dir',
+        notes: <Note[]>[
+            {
+                color: 'black',
+                points: [
+                    [10, 10],
+                    [20, 10],
+                    [40, 40],
+                ]
+            }
+        ]
+    },
+
+])
+
+function onWordEdit(index: number, mainWord: string, secondWord: string, notes: Note[]) {
+    words.value[index].mainLang = mainWord
+    words.value[index].secondLang = secondWord
+    words.value[index].notes = notes
+}
+
+
+
+const wordSizes = ref([33, 33, 33])
 
 onMounted(() => {
+
+    // console.log(mainLangHTMLElement)
+
+    
+
     Split(['#lang1', '#lang2', '#notes'], {
         sizes: [33, 33, 33],
         gutterSize: 15,
         minSize: 150,
         // cursor: 'col-resize',
-        snapOffset: 10
+        snapOffset: 10,
+
+        onDrag(sizes) {
+            wordSizes.value = sizes
+        },
     })
-
-
-    
-
 })
+
 
 
 </script>
@@ -102,6 +168,12 @@ onMounted(() => {
 <style scoped lang="scss">
 
 $bar-height: 70px;
+
+hr {
+    width: 90%;
+    margin-bottom: 40px; 
+    border-color: #ffd7bc;
+}
 
 nav {
     height: $bar-height;
@@ -196,6 +268,8 @@ main {
                         place-items: center;
                         height: 40px;
                         width: 140px;
+
+                        user-select: none;
                     }
 
                     &:first-child {
