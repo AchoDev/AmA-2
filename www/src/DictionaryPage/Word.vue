@@ -101,10 +101,6 @@ hr {
 
     padding-top: 10px;
     padding-bottom: 10px;
-
-    // margin-top: 50%;
-
-    // top: 50%;
 }
 
 </style>

@@ -17,7 +17,11 @@
         <main>
             <div id="main-wrapper">
                 <div id="letter-container">
-                    <div v-for="letter in currentAlphabet">
+                    <div 
+                        v-for="letter in currentAlphabet"
+                        :class="selectedLetter === letter ? 'letter-selected' : ''" 
+                        @click="selectLetter(letter)"
+                    >
                         {{letter}}
                     </div>
                 </div>
@@ -58,7 +62,10 @@
         </main>
 
         <div id="bottom-bar">
-            <button>search</button>
+            <div>
+                <button>search</button>
+                <button @click="openTagMenu">tags</button>
+            </div>
 
             <div>
                 <button> &vartriangleleft; </button>
@@ -71,12 +78,43 @@
             <button>+ Add word</button>
         </div>
 
+        <PopupContainer ref="tagSelector">
+            <div id="tag-selector-popup">
+                <div id="tag-top">
+                    <h1>select tag</h1>
+
+                    <div id="editing-suite">
+                        <button v-show="!editingTags" @click="editingTags = true">edit tags</button>
+                        <button v-show="editingTags" @click="editingTags = false">Stop editing</button>
+                    </div>
+                </div>
+
+                <div id="tag-button-wrapper">
+                    <Wiggly 
+                        v-for="(tag, id) in tags"
+                        :wiggle="editingTags"
+                    >
+                        <button 
+                            class="tag-button"
+                            :class="!editingTags ? 'tag-button-static' : ''"
+                            :key="id"
+                            @click="selectTag(tag)"
+                        >
+                            <span>{{ tag }}</span>
+                        </button>
+                    </Wiggly>
+                </div>
+            </div>
+        </PopupContainer>
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import Word from './Word.vue';
+import PopupContainer from '../components/PopupContainer.vue';
+import Wiggly from '../components/Wiggly.vue';
+
 // const fs = require('fs')
 
 // import DrawingArea from '../components/DrawingArea.vue';
@@ -92,6 +130,25 @@ const props = defineProps<{
 
 const currentPage = ref<number>(1)
 const totalPages = ref<number>(1)
+
+const selectedLetter = ref('')
+const tagSelector = ref()
+
+function openTagMenu() {
+    tagSelector.value.openPopup()
+}
+
+function selectTag(tag: string) {
+    console.log(tag)
+    tagSelector.value.closePopup()
+}
+
+const editingTags = ref(false)
+
+
+function selectLetter(letter: string) {
+    selectedLetter.value = letter
+}
 
 const currentAlphabet = ref(alphabets[props.mainLang])
 
@@ -132,13 +189,32 @@ const words = ref([
 
 ])
 
+const tags = ref({
+    10101010: 'greetings',
+    1818918188: 'nouns',
+    // give me 10 more random ones
+    123131231: 'verbs',
+    123123123: 'adjectives',
+    1231243123: 'adverbs',
+    1231123123: 'prepositions',
+    1231232123: 'conjunctions',
+    1231231223: 'interjections',
+    12321253123: 'articles',
+    12321235123: 'determiners',
+    1231231231: 'pronouns',
+    1231231232: 'numbers',
+    1231231233: 'quantifiers',
+    1231231234: 'demonstratives',
+    1231231235: 'possessives',
+    1231231236: 'interrogatives',
+    1231231237: 'indefinites',
+})
+
 function onWordEdit(index: number, mainWord: string, secondWord: string, notes: Note[]) {
     words.value[index].mainLang = mainWord
     words.value[index].secondLang = secondWord
     words.value[index].notes = notes
 }
-
-
 
 const wordSizes = ref([33, 33, 33])
 
@@ -146,7 +222,15 @@ onMounted(() => {
 
     // console.log(mainLangHTMLElement)
 
-    
+    words.value = words.value.sort((a, b) => {
+        if (a.mainLang < b.mainLang) {
+            return -1
+        }
+        if (a.mainLang > b.mainLang) {
+            return 1
+        }
+        return 0
+    })    
 
     Split(['#lang1', '#lang2', '#notes'], {
         sizes: [33, 33, 33],
@@ -162,7 +246,6 @@ onMounted(() => {
 })
 
 
-
 </script>
 
 <style scoped lang="scss">
@@ -171,8 +254,10 @@ $bar-height: 70px;
 
 hr {
     width: 90%;
-    margin-bottom: 40px; 
-    border-color: #ffd7bc;
+    margin-top: 15px;
+    margin-bottom: 30px;
+    border-top: 2px solid #ffca67;
+    box-shadow: none;
 }
 
 nav {
@@ -193,7 +278,8 @@ nav {
 main {
     min-height: 100vh;
     width: 100%;
-    background: linear-gradient(180deg, #ff7c24, #ffb45f);
+    background: linear-gradient(100deg, #ffb25b, #ffb158);
+    background-position: fixed;
 
     display: flex;
     justify-content: center;
@@ -215,10 +301,12 @@ main {
             // background: white;
 
             div {
+                // width: calc(100% - 6px);
                 width: 100%;
                 margin: 0 1px;
                 height: 50px;
                 background: white;
+                font-weight: bold;
                 
                 display: grid;
                 place-items: center;
@@ -229,8 +317,18 @@ main {
                 transform: translateY(15px);
                 transition: ease-out 0.05s;
                 user-select: none;
-                &:hover {
+
+                // border: 3px solid transparent;
+
+                &:not(.letter-selected):hover {
                     transform: translateY(5px)
+                }
+
+                &.letter-selected {
+                    background: #ff6600;
+                    color: white;
+                    transform: translateY(0);
+                    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
                 }
             }
         }
@@ -248,6 +346,7 @@ main {
             #lang-desc {
                 display: flex;
                 justify-content: space-evenly;
+                
 
                 // cursor: col-resize;
 
@@ -263,7 +362,7 @@ main {
 
                     h1 {
                         font-size: 18pt;
-                        font-weight: normal;
+                        font-weight: bold;
                         display: grid;
                         place-items: center;
                         height: 40px;
@@ -296,7 +395,67 @@ main {
                 }
             }
         }
+    } 
+}
+
+#tag-selector-popup {
+    
+    display: flex;
+    flex-direction: column;
+    
+    #tag-top {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        width: auto;
+
+
+        #editing-suite {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
     }
+
+    .tag-button-static {
+        cursor: pointer;
+        &:hover {
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            transform: scale(1.05);
+        }
+
+        &:active {
+            transform: scale(0.95);
+        }
+    }
+    
+    #tag-button-wrapper {
+        
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: start;
+        align-content: start;
+        gap: 20px;
+        padding: 10px;
+    
+        width: 1000px;
+        // height: 600px;
+        height: 400px;
+        overflow-y: auto;
+    
+        .tag-button {
+            width: 180px;
+            height: 100px;
+            font-size: 16pt;
+            // cursor: pointer;
+            background: rgb(255, 255, 255);
+            border: none;
+            border-radius: 5px;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+            transition: cubic-bezier(0.23, 1, 0.320, 1) 0.1s;
+        }
+}
 
 }
 

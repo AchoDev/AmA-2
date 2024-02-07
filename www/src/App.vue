@@ -16,12 +16,22 @@ import Dictionary from './DictionaryPage/Dictionary.vue'
 
 <style>
 
+@import url('https://fonts.googleapis.com/css2?family=Maven+Pro&display=swap');
+
 html {
   min-height: 100vh;
 }
 
+body > * {
+  font-family: Maven Pro, sans-serif !important;
+  /* font-family: 'Times New Roman', Times, serif; */
+}
+
+button {
+  font-family: Maven Pro, sans-serif !important;
+}
+
 body {
-  font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
