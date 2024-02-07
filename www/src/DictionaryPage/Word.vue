@@ -4,7 +4,7 @@
 
         <div id="word-container" v-show="!editing">
             <span id="main-lang" :style="`width: ${sizes[0]}%`">
-                {{ mainLangWord }}
+                {{ mainWord }}
             </span>
 
             <div class="divider">
@@ -12,25 +12,40 @@
             </div>
             
             <span id="second-lang" :style="`width: ${sizes[1]}%`">
-                {{ secondLangWord }}
+                {{ secondWord }}
             </span>
 
             <div class="divider">
                 &nbsp;
             </div>
-    
+            
             <div id="note-container" :style="`width: ${sizes[2]}%`">
                 NOTES
             </div>
-
-            <button id="edit-button" @click="editing = true">edit</button>
         </div>
-
+        
         <div id="edit-word-container" v-show="editing">
-            <input type="text" :style="`width: ${sizes[0]}%`">
-            <input type="text" :style="`width: ${sizes[1]}%`">
-            <div :style="`width: ${sizes[2]}%`">notez</div>
+            <div :style="`width: ${sizes[0]}%`">
+                <input type="text" v-model="mainWord">
+            </div>
+            <div class="divider">
+                &nbsp;
+            </div>
+            
+            <div :style="`width: ${sizes[1]}%`">
+                <input type="text" v-model="secondWord">
+            </div>
+            <div class="divider">
+                &nbsp;
+            </div>
+
+            <div :style="`width: ${sizes[2]}%`">
+                <div>notez</div>
+            </div>
         </div>
+
+        <button v-show="!editing" id="edit-button" @click="editing = true">edit</button>
+        <button v-show="editing" id="edit-button" @click="editing = false">save</button>
 
         <!-- <center>
             <hr>
@@ -46,12 +61,15 @@ import { ref } from 'vue';
 
 const editing = ref(false)
 
-defineProps<{
+const props = defineProps<{
     mainLangWord: string,
     secondLangWord: string,
 
     sizes: Array<number>,
 }>()
+
+const mainWord = ref(props.mainLangWord)
+const secondWord = ref(props.secondLangWord)
 
 defineEmits(['onWordEdit'])
 
@@ -60,6 +78,10 @@ defineEmits(['onWordEdit'])
 </script>
 
 <style lang="scss" scoped>
+
+div {
+    position: relative;
+}
 
 #word-container, #edit-word-container {
     display: flex;
@@ -76,15 +98,13 @@ defineEmits(['onWordEdit'])
         font-size: 15pt;
         // border-right: 1px solid rgb(255, 219, 143);
     }
+}
 
-    
-
-    #edit-button {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-    }
+#edit-button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 hr {

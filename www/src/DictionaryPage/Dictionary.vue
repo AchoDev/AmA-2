@@ -3,8 +3,7 @@
         
         <nav>
             <div>
-                <span>ama img</span>
-                <button> >> </button>
+                <button @click="sideMenuOpened = true"> >> </button>
             </div>
 
             <div>{{mainLang}} - {{secondLang}}</div>
@@ -13,6 +12,31 @@
                 <button>...</button>
             </div>
         </nav>
+
+        <div id="side-bar" :class="sideMenuOpened ? 'opened' : ''">
+            <div>
+                ama logo
+                <button @click="sideMenuOpened = false"> &lt;&lt; </button>
+            </div>
+
+            <button> &lt;- Menu </button>
+
+            <hr>
+
+            <h4>Your dictionaries</h4>
+
+            <div>
+                <button>spanish - german</button>
+            </div>
+
+            <hr>
+
+            <h4>Your pages</h4>
+
+            <div>
+                <button>page 1</button>
+            </div>
+        </div>
 
         <main>
             <div id="main-wrapper">
@@ -50,6 +74,11 @@
                         :notes="word.notes"
                         :sizes="wordSizes"
 
+                        v-show="
+                            (selectedTag === '' || word.tag == selectedTag) && 
+                            (selectedLetter === '' || word.mainLang.charAt(0).toLowerCase() === selectedLetter.toLowerCase())
+                            && (searchingFor === '' || word.mainLang.toLowerCase().includes(searchingFor.toLowerCase()))"
+
                         @onWordEdit="onWordEdit" 
                     />
 
@@ -62,12 +91,23 @@
         </main>
 
         <div id="bottom-bar">
-            <div>
-                <button>search</button>
-                <button @click="openTagMenu">tags</button>
+
+            <div id="tag-indicator" v-show="selectedTag != ''">
+                <button @click="selectedTag = ''">X</button>
+                <span>Selected tag: <b>{{ selectedTag }}</b></span>
             </div>
 
             <div>
+                <!-- <button>search</button> -->
+
+                <div id="search-bar">
+                    <input type="text" placeholder="Search..." v-model="searchingFor">
+                </div>
+
+                <button @click="openTagMenu">tags</button>
+            </div>
+
+            <div id="page-indicator">
                 <button> &vartriangleleft; </button>
 
                 <span>Page {{ currentPage }}/{{ totalPages }}</span>
@@ -78,7 +118,7 @@
             <button>+ Add word</button>
         </div>
 
-        <PopupContainer ref="tagSelector">
+        <PopupContainer ref="tagSelector" @onClose="editingTags = false">
             <div id="tag-selector-popup">
                 <div id="tag-top">
                     <h1>select tag</h1>
@@ -90,19 +130,26 @@
                 </div>
 
                 <div id="tag-button-wrapper">
-                    <Wiggly 
+                    
+                    <div
                         v-for="(tag, id) in tags"
-                        :wiggle="editingTags"
+                        :key="id"
                     >
-                        <button 
-                            class="tag-button"
-                            :class="!editingTags ? 'tag-button-static' : ''"
-                            :key="id"
-                            @click="selectTag(tag)"
+                        <button id="edit" v-show="editingTags" :style="`opacity: ${editingTags ? 1 : 0}`">e</button>
+                        <button id="delete" v-show="editingTags" :style="`opacity: ${editingTags ? 1 : 0}`">d</button>
+                        <Wiggly 
+                            
+                            :wiggle="editingTags"
                         >
-                            <span>{{ tag }}</span>
-                        </button>
-                    </Wiggly>
+                            <button 
+                                class="tag-button"
+                                :class="!editingTags ? 'tag-button-static' : ''"
+                                @click="selectTag(tag)"
+                            >
+                                <span>{{ tag }}</span>
+                            </button>
+                        </Wiggly>
+                    </div>
                 </div>
             </div>
         </PopupContainer>
@@ -132,6 +179,11 @@ const currentPage = ref<number>(1)
 const totalPages = ref<number>(1)
 
 const selectedLetter = ref('')
+const selectedTag = ref('')
+const searchingFor = ref('')
+
+const sideMenuOpened = ref(false)
+
 const tagSelector = ref()
 
 function openTagMenu() {
@@ -139,7 +191,8 @@ function openTagMenu() {
 }
 
 function selectTag(tag: string) {
-    console.log(tag)
+    if(editingTags.value) return
+    selectedTag.value = tag
     tagSelector.value.closePopup()
 }
 
@@ -147,18 +200,32 @@ const editingTags = ref(false)
 
 
 function selectLetter(letter: string) {
+    if(selectedLetter.value === letter) {
+        selectedLetter.value = ''
+        return
+    }
     selectedLetter.value = letter
 }
 
 const currentAlphabet = ref(alphabets[props.mainLang])
+
+
 
 interface Note {
     color: string,
     points: number[][]
 }
 
+interface Word {
+    mainLang: string,
+    secondLang: string,
+    notes: Note[],
+    tag: string
+}
+
 const words = ref([
     {
+        id: 94193412949123,
         mainLang: 'hola',
         secondLang: 'hallo',
         notes: <Note[]>[
@@ -170,9 +237,11 @@ const words = ref([
                     [40, 40],
                 ]
             }
-        ]
+        ],
+        tag: 'greetings'
     },
     {
+        id: 23442341231243,
         mainLang: 'como estas',
         secondLang: 'wie gehts dir',
         notes: <Note[]>[
@@ -184,7 +253,8 @@ const words = ref([
                     [40, 40],
                 ]
             }
-        ]
+        ],
+        tag: ''
     },
 
 ])
@@ -211,16 +281,19 @@ const tags = ref({
 })
 
 function onWordEdit(index: number, mainWord: string, secondWord: string, notes: Note[]) {
-    words.value[index].mainLang = mainWord
-    words.value[index].secondLang = secondWord
-    words.value[index].notes = notes
+    words.value.find((word, i) => {
+        if(i === index) {
+            word.mainLang = mainWord
+            word.secondLang = secondWord
+            word.notes = notes
+            return true
+        }
+    })
 }
 
 const wordSizes = ref([33, 33, 33])
 
 onMounted(() => {
-
-    // console.log(mainLangHTMLElement)
 
     words.value = words.value.sort((a, b) => {
         if (a.mainLang < b.mainLang) {
@@ -258,6 +331,24 @@ hr {
     margin-bottom: 30px;
     border-top: 2px solid #ffca67;
     box-shadow: none;
+}
+
+#side-bar {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(10deg, rgb(255, 185, 80), rgb(255, 161, 72));
+    height: 100%;
+    width: 300px;
+    position: fixed;
+    left: -300px;
+    z-index: 11;
+    transition: cubic-bezier(0.23, 1, 0.320, 1) .3s;
+
+    border-right: 1px solid black;
+
+    &.opened {
+        left: 0;
+    }
 }
 
 nav {
@@ -318,11 +409,13 @@ main {
                 transition: ease-out 0.05s;
                 user-select: none;
 
+                cursor: pointer;
+
                 // border: 3px solid transparent;
 
-                &:not(.letter-selected):hover {
-                    transform: translateY(5px)
-                }
+                // &:not(.letter-selected):hover {
+                //     transform: translateY(5px)
+                // }
 
                 &.letter-selected {
                     background: #ff6600;
@@ -337,6 +430,7 @@ main {
             min-height: 90%;
             background: white;
             border-radius: 10px;
+            border: 1px solid rgb(235, 175, 120);
             // border: 1px solid #727272;
 
             box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
@@ -443,6 +537,30 @@ main {
         // height: 600px;
         height: 400px;
         overflow-y: auto;
+
+        div {
+            position: relative;
+        }
+
+        #edit, #delete {
+            position: absolute;
+            z-index: 15;
+            top: -10px;
+
+            width: 30px;
+            height: 30px;
+            transition: ease-out .2s;
+            &:hover {
+                transform: scale(1.1);
+            }
+        }
+
+        #edit {
+            left: -5px;
+        }
+        #delete {
+            right: -5px;
+        }
     
         .tag-button {
             width: 180px;
@@ -472,6 +590,55 @@ main {
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 
     z-index: 10;
+
+    div {
+        margin-left: 5px;
+        display: flex;
+        gap: 10px;
+        
+            #search-bar {
+                input[type="text"] {
+                    width: 200px;
+                    height: 30px;
+                    border: none;
+                    border-radius: 100px;
+                    padding: 5px;
+                    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+                    transition: ease .1s;
+
+                    &:focus {
+                        outline: none;
+                        box-shadow: rgba(0, 0, 0, 0.521) 0px 3px 8px;
+                    }
+                }
+            }
+    }
+
+    #page-indicator {
+        display: flex;
+        gap: 10px;
+
+        position: absolute;
+        right: 50%;
+        transform: translateX(50%);
+    }
+
+    #tag-indicator {
+        position: absolute;
+        left: 10px;
+        top: -50px;
+        background: white;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        border-radius: 5px;
+        min-width: 200px;
+        height: 30px;
+        padding: 5px;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+    }
 }
 
 </style>

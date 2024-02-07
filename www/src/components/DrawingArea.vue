@@ -118,7 +118,7 @@ function catmullRomSpline(P0: { x: number; y: number; }, P1: { x: number; y: num
     };
 }
 
-function generateCurve(points: string | any[], numPoints = 100) {
+function generateCurve(points: string | any[], numPoints = 1000) {
 
     points = [points[0], ...points, points[points.length - 1]]
     const curve = [];
