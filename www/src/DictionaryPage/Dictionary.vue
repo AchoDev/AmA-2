@@ -238,22 +238,27 @@ function selectTag(tag: string) {
 }
 
 function deleteTag(tag: string) {
-    yesNo.value.ask('Are you sure you want to delete this tag?', 'All tagged words will lose their tag').then((answer: boolean) => {
+    yesNo.value.ask(`Are you sure you want to delete the tag "${tag}"?`, 'All tagged words will lose their tag').then((answer: boolean) => {
         if(answer) {
-            yesNo.value.ask(`Delete all words belonging to tag ${tag}?`, '').then((answer: boolean) => {
-                if(answer) {
-                    words.value = words.value.filter(word => word.tag !== tag)
-                } else {
-                    words.value.forEach(word => {
-                        if(word.tag === tag) {
-                            word.tag = ''
-                        }
-                    })
-                }
-            })
 
-            tags.value.splice(tags.value.indexOf(tag), 1)
-            console.log(tags.value)
+            setTimeout(() => {
+        
+                yesNo.value.ask(`Delete all words belonging to this tag?`, '').then((answer: boolean) => {
+                    if(answer) {
+                        words.value = words.value.filter(word => word.tag !== tag)
+                    } else {
+                        words.value.forEach(word => {
+                            if(word.tag === tag) {
+                                word.tag = ''
+                            }
+                        })
+                    }
+                })
+    
+                tags.value.splice(tags.value.indexOf(tag), 1)
+                console.log(tags.value)
+            }, 200)
+
         }
     })
 }
