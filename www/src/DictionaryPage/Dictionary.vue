@@ -82,6 +82,28 @@
                         @onWordEdit="onWordEdit" 
                     />
 
+                    <center v-if="words.length === 0">
+                        <h2>So empty....</h2>
+                        <span>Add your first word to start the learning journey</span>
+                    </center>
+
+                    <div v-if="words.length !== 0">
+                        <center v-if="noTagWordFound && !noSearchWordFound">
+                            <h2>No word with the tag "{{ selectedTag }}" :(</h2>
+                            <span>You can edit existing words to give them tags or select a tag upon creating a new word</span>
+                        </center>
+                        
+                        <center v-if="noSearchWordFound && !noTagWordFound">
+                            <h2>No word called "{{ searchingFor }}" was found :(</h2>
+                            <span>Maybe you mispelled it? Make sure </span>
+                        </center>
+
+                        <center v-if="noSearchWordFound && noTagWordFound">
+                            <h2>No word with the Tag "{{ selectedTag }}" OR with the name "{{ searchingFor }}"</h2>
+                            <span>You are searching in an empty tag for something? That's... terrifying...</span>
+                        </center>
+                    </div>                
+
                     <!-- <center>
                         <DrawingArea width="750px" height="500px"/>
                     </center> -->
@@ -124,7 +146,9 @@
                     <h1>select tag</h1>
 
                     <div id="editing-suite">
-                        <button v-show="!editingTags" @click="editingTags = true">edit tags</button>
+                        <button v-show="!editingTags" @click="editingTags = true">
+                            <img src="../assets/edit.svg" alt="Edit button">
+                        </button>
                         <button v-show="editingTags" @click="editingTags = false">Stop editing</button>
                     </div>
                 </div>
@@ -135,8 +159,12 @@
                         v-for="(tag, id) in tags"
                         :key="id"
                     >
-                        <button id="edit" v-show="editingTags" :style="`opacity: ${editingTags ? 1 : 0}`">e</button>
-                        <button id="delete" v-show="editingTags" :style="`opacity: ${editingTags ? 1 : 0}`">d</button>
+                        <button id="edit" v-show="editingTags" :style="`opacity: ${editingTags ? 1 : 0}`" @click="deleteTag(tag)">
+                            <img src="../assets/edit.svg" alt="Edit">
+                        </button>
+                        <button id="delete" v-show="editingTags" :style="`opacity: ${editingTags ? 1 : 0}`" @click="deleteTag(tag)">
+                            <img src="../assets/trash.svg" alt="Delete">
+                        </button>
                         <Wiggly 
                             
                             :wiggle="editingTags"
@@ -153,14 +181,17 @@
                 </div>
             </div>
         </PopupContainer>
+
+        <YesNo ref="yesNo" />
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import Word from './Word.vue';
 import PopupContainer from '../components/PopupContainer.vue';
 import Wiggly from '../components/Wiggly.vue';
+import YesNo from '../components/YesNo.vue';
 
 // const fs = require('fs')
 
@@ -169,6 +200,15 @@ import Wiggly from '../components/Wiggly.vue';
 import Split from 'split.js'
 
 import alphabets from './alphabets.ts'
+
+const noTagWordFound = computed(() => {
+    return words.value.find(value => value.tag === selectedTag.value) == undefined && selectedTag.value !== ''
+})
+
+const noSearchWordFound = computed(() => {
+    return words.value.find(value => value.mainLang.toLowerCase().includes(searchingFor.value.toLowerCase())) == undefined && searchingFor.value !== ''
+})
+
 
 const props = defineProps<{
     mainLang: string,
@@ -185,6 +225,7 @@ const searchingFor = ref('')
 const sideMenuOpened = ref(false)
 
 const tagSelector = ref()
+const yesNo = ref()
 
 function openTagMenu() {
     tagSelector.value.openPopup()
@@ -194,6 +235,27 @@ function selectTag(tag: string) {
     if(editingTags.value) return
     selectedTag.value = tag
     tagSelector.value.closePopup()
+}
+
+function deleteTag(tag: string) {
+    yesNo.value.ask('Are you sure you want to delete this tag?', 'All tagged words will lose their tag').then((answer: boolean) => {
+        if(answer) {
+            yesNo.value.ask(`Delete all words belonging to tag ${tag}?`, '').then((answer: boolean) => {
+                if(answer) {
+                    words.value = words.value.filter(word => word.tag !== tag)
+                } else {
+                    words.value.forEach(word => {
+                        if(word.tag === tag) {
+                            word.tag = ''
+                        }
+                    })
+                }
+            })
+
+            tags.value.splice(tags.value.indexOf(tag), 1)
+            console.log(tags.value)
+        }
+    })
 }
 
 const editingTags = ref(false)
@@ -226,6 +288,22 @@ interface Word {
 const words = ref([
     {
         id: 94193412949123,
+        mainLang: 'mi nombre es BEERLINER',
+        secondLang: 'ich bin ein berliner',
+        notes: <Note[]>[
+            {
+                color: 'black',
+                points: [
+                    [10, 10],
+                    [20, 10],
+                    [40, 40],
+                ]
+            }
+        ],
+        tag: 'greetings'
+    },
+    {
+        id: 94193412949123,
         mainLang: 'hola',
         secondLang: 'hallo',
         notes: <Note[]>[
@@ -241,9 +319,25 @@ const words = ref([
         tag: 'greetings'
     },
     {
-        id: 23442341231243,
+        id: 123,
         mainLang: 'como estas',
         secondLang: 'wie gehts dir',
+        notes: <Note[]>[
+            {
+                color: 'black',
+                points: [
+                    [10, 10],
+                    [20, 10],
+                    [40, 40],
+                ]
+            }
+        ],
+        tag: ''
+    },
+    {
+        id: 23442341231243,
+        mainLang: 'mi nombre es',
+        secondLang: 'mein name ist',
         notes: <Note[]>[
             {
                 color: 'black',
@@ -259,26 +353,25 @@ const words = ref([
 
 ])
 
-const tags = ref({
-    10101010: 'greetings',
-    1818918188: 'nouns',
-    // give me 10 more random ones
-    123131231: 'verbs',
-    123123123: 'adjectives',
-    1231243123: 'adverbs',
-    1231123123: 'prepositions',
-    1231232123: 'conjunctions',
-    1231231223: 'interjections',
-    12321253123: 'articles',
-    12321235123: 'determiners',
-    1231231231: 'pronouns',
-    1231231232: 'numbers',
-    1231231233: 'quantifiers',
-    1231231234: 'demonstratives',
-    1231231235: 'possessives',
-    1231231236: 'interrogatives',
-    1231231237: 'indefinites',
-})
+const tags = ref([
+    'greetings',
+    'nouns',
+    'verbs',
+    'adjectives',
+    'adverbs',
+    'prepositions',
+    'conjunctions',
+    'interjections',
+    'articles',
+    'determiners',
+    'pronouns',
+    'numbers',
+    'quantifiers',
+    'demonstratives',
+    'possessives',
+    'interrogatives',
+    'indefinites',
+])
 
 function onWordEdit(index: number, mainWord: string, secondWord: string, notes: Note[]) {
     words.value.find((word, i) => {
@@ -509,6 +602,27 @@ main {
             right: 10px;
             top: 50%;
             transform: translateY(-50%);
+
+            
+            button {
+                width: 60px;
+                height: 60px;
+                background: white;
+                border: none;
+                border-radius: 100px;
+                box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+                transition: ease-out .1s;
+
+                img {
+                    width: 70%;
+                    height: auto;
+                }
+
+                &:active {
+                    transform: scale(0.75);
+                }
+            }
+
         }
     }
 
@@ -547,11 +661,20 @@ main {
             z-index: 15;
             top: -10px;
 
-            width: 30px;
-            height: 30px;
+            width: 40px;
+            height: 40px;
             transition: ease-out .2s;
             &:hover {
                 transform: scale(1.1);
+            }
+
+            background: white;
+            border: 1px solid rgb(182, 182, 182);
+            border-radius: 100px;
+
+            img {
+                width: 100%;
+                height: auto;
             }
         }
 

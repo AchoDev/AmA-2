@@ -20,8 +20,15 @@ defineExpose({
     openPopup() {
         open.value = true
     },
-    closePopup() {
+    async closePopup(): Promise<void> {
         open.value = false
+        console.log('closing')
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                console.log("closed!")
+                resolve()
+            }, 250)
+        })
     },
 })
 

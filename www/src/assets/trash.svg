@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Created with Vectornator (http://vectornator.io/) -->
+<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" version="1.1" viewBox="0 0 1000 1000" width="100%" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:vectornator="http://vectornator.io" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs/>
+<g id="Ebene-1" vectornator:layerName="Ebene 1">
+<path d="M850 191.667L850 142.377C850 105.166 819.834 75 782.623 75L217.377 75C180.166 75 150 105.166 150 142.377L150 191.667L850 191.667Z" fill="#ff9a00" fill-rule="nonzero" opacity="1" stroke="#000000" stroke-linecap="butt" stroke-linejoin="round" stroke-width="11.6667" vectornator:layerName="Kurve 2"/>
+<path d="M383.333 75L383.333 48.5465C383.333 30.9398 397.606 16.6667 415.213 16.6667L584.787 16.6667C602.394 16.6667 616.667 30.9398 616.667 48.5465L616.667 75" fill="none" opacity="1" stroke="#000000" stroke-linecap="butt" stroke-linejoin="round" stroke-width="18.0557" vectornator:layerName="Kurve 3"/>
+<path d="M150 250L208.333 950L791.667 950L850 250L150 250ZM325 337.5C341.108 337.5 354.167 350.558 354.167 366.667L354.167 833.333C354.167 849.442 341.109 862.5 325 862.5C308.891 862.5 295.833 849.442 295.833 833.333L295.833 366.667C295.833 350.558 308.891 337.5 325 337.5ZM500 337.5C516.109 337.5 529.167 350.558 529.167 366.667L529.167 833.333C529.167 849.442 516.109 862.5 500 862.5C483.892 862.5 470.833 849.442 470.833 833.333L470.833 366.667C470.833 350.558 483.891 337.5 500 337.5ZM675 337.5C691.109 337.5 704.167 350.558 704.167 366.667L704.167 833.333C704.167 849.442 691.109 862.5 675 862.5C658.891 862.5 645.833 849.442 645.833 833.333L645.833 366.667C645.833 350.558 658.891 337.5 675 337.5Z" fill="#ff9a00" fill-rule="nonzero" opacity="1" stroke="#000000" stroke-linecap="butt" stroke-linejoin="round" stroke-width="11.6667" vectornator:layerName="Kurve 4"/>
+</g>
+</svg>

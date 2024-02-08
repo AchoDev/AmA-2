@@ -4,7 +4,7 @@
 
         <div id="word-container" v-show="!editing">
             <span id="main-lang" :style="`width: ${sizes[0]}%`">
-                {{ mainWord }}
+                {{ mainLangWord }}
             </span>
 
             <div class="divider">
@@ -12,7 +12,7 @@
             </div>
             
             <span id="second-lang" :style="`width: ${sizes[1]}%`">
-                {{ secondWord }}
+                {{ secondLangWord }}
             </span>
 
             <div class="divider">
@@ -72,8 +72,6 @@ const mainWord = ref(props.mainLangWord)
 const secondWord = ref(props.secondLangWord)
 
 defineEmits(['onWordEdit'])
-
-
 
 </script>
 
