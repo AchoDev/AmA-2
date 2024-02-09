@@ -20,7 +20,7 @@
             </div>
             
             <div id="note-container" :style="`width: ${sizes[2]}%`">
-                NOTES
+                <DrawingPreview width="700px" height="250px" scale-down="3.5" :paths="notes" />
             </div>
         </div>
         
@@ -40,12 +40,26 @@
             </div>
 
             <div :style="`width: ${sizes[2]}%`">
-                <div>notez</div>
+                <div></div>
             </div>
         </div>
 
-        <button v-show="!editing" id="edit-button" @click="editing = true">edit</button>
-        <button v-show="editing" id="edit-button" @click="editing = false">save</button>
+        <div id="editing-suite">
+            <button v-show="!editing" id="edit-button" @click="startEditing()">
+                <img src="../assets/edit.svg" alt="Edit">
+            </button>
+    
+            <button v-show="editing" id="edit-button" @click="deleteWord()">
+                <img src="../assets/trash.svg" alt="Delete">
+            </button>
+            <button v-show="editing" id="edit-button" @click="saveWord()">
+                <img src="../assets/save.svg" alt="Save">
+            </button>
+            <button v-show="editing" id="edit-button" @click="editing = false">
+                <img src="../assets/cancel.svg" alt="Cancel">
+            </button>
+        </div>
+
 
         <!-- <center>
             <hr>
@@ -57,15 +71,32 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import DrawingPreview from '../components/DrawingPreview.vue';
+import Path from '../components/path';
 
+function startEditing() {
+    editing.value = true
+    mainWord.value = props.mainLangWord;
+    secondWord.value = props.secondLangWord;
+}
 
+function saveWord() {
+    emit('onWordEdit', props.index, mainWord.value, secondWord.value)
+    editing.value = false
+}
 
+function deleteWord() {
+    emit('onWordDelete')
+}
 
 const editing = ref(false)
 
 const props = defineProps<{
     mainLangWord: string,
     secondLangWord: string,
+    notes: Path[]
+
+    index: number,
 
     sizes: Array<number>,
 }>()
@@ -73,7 +104,7 @@ const props = defineProps<{
 const mainWord = ref(props.mainLangWord)
 const secondWord = ref(props.secondLangWord)
 
-defineEmits(['onWordEdit'])
+const emit = defineEmits(['onWordEdit', 'onWordDelete'])
 
 </script>
 
@@ -91,20 +122,63 @@ div {
 
     height: 70px;
 
+    #note-container {
+        overflow: hidden;
+    }
+
     span, div {
+        text-align: center;
         display: flex;
         justify-content: center;
         align-items: center;
         font-size: 15pt;
         // border-right: 1px solid rgb(255, 219, 143);
     }
+
+    input[type="text"] {
+        width: 80%;
+        height: 40px;
+        border-radius: 100px;
+        font-size: 15pt;
+        text-align: center;
+        box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
+        border: none;
+
+        &:focus {
+            outline: none;
+        }
+    }
 }
 
-#edit-button {
+#editing-suite {
     position: absolute;
     right: 10px;
     top: 50%;
     transform: translateY(-50%);
+
+    display: flex;
+    flex-direction: row;
+    // width: 100px;
+    gap: 5px;
+
+    button {
+        width: 40px;
+        height: 40px;
+        padding: 5px;
+        box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
+        border: none;
+        border-radius: 100px;
+        display: grid;
+        place-items: center;
+        background: white;
+    
+        img {
+            // filter: brightness(0);
+            width: 80%;
+            height: auto;
+        }
+    }
+
 }
 
 hr {

@@ -15,17 +15,14 @@ function closePopup() {
     emit('onClose')
 }
 
-
 defineExpose({
     openPopup() {
         open.value = true
     },
     async closePopup(): Promise<void> {
         open.value = false
-        console.log('closing')
         return new Promise((resolve) => {
             setTimeout(() => {
-                console.log("closed!")
                 resolve()
             }, 250)
         })
@@ -66,6 +63,8 @@ const emit = defineEmits(['onClose'])
     #popup-container {
         transition: cubic-bezier(0.165, 0.84, 0.44, 1) .25s;
         transform: scale(1.1);
+
+        // position:unset;
 
         // width: 700px;
         // height: 400px;

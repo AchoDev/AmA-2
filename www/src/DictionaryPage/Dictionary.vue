@@ -68,10 +68,11 @@
                     </center>
 
                     <Word 
-                        v-for="word in words" 
+                        v-for="(word, i) in words" 
                         :mainLangWord="word.mainLang" 
                         :secondLangWord="word.secondLang" 
                         :notes="word.notes"
+                        :index="i"
                         :sizes="wordSizes"
 
                         v-show="
@@ -137,7 +138,7 @@
                 <button> &vartriangleright; </button>
             </div>
 
-            <button>+ Add word</button>
+            <button @click="createNewWord()">+ Add word</button>
         </div>
 
         <PopupContainer ref="tagSelector" @onClose="editingTags = false">
@@ -202,6 +203,46 @@
             </div>
         </PopupContainer>
 
+        <PopupContainer ref="wordCreator">
+            <div id="word-creator">
+                <h1>Create a new word</h1>
+                
+                {{ mainLang }}
+                <input type="text" :placeholder="mainLang + ' word'" v-model="newWordMainLang">
+                
+                {{ secondLang }}
+                <input type="text" :placeholder="secondLang + ' word'" v-model="newWordSecondLang">
+
+                Tag
+                <select name="Tag" id="tag-selector" v-model="newWordTag">
+                    <option value="">No tag</option>
+                    <option v-for="(tag, id) in tags" :key="id" :value="tag">{{ tag }}</option>
+                </select>
+
+                Notes (click to draw)
+                <div @click="openDrawer()">
+                    <DrawingPreview
+                        width="700px"
+                        height="250px"
+                        :paths="newWordNoteDrawing"
+                        scale-down="2.5" 
+                    />
+                </div>
+                
+                <button @click="saveNewWord">Create</button>
+                <button @click="closeWordCreator">Cancel</button>
+            
+            </div>
+        </PopupContainer>
+
+        <PopupContainer ref="drawingPopup">
+            <DrawingArea 
+                width="700px" 
+                height="250px"
+                v-model="newWordNoteDrawing"
+            />
+        </PopupContainer>
+
         <YesNo ref="yesNo" />
     </div>
 </template>
@@ -212,6 +253,9 @@ import Word from './Word.vue';
 import PopupContainer from '../components/PopupContainer.vue';
 import Wiggly from '../components/Wiggly.vue';
 import YesNo from '../components/YesNo.vue';
+import DrawingPreview from '../components/DrawingPreview.vue';
+import DrawingArea from '../components/DrawingArea.vue';
+import Path from '../components/path';
 
 // const fs = require('fs')
 
@@ -249,6 +293,44 @@ const tagEditor = ref()
 
 const currentEditedTag = ref('')
 const currentEditedTagModel = ref('')
+
+const newWordMainLang = ref('')
+const newWordSecondLang = ref('')
+const wordCreator = ref()
+const drawingPopup = ref()
+
+const newWordNoteDrawing = ref<Path[]>([])
+const newWordTag = ref('')
+
+function openDrawer() {
+    drawingPopup.value.openPopup()
+}
+
+function createNewWord() {
+    wordCreator.value.openPopup();
+}
+
+function saveNewWord() {
+    words.value.push({
+        id: Math.random(),
+        mainLang: newWordMainLang.value,
+        secondLang: newWordSecondLang.value,
+        notes: newWordNoteDrawing.value,
+        tag: newWordTag.value
+    })
+
+    closeWordCreator()
+}
+
+function closeWordCreator() {
+    newWordMainLang.value = ''
+    newWordSecondLang.value = ''
+    newWordNoteDrawing.value = []
+    newWordTag.value = ''
+
+    wordCreator.value.closePopup()
+}
+
 
 const yesNo = ref()
 
@@ -336,15 +418,11 @@ const currentAlphabet = ref(alphabets[props.mainLang])
 
 
 
-interface Note {
-    color: string,
-    points: number[][]
-}
 
 interface Word {
     mainLang: string,
     secondLang: string,
-    notes: Note[],
+    notes: Path[],
     tag: string
 }
 
@@ -353,64 +431,21 @@ const words = ref([
         id: 94193412949123,
         mainLang: 'mi nombre es BEERLINER',
         secondLang: 'ich bin ein berliner',
-        notes: <Note[]>[
-            {
-                color: 'black',
-                points: [
-                    [10, 10],
-                    [20, 10],
-                    [40, 40],
-                ]
-            }
-        ],
-        tag: 'greetings'
-    },
-    {
-        id: 94193412949123,
-        mainLang: 'hola',
-        secondLang: 'hallo',
-        notes: <Note[]>[
-            {
-                color: 'black',
-                points: [
-                    [10, 10],
-                    [20, 10],
-                    [40, 40],
-                ]
-            }
-        ],
+        notes: <Path[]>[],
         tag: 'greetings'
     },
     {
         id: 123,
         mainLang: 'como estas',
         secondLang: 'wie gehts dir',
-        notes: <Note[]>[
-            {
-                color: 'black',
-                points: [
-                    [10, 10],
-                    [20, 10],
-                    [40, 40],
-                ]
-            }
-        ],
+        notes: <Path[]>[],
         tag: ''
     },
     {
         id: 23442341231243,
         mainLang: 'mi nombre es',
         secondLang: 'mein name ist',
-        notes: <Note[]>[
-            {
-                color: 'black',
-                points: [
-                    [10, 10],
-                    [20, 10],
-                    [40, 40],
-                ]
-            }
-        ],
+        notes: <Path[]>[],
         tag: ''
     },
 
@@ -436,21 +471,21 @@ const tags = ref([
     'indefinites',
 ])
 
-function onWordEdit(index: number, mainWord: string, secondWord: string, notes: Note[]) {
+function onWordEdit(index: number, mainWord: string, secondWord: string) {
     words.value.find((word, i) => {
         if(i === index) {
             word.mainLang = mainWord
             word.secondLang = secondWord
-            word.notes = notes
             return true
         }
     })
+
+    orderWords()
 }
 
 const wordSizes = ref([33, 33, 33])
 
-onMounted(() => {
-
+function orderWords() {
     words.value = words.value.sort((a, b) => {
         if (a.mainLang < b.mainLang) {
             return -1
@@ -459,7 +494,12 @@ onMounted(() => {
             return 1
         }
         return 0
-    })    
+    })
+}
+
+onMounted(() => {
+
+    orderWords()  
 
     Split(['#lang1', '#lang2', '#notes'], {
         sizes: [33, 33, 33],
@@ -646,6 +686,51 @@ main {
             }
         }
     } 
+}
+
+#word-creator {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding: 15px;
+    gap: 10px;
+
+    input[type="text"] {
+        width: 300px;
+        height: 50px;
+        border: none;
+        border-radius: 100px;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        transition: ease .1s;
+
+        &:focus {
+            outline: none;
+            box-shadow: rgba(0, 0, 0, 0.521) 0px 3px 8px;
+        }
+    
+    }
+
+    select {
+        width: 200px;
+        height: 50px;
+        border-radius: 100px;
+        border: none;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    button {
+        width: 200px;
+        height: 50px;
+        background: white;
+        border: none;
+        border-radius: 100px;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    }
 }
 
 #edit-tag-popup {

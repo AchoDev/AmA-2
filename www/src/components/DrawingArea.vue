@@ -15,22 +15,22 @@
                 :d="path.path.map((p, index) => (index === 0 ? 'M' : 'L') + p.x + ' ' + p.y).join(' ')"
                 fill="none"
                 :stroke="path.color"
-                stroke-width="2"
+                :stroke-width="path.width"
             />
             <path
                 :d="currentPath.path.map((p, index) => (index === 0 ? 'M' : 'L') + p.x + ' ' + p.y).join(' ')"
                 fill="none"
                 :stroke="currentColor"
-                stroke-width="2"
+                :stroke-width="penSize"
             />
         </svg>
 
-        <div id="tool-bar">
+        <div id="tool-bar" :class="toolBarMinimized ? 'minimized' : ''">
 
-            <button @click="currentTool = 'pen'" :class="currentTool == 'pen' ? 'active' : ''">
+            <button @click="currentTool = toolBarMinimized ? 'eraser' : 'pen'" :class="currentTool == 'pen' ? 'active' : ''">
                 <img src="../assets/pen.svg" alt="">
             </button>
-            <button @click="currentTool = 'eraser'" :class="currentTool == 'eraser' ? 'active' : ''">
+            <button @click="currentTool = toolBarMinimized ? 'pen' : 'eraser'" :class="currentTool == 'eraser' ? 'active' : ''">
                 <img src="../assets/eraser.svg" alt="">
             </button>
 
@@ -49,6 +49,10 @@
                 </button>
             </div>
 
+            <button id="minimizer" @click="toolBarMinimized = !toolBarMinimized">
+                >>
+            </button>
+
             <div v-show="currentTool == 'eraser'" id="eraser-size">
                 <input type="range" min="10" max="100" v-model="eraserSize" />
                 
@@ -57,6 +61,18 @@
                         :style="`width: ${eraserSize}px; height: ${eraserSize}px;`"
                     >
                         {{ eraserSize >= 25 ? eraserSize : '' }}
+                    </div>
+                </div>
+            </div>
+
+            <div v-show="currentTool == 'pen'" id="pen-size">
+                <input type="range" min="1" max="20" v-model="penSize" @click.stop id="pen-size-range"/>
+                
+                <div id="pen-repr-wrapper">
+                    <div id="repr" 
+                        :style="`width: ${penSize}px; height: ${penSize}px;`"
+                    >
+                    &nbsp;
                     </div>
                 </div>
             </div>
@@ -80,6 +96,12 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import Path from './path';
+
+interface Point {
+    x: number,
+    y: number
+}
 
 defineProps<{
     width: string,
@@ -91,23 +113,17 @@ const touching = ref(false)
 const currentColor = ref('black')
 const currentTool = ref('pen');
 
+const penSize = ref(5)
 const eraserSize = ref(10)
 const eraserPosition = ref({x: 0, y: 0})
 
 const colors = ref(['black', 'red', 'blue', 'green'])
 
-interface Point {
-    x: number,
-    y: number
-}
+const toolBarMinimized = ref(false)
 
-interface Path {
-    path: Array<Point>,
-    color: string
-}
-
-const paths = ref< Array<Path> >([])
-const currentPath = ref<Path>({path: [], color: currentColor.value})
+const paths = defineModel< Array<Path> >()
+paths.value = []
+const currentPath = ref<Path>({path: [], color: currentColor.value, width: penSize.value})
 
 function catmullRomSpline(P0: { x: number; y: number; }, P1: { x: number; y: number; }, P2: { x: number; y: number; }, P3: { x: number; y: number; }, t: number) {
     const t2 = t * t;
@@ -118,7 +134,7 @@ function catmullRomSpline(P0: { x: number; y: number; }, P1: { x: number; y: num
     };
 }
 
-function generateCurve(points: string | any[], numPoints = 1000) {
+function generateCurve(points: string | any[], numPoints = 100) {
 
     points = [points[0], ...points, points[points.length - 1]]
     const curve = [];
@@ -161,16 +177,23 @@ function simplify(points: any[], epsilon: number): Array<Point> {
     }
 }
 
+
 onMounted(() => {
+
+    document.getElementById("pen-size-range")?.addEventListener('change', (e) => {
+        e.stopPropagation()
+    })
 
     const drawingArea = document.getElementById('drawing-area')!
 
     function evaluatePoint(x: number, y: number) {
-        return {x: x - drawingArea.offsetLeft, y: y - drawingArea.offsetTop}
+        const absPos = drawingArea.getBoundingClientRect()
+        return {x: x - absPos.left, y: y - absPos.top}
     }
 
     const setEraserPos = (x: number, y: number) => {
-        eraserPosition.value = {x: x - eraserSize.value / 2 - drawingArea.offsetLeft, y: y - eraserSize.value / 2- drawingArea.offsetTop}
+        const absPos = drawingArea.getBoundingClientRect()
+        eraserPosition.value = {x: x - eraserSize.value / 2 - absPos.left, y: y - eraserSize.value / 2- absPos.top}
     }
 
     document.querySelector('#tool-bar')?.addEventListener('touchstart', (e) => {
@@ -178,6 +201,7 @@ onMounted(() => {
     })
 
     drawingArea.addEventListener('touchstart', (e) => {
+
         touching.value = true
         setEraserPos(e.targetTouches[0].clientX, e.touches[0].clientY)
 
@@ -190,6 +214,12 @@ onMounted(() => {
     
     drawingArea.addEventListener('touchmove', (e) => {
         
+        // TODO fix eraser glitching below 320px for some reason
+
+        if(!touching.value) {
+            return
+        }
+
         const touchX = e.touches[0].clientX
         const touchY = e.touches[0].clientY
 
@@ -197,9 +227,7 @@ onMounted(() => {
 
             setEraserPos(touchX, touchY)
 
-            console.log(paths.value)
-
-            paths.value.forEach(element => {
+            paths.value!.forEach(element => {
                 let pointFound = false
                 let newPath: Array<Point> = []
                 element.path.forEach(point => {
@@ -214,16 +242,17 @@ onMounted(() => {
                         return
                     }
                     
-                    if(point.x > touchX - drawingArea.offsetLeft - eraserSize.value / 2 && point.x < touchX - drawingArea.offsetLeft + eraserSize.value / 2
-                    && point.y > touchY - drawingArea.offsetTop - eraserSize.value / 2 && point.y < touchY - drawingArea.offsetTop + eraserSize.value / 2) {
+                    const absPos = drawingArea.getBoundingClientRect()
+
+                    if(point.x > touchX - absPos.top - eraserSize.value / 2 && point.x < touchX - absPos.top + eraserSize.value / 2
+                    && point.y > touchY - absPos.top - eraserSize.value / 2 && point.y < touchY - absPos.top + eraserSize.value / 2) {
                         
                         
                         if(element.path[0] === point || element.path[element.path.length - 1] === point) {
-                            console.log('found start or end')
                             element.path = element.path.filter(p => p !== point)
 
                             if(element.path.length === 0) {
-                                paths.value = paths.value.filter(p => p !== element)
+                                paths.value = paths.value!.filter(p => p !== element)
                             }
 
                             return
@@ -236,7 +265,7 @@ onMounted(() => {
                 })
 
                 if(pointFound) {
-                    paths.value.push({path: newPath, color: element.color})
+                    paths.value!.push({path: newPath, color: element.color, width: element.width})
                 }
             })
 
@@ -259,16 +288,16 @@ onMounted(() => {
         }
 
         if(currentPath.value.path.length < 2) {
-            currentPath.value = {path: [], color: currentColor.value}
+            currentPath.value = {path: [], color: currentColor.value, width: penSize.value}
             return
         }
 
-        paths.value.push({
-            path: simplify(generateCurve(currentPath.value.path), 1),
-            color: currentColor.value
+        paths.value!.push({
+            path: simplify(generateCurve(currentPath.value.path), 0.5),
+            color: currentColor.value,
+            width: penSize.value
         })
-        currentPath.value = {path: [], color: currentColor.value}
-        console.log(paths.value)
+        currentPath.value = {path: [], color: currentColor.value, width: penSize.value}
     })
 })
 
@@ -278,8 +307,11 @@ onMounted(() => {
 
 #drawing-area {
     overflow: hidden;
-    border: 1px solid black;
+    // border: 1px solid black;
     position: relative;
+    background: white;
+
+    border-radius: 10px;
 
     svg {
         position: absolute;
@@ -287,6 +319,7 @@ onMounted(() => {
         left: 0;
         width: 100%;
         height: 100%;
+        // background: white;
     }
 
     // transform: scale(1.5);
@@ -308,11 +341,11 @@ onMounted(() => {
 
     background: white;
 
-    width: 400px;
+    width: 550px;
     margin: 10px 0;
     padding: 10px;
 
-    overflow: hidden;
+
     height: 50px;
 
     // pointer-events: none;
@@ -320,6 +353,66 @@ onMounted(() => {
     // & > * {
     //     pointer-events: all;
     // }
+
+    transition: ease-out .2s;
+
+    &.minimized {
+
+        overflow: hidden;
+
+        width: 100px;
+
+        right: 0;
+        margin: 10px;
+        transform: none;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: left;
+
+        button {
+            opacity: 0;
+            pointer-events: none;
+            // position: absolute;
+        }
+        button.active {
+            opacity: 1;
+            position: absolute;
+            pointer-events: all;
+            left: 10px;
+
+        }
+
+        #eraser-size {
+            opacity: 0;
+            pointer-events: none;
+            // position: absolute;
+        }
+
+        #pen-size {
+            opacity: 0;
+            pointer-events: none;
+            // position: absolute;
+        }
+
+        #minimizer {
+            opacity: 1;
+            pointer-events: all;
+            right: 5px;
+            transform: rotate(180deg);
+        }
+
+        .divider {
+            opacity: 0;
+            // position: absolute;
+        }
+
+        #color-picker {
+            opacity: 0;
+            pointer-events: none;
+            // position: absolute;
+        }
+    }
 
     button {
 
@@ -358,6 +451,8 @@ onMounted(() => {
         display: flex;
         justify-content: center;
         width: 100%;
+
+        transition: ease .3s;
         
         button {
             height: 30px;
@@ -374,6 +469,43 @@ onMounted(() => {
         }
     }
 
+    #minimizer {
+        transition: ease-out .1s;
+        position: absolute;
+        right: -50px;
+        box-shadow: rgba(0, 0, 0, 0.664) 0px 0px 8px;
+    }
+
+    #pen-size {
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        width: auto;
+
+        flex-direction: row;
+        transition: linear .2s;
+
+        width: 90%;
+
+        #pen-repr-wrapper {
+                
+                width: 50px;
+                display: grid;
+                place-items: center;
+    
+                #repr {
+                    width: 50px;
+                    height: 50px;
+                    // border: 1px solid black;
+                    border-radius: 100%;
+                    background: rgb(0, 0, 0);
+                    // border: 1px solid black;
+                    display: grid;
+                    place-items: center;
+                }
+        }
+    }
+
     #eraser-size {
         display: flex;
         align-items: center;
@@ -383,6 +515,8 @@ onMounted(() => {
         flex-direction: row;
 
         width: 90%;
+        height: 70px;
+        overflow: hidden;
 
 
         #repr-wrapper {
