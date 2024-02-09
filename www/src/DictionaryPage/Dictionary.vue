@@ -143,9 +143,12 @@
         <PopupContainer ref="tagSelector" @onClose="editingTags = false">
             <div id="tag-selector-popup">
                 <div id="tag-top">
-                    <h1>select tag</h1>
+                    <h1>Select tag</h1>
 
                     <div id="editing-suite">
+                        <button @click="addNewTag()">
+                            <img src="../assets/plus.svg" alt="Add new tag">
+                        </button>
                         <button v-show="!editingTags" @click="editingTags = true">
                             <img src="../assets/edit.svg" alt="Edit button">
                         </button>
@@ -153,16 +156,16 @@
                     </div>
                 </div>
 
-                <div id="tag-button-wrapper">
+                <div id="tag-button-wrapper"  @click="editingTags = false">
                     
                     <div
                         v-for="(tag, id) in tags"
                         :key="id"
                     >
-                        <button id="edit" v-show="editingTags" :style="`opacity: ${editingTags ? 1 : 0}`" @click="deleteTag(tag)">
+                        <button id="edit" v-show="editingTags" :style="`opacity: ${editingTags ? 1 : 0}`" @click="openTagEditor(tag)" @click.stop>
                             <img src="../assets/edit.svg" alt="Edit">
                         </button>
-                        <button id="delete" v-show="editingTags" :style="`opacity: ${editingTags ? 1 : 0}`" @click="deleteTag(tag)">
+                        <button id="delete" v-show="editingTags" :style="`opacity: ${editingTags ? 1 : 0}`" @click="deleteTag(tag)" @click.stop>
                             <img src="../assets/trash.svg" alt="Delete">
                         </button>
                         <Wiggly 
@@ -173,12 +176,29 @@
                                 class="tag-button"
                                 :class="!editingTags ? 'tag-button-static' : ''"
                                 @click="selectTag(tag)"
+                                @click.stop
                             >
                                 <span>{{ tag }}</span>
                             </button>
                         </Wiggly>
                     </div>
                 </div>
+            </div>
+        </PopupContainer>
+
+        <PopupContainer ref="tagEditor">
+            <div id="edit-tag-popup">
+                <h1>Edit tag "{{ currentEditedTag }}"</h1>
+                <center>
+                    <input type="text" placeholder="New tag name" v-model="currentEditedTagModel">
+    
+                    <br>
+    
+                    <button @click="saveTag(currentEditedTag, currentEditedTagModel)">Save</button>
+                    <br>
+                    <button @click="closeTagEditor">Cancel</button>
+                </center>
+                
             </div>
         </PopupContainer>
 
@@ -225,10 +245,48 @@ const searchingFor = ref('')
 const sideMenuOpened = ref(false)
 
 const tagSelector = ref()
+const tagEditor = ref()
+
+const currentEditedTag = ref('')
+const currentEditedTagModel = ref('')
+
 const yesNo = ref()
+
+function addNewTag() {
+    let currentNum = 0
+    while(tags.value.find(tag => tag === `New tag ${currentNum}`)) {
+        currentNum++
+    }
+
+    
+    tags.value.push(`New tag ${currentNum}`)
+}
 
 function openTagMenu() {
     tagSelector.value.openPopup()
+}
+
+function closeTagEditor() {
+    tagEditor.value.closePopup()
+}
+
+function openTagEditor(tag: string) {
+    currentEditedTag.value = tag
+    currentEditedTagModel.value = tag
+    tagEditor.value.openPopup()
+}
+
+function saveTag(tag: string, newTag: string) {
+    if(selectedTag.value === tag) {
+        selectedTag.value = newTag
+    }
+    tags.value[tags.value.indexOf(tag)] = newTag
+    words.value.forEach(word => {
+        if(word.tag === tag) {
+            word.tag = newTag
+        }
+    })
+    tagEditor.value.closePopup()
 }
 
 function selectTag(tag: string) {
@@ -590,6 +648,53 @@ main {
     } 
 }
 
+#edit-tag-popup {
+
+    padding: 30px;
+
+    h1 {
+        font-size: 24pt;
+        margin-bottom: 0.5rem;
+        padding: 10px;
+    }
+
+    span {
+        font-size: 16pt;
+        margin: 50px;
+    }
+
+    input[type="text"] {
+        width: 200px;
+        height: 30px;
+        border: none;
+        border-radius: 100px;
+        padding: 5px;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        transition: ease .1s;
+        margin: 10px;
+
+        &:focus {
+            outline: none;
+            box-shadow: rgba(0, 0, 0, 0.521) 0px 3px 8px;
+        }
+    }
+
+    button {
+        padding: 1rem;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        width: 120px;
+        height: 60px;
+        background: #ff7c24;
+        color: white;
+        font-size: 16pt;
+
+        margin: 5px;
+    }
+
+}
+
 #tag-selector-popup {
     
     display: flex;
@@ -607,6 +712,9 @@ main {
             right: 10px;
             top: 50%;
             transform: translateY(-50%);
+
+            display: flex;
+            gap: 10px;
 
             
             button {
