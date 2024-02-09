@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 
 function getRandom(min: number, max: number) {
@@ -50,14 +50,24 @@ function startWiggle() {
     }, currentDuration.value * 2000)
 }
 
+function stopWiggle() {
+    clearTimeout(timeout);
+    clearTimeout(interval);
+    currentRotation.value = 0;
+}
 
 watch(() => props.wiggle, (newVal) => {
     if (newVal) {
         startWiggle();
     } else {
-        clearTimeout(timeout);
-        clearTimeout(interval);
-        currentRotation.value = 0;
+        stopWiggle();
+    }
+})
+
+onMounted(() => {
+    if (props.wiggle) {
+        stopWiggle();
+        startWiggle();
     }
 })
 
