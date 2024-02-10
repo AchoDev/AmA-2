@@ -49,6 +49,9 @@
                 <img src="../assets/edit.svg" alt="Edit">
             </button>
     
+            <button v-show="editing" id="edit-button" @click="editNote()">
+                <img src="../assets/pen.svg" alt="Edit note">
+            </button>
             <button v-show="editing" id="edit-button" @click="deleteWord()">
                 <img src="../assets/trash.svg" alt="Delete">
             </button>
@@ -85,8 +88,13 @@ function saveWord() {
     editing.value = false
 }
 
+function editNote() {
+    emit('onNoteEdit', props.index, props.notes)
+}
+
 function deleteWord() {
-    emit('onWordDelete')
+    editing.value = false
+    emit('onWordDelete', props.index)
 }
 
 const editing = ref(false)
@@ -104,7 +112,7 @@ const props = defineProps<{
 const mainWord = ref(props.mainLangWord)
 const secondWord = ref(props.secondLangWord)
 
-const emit = defineEmits(['onWordEdit', 'onWordDelete'])
+const emit = defineEmits(['onWordEdit', 'onWordDelete', 'onNoteEdit'])
 
 </script>
 
@@ -159,11 +167,11 @@ div {
     display: flex;
     flex-direction: row;
     // width: 100px;
-    gap: 5px;
+    gap: 15px;
 
     button {
-        width: 40px;
-        height: 40px;
+        width: 50px;
+        height: 50px;
         padding: 5px;
         box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
         border: none;

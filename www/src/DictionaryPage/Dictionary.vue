@@ -68,19 +68,18 @@
                     </center>
 
                     <Word 
-                        v-for="(word, i) in words" 
+                        v-for="(word, i) in getVisibleWords()" 
                         :mainLangWord="word.mainLang" 
                         :secondLangWord="word.secondLang" 
                         :notes="word.notes"
                         :index="i"
                         :sizes="wordSizes"
 
-                        v-show="
-                            (selectedTag === '' || word.tag == selectedTag) && 
-                            (selectedLetter === '' || word.mainLang.charAt(0).toLowerCase() === selectedLetter.toLowerCase())
-                            && (searchingFor === '' || word.mainLang.toLowerCase().includes(searchingFor.toLowerCase()))"
+                        v-show="(i >= maxWordsPerPage * (currentPage - 1) && i < maxWordsPerPage * currentPage)"
 
-                        @onWordEdit="onWordEdit" 
+                        @onWordEdit="onWordEdit"
+                        @on-word-delete="deleteWord"
+                        @on-note-edit="editNotes"
                     />
 
                     <center v-if="words.length === 0">
@@ -120,22 +119,28 @@
                 <span>Selected tag: <b>{{ selectedTag }}</b></span>
             </div>
 
-            <div>
+            <div id="bottom-left-container">
                 <!-- <button>search</button> -->
 
                 <div id="search-bar">
                     <input type="text" placeholder="Search..." v-model="searchingFor">
                 </div>
 
-                <button @click="openTagMenu">tags</button>
+                <button @click="openTagMenu">
+                    <img src="../assets/filter.svg" alt="Tag">
+                </button>
             </div>
 
             <div id="page-indicator">
-                <button> &vartriangleleft; </button>
+                <button @click="lastPage()">
+                    <img src="../assets/arrow.svg" alt="Last page">
+                </button>
 
                 <span>Page {{ currentPage }}/{{ totalPages }}</span>
 
-                <button> &vartriangleright; </button>
+                <button @click="nextPage()">
+                    <img src="../assets/arrow.svg" alt="Next page">
+                </button>
             </div>
 
             <button id="add-word-button" @click="createNewWord()">
@@ -251,7 +256,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import Word from './Word.vue';
 import PopupContainer from '../components/PopupContainer.vue';
 import Wiggly from '../components/Wiggly.vue';
@@ -277,14 +282,33 @@ const noSearchWordFound = computed(() => {
     return words.value.find(value => value.mainLang.toLowerCase().includes(searchingFor.value.toLowerCase())) == undefined && searchingFor.value !== ''
 })
 
-
 const props = defineProps<{
     mainLang: string,
     secondLang: string
 }>()
 
 const currentPage = ref<number>(1)
-const totalPages = ref<number>(1)
+
+const totalPages = computed(() => {
+    let visibleWords = words.value;
+    visibleWords = visibleWords.filter(word => word.tag === selectedTag.value || selectedTag.value === '')
+    visibleWords = visibleWords.filter(word => word.mainLang.charAt(0).toLowerCase() === selectedLetter.value.toLowerCase() || selectedLetter.value === '')
+    visibleWords = visibleWords.filter(word => word.mainLang.toLowerCase().includes(searchingFor.value.toLowerCase()) || searchingFor.value === '')
+    const value = Math.ceil(visibleWords.length / maxWordsPerPage.value)
+
+    if(value === 0) return 1
+    return value
+})
+
+function getVisibleWords() {
+    let visibleWords = words.value;
+    visibleWords = visibleWords.filter(word => word.tag === selectedTag.value || selectedTag.value === '')
+    visibleWords = visibleWords.filter(word => word.mainLang.charAt(0).toLowerCase() === selectedLetter.value.toLowerCase() || selectedLetter.value === '')
+    visibleWords = visibleWords.filter(word => word.mainLang.toLowerCase().includes(searchingFor.value.toLowerCase()) || searchingFor.value === '')
+    return visibleWords
+}
+
+const maxWordsPerPage = ref<number>(10)
 
 const selectedLetter = ref('')
 const selectedTag = ref('')
@@ -306,11 +330,29 @@ const drawingPopup = ref()
 const newWordNoteDrawing = ref<Path[]>([])
 const newWordTag = ref('')
 
+function nextPage() {
+    if(currentPage.value < totalPages.value) {
+        currentPage.value++
+    } else {
+        currentPage.value = 1
+    }
+}
+
+function lastPage() {
+    if(currentPage.value > 1) {
+        currentPage.value--
+    } else {
+        currentPage.value = totalPages.value
+    }
+
+}
+
 function openDrawer() {
     drawingPopup.value.openPopup()
 }
 
 function createNewWord() {
+    newWordNoteDrawing.value = []
     wordCreator.value.openPopup();
 }
 
@@ -324,6 +366,7 @@ function saveNewWord() {
     })
 
     closeWordCreator()
+    orderWords()
 }
 
 function closeWordCreator() {
@@ -428,8 +471,6 @@ function selectLetter(letter: string) {
 const currentAlphabet = ref(alphabets[props.mainLang])
 
 
-
-
 interface Word {
     mainLang: string,
     secondLang: string,
@@ -459,8 +500,119 @@ const words = ref([
         notes: <Path[]>[],
         tag: ''
     },
+    {
+        id: 94193412949123,
+        mainLang: 'mi nombre es BEERLINER',
+        secondLang: 'ich bin ein berliner',
+        notes: <Path[]>[],
+        tag: 'greetings'
+    },
+    {
+        id: 123,
+        mainLang: 'como estas',
+        secondLang: 'wie gehts dir',
+        notes: <Path[]>[],
+        tag: ''
+    },
+    {
+        id: 23442341231243,
+        mainLang: 'mi nombre es',
+        secondLang: 'mein name ist',
+        notes: <Path[]>[],
+        tag: ''
+    },
+    {
+        id: 94193412949123,
+        mainLang: 'mi nombre es BEERLINER',
+        secondLang: 'ich bin ein berliner',
+        notes: <Path[]>[],
+        tag: 'greetings'
+    },
+    {
+        id: 123,
+        mainLang: 'como estas',
+        secondLang: 'wie gehts dir',
+        notes: <Path[]>[],
+        tag: ''
+    },
+    {
+        id: 23442341231243,
+        mainLang: 'mi nombre es',
+        secondLang: 'mein name ist',
+        notes: <Path[]>[],
+        tag: ''
+    },
+    {
+        id: 94193412949123,
+        mainLang: 'mi nombre es BEERLINER',
+        secondLang: 'ich bin ein berliner',
+        notes: <Path[]>[],
+        tag: 'greetings'
+    },
+    {
+        id: 123,
+        mainLang: 'como estas',
+        secondLang: 'wie gehts dir',
+        notes: <Path[]>[],
+        tag: ''
+    },
+    {
+        id: 23442341231243,
+        mainLang: 'mi nombre es',
+        secondLang: 'mein name ist',
+        notes: <Path[]>[],
+        tag: ''
+    },
+    {
+        id: 94193412949123,
+        mainLang: 'mi nombre es BEERLINER',
+        secondLang: 'ich bin ein berliner',
+        notes: <Path[]>[],
+        tag: 'greetings'
+    },
+    {
+        id: 123,
+        mainLang: 'como estas',
+        secondLang: 'wie gehts dir',
+        notes: <Path[]>[],
+        tag: ''
+    },
+    {
+        id: 23442341231243,
+        mainLang: 'mi nombre es',
+        secondLang: 'mein name ist',
+        notes: <Path[]>[],
+        tag: ''
+    },
+    {
+        id: 94193412949123,
+        mainLang: 'mi nombre es BEERLINER',
+        secondLang: 'ich bin ein berliner',
+        notes: <Path[]>[],
+        tag: 'greetings'
+    },
+    {
+        id: 123,
+        mainLang: 'como estas',
+        secondLang: 'wie gehts dir',
+        notes: <Path[]>[],
+        tag: ''
+    },
+    {
+        id: 23442341231243,
+        mainLang: 'mi nombre es',
+        secondLang: 'mein name ist',
+        notes: <Path[]>[],
+        tag: ''
+    },
 
 ])
+
+watch(totalPages, () => {
+    if(currentPage.value > totalPages.value) {
+        currentPage.value = 1
+    }
+})
 
 const tags = ref([
     'greetings',
@@ -492,6 +644,24 @@ function onWordEdit(index: number, mainWord: string, secondWord: string) {
     })
 
     orderWords()
+}
+
+function editNotes(index: number, notes: Path[]) {
+    drawingPopup.value.openPopup()
+    newWordNoteDrawing.value = notes
+
+    index++
+}
+
+function deleteWord(index: number) {
+    console.log(index)
+    yesNo.value.ask(`Are you sure you want to delete the word "${words.value[index].mainLang}"?`, 'This action cannot be undone').then((answer: boolean) => {
+        if(answer) {
+            words.value.splice(index, 1)
+            console.log(words.value)
+        }
+    })
+
 }
 
 const wordSizes = ref([33, 33, 33])
@@ -591,6 +761,8 @@ main {
         display: flex;
         flex-direction: column;
 
+        margin-bottom: 100px;
+
         #letter-container {
             display: flex;
             justify-content: space-evenly;
@@ -643,6 +815,8 @@ main {
             box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 
             z-index: 1;
+
+            // margin-bottom: 500px;
             
             #lang-desc {
                 display: flex;
@@ -923,9 +1097,35 @@ main {
 
     z-index: 10;
 
+    #bottom-left-container {
+        button {
+            width: 45px;
+            height: 45px;
+            margin-left: 5px;
+            background: white;
+            border: none;
+            border-radius: 100px;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+            transition: ease-out .1s;
+
+            display: grid;
+            place-items: center;
+
+            img {
+                width: 80%;
+                height: auto;
+            }
+
+            &:active {
+                transform: scale(0.95);
+            }
+        }
+
+    }
     div {
         margin-left: 5px;
         display: flex;
+        align-items: center;
         gap: 10px;
         
             #search-bar {
@@ -968,11 +1168,49 @@ main {
 
     #page-indicator {
         display: flex;
+        align-items: center;
         gap: 10px;
+
+        font-size: 16pt;
 
         position: absolute;
         right: 50%;
         transform: translateX(50%);
+
+        button {
+            width: 45px;
+            height: 45px;
+            background: white;
+            border: none;
+            border-radius: 100px;
+            
+            color: #ff7c24;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+            transition: ease-out .05s;
+
+            img {
+                width: 80%;
+                height: auto;
+                transform: translateX(2px);
+            }
+
+            &:first-child {
+                img {
+                    transform: rotate(180deg) translateX(2px);
+                }
+                &:active {
+                    transform: scale(0.95) translateX(-5px);
+                }
+            }
+
+            &:active {
+                transform: scale(0.95) translateX(5px);
+                filter: brightness(1.2)
+            }
+        }
     }
 
     #tag-indicator {
