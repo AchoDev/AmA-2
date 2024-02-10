@@ -244,6 +244,7 @@
         </PopupContainer>
 
         <YesNo ref="yesNo" />
+        <Ok ref="ok" />
     </div>
 </template>
 
@@ -253,6 +254,7 @@ import Word from './Word.vue';
 import PopupContainer from '../components/PopupContainer.vue';
 import Wiggly from '../components/Wiggly.vue';
 import YesNo from '../components/YesNo.vue';
+import Ok from '../components/Ok.vue';
 import DrawingPreview from '../components/DrawingPreview.vue';
 import DrawingArea from '../components/DrawingArea.vue';
 import Path from '../components/path';
@@ -333,6 +335,7 @@ function closeWordCreator() {
 
 
 const yesNo = ref()
+const ok = ref()
 
 function addNewTag() {
     let currentNum = 0
@@ -359,6 +362,12 @@ function openTagEditor(tag: string) {
 }
 
 function saveTag(tag: string, newTag: string) {
+
+    if(tags.value.find(tag => tag === newTag)) {
+        ok.value.notify(`Tag already "${newTag}" already exists`, 'Please choose a different name')
+        return
+    }
+
     if(selectedTag.value === tag) {
         selectedTag.value = newTag
     }
