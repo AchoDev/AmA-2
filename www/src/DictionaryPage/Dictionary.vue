@@ -3,7 +3,7 @@
         
         <nav>
             <div>
-                <button @click="sideMenuOpened = true"> >> </button>
+                <button @click="openSideBar()"> >> </button>
             </div>
 
             <div>{{mainLang}} - {{secondLang}}</div>
@@ -13,30 +13,7 @@
             </div>
         </nav>
 
-        <div id="side-bar" :class="sideMenuOpened ? 'opened' : ''">
-            <div>
-                ama logo
-                <button @click="sideMenuOpened = false"> &lt;&lt; </button>
-            </div>
-
-            <button> &lt;- Menu </button>
-
-            <hr>
-
-            <h4>Your dictionaries</h4>
-
-            <div>
-                <button>spanish - german</button>
-            </div>
-
-            <hr>
-
-            <h4>Your pages</h4>
-
-            <div>
-                <button>page 1</button>
-            </div>
-        </div>
+        
 
         <main>
             <div id="main-wrapper">
@@ -160,7 +137,9 @@
                         <button v-show="!editingTags" @click="editingTags = true">
                             <img src="../assets/edit.svg" alt="Edit button">
                         </button>
-                        <button v-show="editingTags" @click="editingTags = false">Stop editing</button>
+                        <button v-show="editingTags" @click="editingTags = false">
+                            <img src="../assets/save.svg" alt="Save button">
+                        </button>
                     </div>
                 </div>
 
@@ -287,6 +266,8 @@ const props = defineProps<{
     secondLang: string
 }>()
 
+const emits = defineEmits(["onSideBarOpen"])
+
 const currentPage = ref<number>(1)
 
 const totalPages = computed(() => {
@@ -314,8 +295,6 @@ const selectedLetter = ref('')
 const selectedTag = ref('')
 const searchingFor = ref('')
 
-const sideMenuOpened = ref(false)
-
 const tagSelector = ref()
 const tagEditor = ref()
 
@@ -329,6 +308,10 @@ const drawingPopup = ref()
 
 const newWordNoteDrawing = ref<Path[]>([])
 const newWordTag = ref('')
+
+function openSideBar() {
+    emits('onSideBarOpen')
+}
 
 function nextPage() {
     if(currentPage.value < totalPages.value) {
@@ -710,23 +693,6 @@ hr {
     box-shadow: none;
 }
 
-#side-bar {
-    display: flex;
-    flex-direction: column;
-    background: linear-gradient(10deg, rgb(255, 185, 80), rgb(255, 161, 72));
-    height: 100%;
-    width: 300px;
-    position: fixed;
-    left: -300px;
-    z-index: 11;
-    transition: cubic-bezier(0.23, 1, 0.320, 1) .3s;
-
-    border-right: 1px solid black;
-
-    &.opened {
-        left: 0;
-    }
-}
 
 nav {
     height: $bar-height;
