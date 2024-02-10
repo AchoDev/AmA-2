@@ -2,7 +2,14 @@
 <div id="container">
     <div id="drawing-container">
         <svg :style="`width: calc(${width} / ${scaleDown}); height: calc(${height} / ${scaleDown})`">
-            <path v-for="path in paths" :d="`M ${path.path.map(p => `${p.x / parseFloat(scaleDown)} ${p.y / parseFloat(scaleDown)}`).join(' L ')}`" :stroke="path.color" :stroke-width="path.width / parseFloat(scaleDown)" fill="none" />
+            <path 
+                v-for="path in paths" 
+                :d="`M ${path.path.map(p => `${p.x / parseFloat(scaleDown)} ${p.y / parseFloat(scaleDown)}`).join(' L ')}`" 
+                :stroke="path.color" 
+                :stroke-width="path.width / parseFloat(scaleDown)" 
+                fill="none"
+                stroke-linecap="round" 
+            />
         </svg>
     </div>
 </div>

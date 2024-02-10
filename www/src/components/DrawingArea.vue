@@ -16,12 +16,14 @@
                 fill="none"
                 :stroke="path.color"
                 :stroke-width="path.width"
+                stroke-linecap="round"
             />
             <path
                 :d="currentPath.path.map((p, index) => (index === 0 ? 'M' : 'L') + p.x + ' ' + p.y).join(' ')"
                 fill="none"
                 :stroke="currentColor"
                 :stroke-width="penSize"
+                stroke-linecap="round"
             />
         </svg>
 

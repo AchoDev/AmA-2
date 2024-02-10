@@ -138,7 +138,9 @@
                 <button> &vartriangleright; </button>
             </div>
 
-            <button @click="createNewWord()">+ Add word</button>
+            <button id="add-word-button" @click="createNewWord()">
+                <img src="../assets/plus.svg" alt="Create word">
+            </button>
         </div>
 
         <PopupContainer ref="tagSelector" @onClose="editingTags = false">
@@ -942,6 +944,26 @@ main {
                     }
                 }
             }
+    }
+
+    #add-word-button {
+        width: 55px;
+        height: 55px;
+        margin-right: 5px;
+        background: white;
+        border: none;
+        border-radius: 100px;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        transition: ease-out .1s;
+
+        img {
+            width: 70%;
+            height: auto;
+        }
+
+        &:active {
+            transform: scale(0.95);
+        }
     }
 
     #page-indicator {
