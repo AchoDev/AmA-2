@@ -7,7 +7,7 @@ declare global {
     }
 }
 
-alert("something")
+// alert("something")
 
 createApp(App).mount('#app')
 
