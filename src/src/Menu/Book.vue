@@ -4,7 +4,9 @@
             <svg :class="open ? 'open' : ''">
                 <path id="back-cover" d="M800 100L1300 100L1300 850L800 850L800 100Z" fill="#ffa633" fill-rule="nonzero" opacity="1" stroke="white" stroke-width="5" stroke-linejoin="round" />
                 <path id="bind" d="M750 100L800 100L800 850L750 850" fill="#ffa633" fill-rule="nonzero" opacity="1" stroke="white" stroke-width="5" stroke-linejoin="round"/>
+                
                 <path id="right-page" d="M775 125 C1275 125, 1275 125, 1275 125 L1275 875 C 775 875, 775 875, 775 875" fill="white" fill-rule="nonzero" opacity="1" stroke="black" stroke-linecap="round"/>
+                
                 <path :style="`visibility: ${secondHalfOpen ? 'hidden' : 'visible'}`" id="left-page" d="M775 125 C1275 125, 1275 125, 1275 125 L1275 875 C 775 875, 775 875, 775 875 L775 125" fill="white" fill-rule="nonzero" opacity="1" stroke="black" stroke-linejoin="round"/>
                 
                 <path id="front-cover" d="M750 100L1250 100L1250 850L750 850L750 100Z" fill="#ffa633" fill-rule="nonzero" opacity="1" stroke="white" stroke-width="5" stroke-linejoin="round"/>
@@ -12,17 +14,24 @@
                 <path id="right-top-pageblock" d="M750 150 C1240 150, 1250 150, 1250 150 L1275 125 C775 125, 775 125, 775 125" :stroke="secondHalfOpen ? 'black' : 'white'" fill="white"/>
                 <path id="right-side-pageblock" d="M1275 875 L1275 125 L1250 150 L1250 900 L1275 875" :stroke="secondHalfOpen ? 'black' : 'white'" fill="white"/>
                 
+                <path id="middle-page" v-show="open" :class="middlePageOpen ? 'middle-open' : ''" d="M775 125 C1275 125, 1275 125, 1275 125 L1275 875 C 775 875, 775 875, 775 875" fill="white" fill-rule="nonzero" opacity="1" stroke="black" stroke-linecap="round"/>
                 <path id="left-top-pageblock" d="M750 150 C1250 150, 1250 150, 1250 150 L1275 125 C775 125, 775 125, 775 125" :stroke="secondHalfOpen ? 'black' : 'white'" fill="white"/>
                 <path id="left-side-pageblock" d="M1275 875 L1275 125 L1250 150 L1250 900 L1275 875" :stroke="secondHalfOpen ? 'black' : 'white'" fill="white"/>
                 
-                <path id="left-page-inner" :style="`visibility: ${secondHalfOpen ? 'visible' : 'hidden'}`" d="M775 125 C1275 125, 1275 125, 1275 125 L1275 875 C 775 875, 775 875, 775 875 L775 125" fill="white" fill-rule="nonzero" opacity="1" stroke="black"/>
+                <path id="left-page-inner" :style="`visibility: ${secondHalfOpen ? 'visible' : 'hidden'}`" d="M775 125 C1275 125, 1275 125, 1275 125 L1275 875 C 775 875, 775 875, 775 875 L775 125" fill="white" fill-rule="nonzero" opacity="1" stroke="black" />
                 
+                <path id="middle-page-inner" :class="middlePageOpen ? 'middle-open' : ''" :style="`visibility: ${middlePageHalfOpen && open ? 'visible' : 'hidden'}`" d="M775 125 C1275 125, 1275 125, 1275 125 L1275 875 C 775 875, 775 875, 775 875 L775 125" fill="white" fill-rule="nonzero" opacity="1" stroke="black" />
             </svg>
+            
 
             <div id="clicker" @click="clicker">
                 &nbsp;
             </div>
         </div>
+
+        <button id="right-button" @click="toggleMiddlePage">
+            <img src="../assets/arrow.svg" alt="Go to pages">
+        </button>
     </div>
 </template>
 
@@ -39,6 +48,10 @@ const props = defineProps<{
 const open = ref(false)
 const secondHalfOpen = ref(false);
 
+
+const middlePageOpen = ref(false);
+const middlePageHalfOpen = ref(false);
+
 function clicker() {
     togglePage()
     if(!open.value) {
@@ -49,7 +62,9 @@ function togglePage() {
     const duration = 1500;
     if(open.value) {
         emit('bookClose')
+        middlePageOpen.value = false;
         setTimeout(() => {
+            middlePageHalfOpen.value = false;
             secondHalfOpen.value = false;
             console.log("HALF CLOSED")
         }, 1350);
@@ -65,6 +80,23 @@ function togglePage() {
     open.value = !open.value;
 }
 
+function toggleMiddlePage() {
+    const duration = 1500;
+    if(middlePageHalfOpen.value) {
+        middlePageOpen.value = false;
+        setTimeout(() => {
+            middlePageHalfOpen.value = false;
+            console.log("MIDDLE HALF CLOSED")
+        }, 1350);
+    } else {
+        middlePageOpen.value = true;
+        setTimeout(() => {
+            middlePageHalfOpen.value = true;
+            console.log("MIDDLE HALF open")
+        }, duration / 3);
+    }
+}
+
 watch(() => props.pageOpen, () => {
     togglePage()
 })
@@ -74,6 +106,27 @@ const emit = defineEmits(['bookOpen', 'bookClose'])
 </script>
 
 <style scoped lang="scss">
+
+#right-button {
+    position: absolute;
+    right: 20px;
+    height: 70%;
+    cursor: pointer;
+    width: 80px;
+
+    z-index: 10;
+
+    img {
+        width: 100%;
+        height: 100%;
+    }
+
+    transition: ease-out .1s;
+
+    &:active {
+        transform: scale(0.95) translateX(5px);
+    }
+}
 
 #svg-wrapper-wrapper {
     display: flex;
@@ -124,6 +177,7 @@ svg {
     transform: scale(0.6) ;
     transition: cubic-bezier(0.4, 0, 0.2, 1) 1.7s;
 
+
     path {
         transform-origin: center;
         // transform: translateX(calc(100% - 50px));
@@ -132,7 +186,7 @@ svg {
         // transition: cubic-bezier(0.55, 0.085, 0.68, 0.53) $transition-duration, d cubic-bezier(0.55, 0.085, 0.68, 0.53) $transition-duration;
     }
 
-    #left-page, #left-page-inner, #right-page, #left-top-pageblock, #left-side-pageblock, #right-top-pageblock, #right-side-pageblock {
+    #left-page, #left-page-inner, #right-page, #middle-page, #middle-page-inner, #left-top-pageblock, #left-side-pageblock, #right-top-pageblock, #right-side-pageblock {
         transform-origin: 775px center;
         transform: translateZ(10px);
         // -webkit-perspective: 4000px;
@@ -210,9 +264,13 @@ svg {
     }
     
     
-    #right-page {
+    #right-page, #middle-page, #middle-page-inner{
         transform: translateX($right-movement) translateY(-25px);
         d: path('M775 125 C800 150, 925 190, 1275 190 L1275 925 C 875 950, 775 875, 775 875')
+    }
+
+    .middle-open {
+        transform: rotateY(180deg) translateX(-$right-movement) translateY(-25px) translateZ(10px) !important;
     }
 }
 

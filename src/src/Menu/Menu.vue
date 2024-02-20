@@ -16,10 +16,11 @@
             :style="bookOpen ? 'overflow: hidden' : 'overflow: scroll'"
         >
             <Book 
-                v-for="dictionary in dictionaries"
-                :key="dictionary.mainLang"
+                v-for="dictionary, i in dictionaries"
+                :key="i"
                 :main-lang="dictionary.mainLang"
                 :second-lang="dictionary.secondLang"
+                :words="dictionary.words"
                 :page-open="false"
                 class="book"
 
@@ -44,7 +45,20 @@ const dictionaries = ref([
     {
         mainLang: 'spanish',
         secondLang: 'german',
-        words: [1, 2, 3]
+        words: [
+            {
+                main: 'hola',
+                second: 'hallo'
+            },
+            {
+                main: 'adios',
+                second: 'tschüss'
+            },
+            {
+                main: 'casa',
+                second: 'haus'
+            }
+        ]
     },
     {
         mainLang: 'spanish',
