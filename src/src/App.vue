@@ -7,21 +7,21 @@
       :secondLang="secondLang"
     />
 
-    <Menu @onSideBarOpen="openSideBar"/>
+    <!-- <Menu @onSideBarOpen="openSideBar"/> -->
 
-    <!-- <Dictionary 
+    <Dictionary 
       :mainLang="mainLang"
       :secondLang="secondLang"
       @onSideBarOpen="openSideBar"
-    /> -->
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
-// import Dictionary from './DictionaryPage/Dictionary.vue'
+import Dictionary from './DictionaryPage/Dictionary.vue'
 import SideBar from './components/SideBar.vue';
-import Menu from './Menu/Menu.vue';
+// import Menu from './Menu/Menu.vue';
 
 const mainLang = ref('spanish')
 const secondLang = ref('german')
