@@ -15,7 +15,7 @@
             <hr>
 
             <h3>Your dictionary</h3>
-            <button id="dict">
+            <button id="dict" @click="openPage('dictionary')">
                 {{ mainLang }} - {{ secondLang }}
             </button>
             <br>
