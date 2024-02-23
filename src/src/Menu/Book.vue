@@ -17,7 +17,8 @@
                 <path id="left-top-pageblock" d="M750 150 C1250 150, 1250 150, 1250 150 L1275 125 C775 125, 775 125, 775 125" :stroke="secondHalfOpen ? 'black' : 'white'" fill="white"/>
                 <path id="left-side-pageblock" d="M1275 875 L1275 125 L1250 150 L1250 900 L1275 875" :stroke="secondHalfOpen ? 'black' : 'white'" fill="white"/>
                 
-                <path id="left-page-inner" :style="`visibility: ${secondHalfOpen ? 'visible' : 'hidden'}`" d="M775 125 C1275 125, 1275 125, 1275 125 L1275 875 C 775 875, 775 875, 775 875 L775 125" fill="white" fill-rule="nonzero" opacity="1" stroke="black" />
+                <path id="left-page-inner" :style="`visibility: ${secondHalfOpen ? 'visible' : 'hidden'}`" d="M775 125 C1275 125, 1275 125, 1275 125 L1275 875 C 775 875, 775 875, 775 875 " fill="white" fill-rule="nonzero" opacity="1" stroke="black" /> 
+                <!-- L775 125 -->
             </svg>
 
             <div id="lang-description" :class="open ? 'desc-open' : ''" :style="`visibility: ${secondHalfOpen ? 'hidden' : 'visible'}`">
@@ -91,7 +92,7 @@ function togglePage() {
 
         setTimeout(() => {
             emit('completedOpen')
-        }, duration * 1.5);
+        }, duration * 1.7);
     }
 
 
@@ -291,7 +292,8 @@ svg {
 
     #left-page, #left-page-inner {
         transform: rotateY(180deg) translateX(-$right-movement) translateY(-25px) translateZ(10px);
-        d: path('M775 125 C800 150, 925 190, 1275 190 L1275 925 C 875 950, 775 875, 775 875 L775 125')
+        d: path('M775 125 C800 150, 925 190, 1275 190 L1275 925 C 875 950, 775 875, 775 875')
+        // L775 125
     }
 
     

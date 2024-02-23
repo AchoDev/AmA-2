@@ -46,6 +46,7 @@ function exitToMenu() {
 }
 
 function openPage(page: string) {
+    sideMenuOpened.value = false
     emit('openPage', page)
 }
 

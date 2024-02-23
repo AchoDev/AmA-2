@@ -77,6 +77,17 @@
                     &nbsp;
                     </div>
                 </div>
+
+                <span>{{ penSize }}</span>
+
+                <!-- <input
+                    id="pen-size-show"
+                    type="number"
+                    inputmode="numeric"
+                    v-model="penSize"
+                    min="1"
+                    max="20"
+                /> -->
             </div>
 
 
@@ -137,7 +148,7 @@ function catmullRomSpline(P0: { x: number; y: number; }, P1: { x: number; y: num
     };
 }
 
-function generateCurve(points: string | any[], numPoints = 100) {
+function generateCurve(points: string | any[], numPoints = 1000) {
 
     points = [points[0], ...points, points[points.length - 1]]
     const curve = [];
@@ -513,6 +524,10 @@ onMounted(() => {
                     display: grid;
                     place-items: center;
                 }
+        }
+
+        span {
+            font-size: 13pt;
         }
     }
 

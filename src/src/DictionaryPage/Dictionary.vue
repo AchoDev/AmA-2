@@ -1,19 +1,10 @@
 <template>
     <div>
-        
-        <nav>
-            <div>
-                <button @click="openSideBar()"> >> </button>
-            </div>
 
-            <div>{{mainLang}} - {{secondLang}}</div>
-
-            <div>
-                <button>...</button>
-            </div>
-        </nav>
-
-        
+        <NavBar 
+            :title="mainLang + ' - ' + secondLang"
+            @openSideBar="openSideBar" 
+        />
 
         <main>
             <div id="main-wrapper">
@@ -245,6 +236,7 @@ import Ok from '../components/Ok.vue';
 import DrawingPreview from '../components/DrawingPreview.vue';
 import DrawingArea from '../components/DrawingArea.vue';
 import Path from '../components/path';
+import NavBar from './NavBar.vue';
 
 // const fs = require('fs')
 
@@ -540,22 +532,6 @@ hr {
     margin-bottom: 30px;
     border-top: 2px solid #ffca67;
     box-shadow: none;
-}
-
-
-nav {
-    height: $bar-height;
-    background: white;
-    position: fixed;
-    top: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-
-    z-index: 10;
 }
 
 main {

@@ -1,7 +1,12 @@
 <template>
 
 <div id="container">
-    <button @click="openSideBar()" id="sidebar-button">>></button>
+
+    <NavBar 
+        title="test name name"
+        @openSideBar="openSideBar"
+    />
+
     <DrawingArea 
         width="297mm"
         height="420mm"
@@ -15,6 +20,8 @@
 
 <script setup lang="ts">
 import DrawingArea from '../components/DrawingArea.vue';
+import NavBar from './NavBar.vue';
+
 
 const emit = defineEmits(['openSideBar'])
 
@@ -36,18 +43,6 @@ function openSideBar() {
     align-items: center;
     background: orange;
     // overflow: hidden;
-}
-
-#sidebar-button {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 100;
-    background: white;
-    border: none;
-    padding: 10px;
-    font-size: 20px;
-    cursor: pointer;
 }
 
 </style>
