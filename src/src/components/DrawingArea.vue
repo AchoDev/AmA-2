@@ -27,7 +27,7 @@
             />
         </svg>
 
-        <div id="tool-bar" :class="toolBarMinimized ? 'minimized' : ''">
+        <div id="tool-bar" :class="(toolBarMinimized ? 'minimized' : '') + (toolbarFixed ? 'fixed-toolbar' : '')">
 
             <button @click="currentTool = toolBarMinimized ? 'eraser' : 'pen'" :class="currentTool == 'pen' ? 'active' : ''">
                 <img src="../assets/pen.svg" alt="">
@@ -107,7 +107,8 @@ interface Point {
 
 defineProps<{
     width: string,
-    height: string
+    height: string,
+    toolbarFixed: boolean
 }>()
 
 const touching = ref(false)
@@ -414,6 +415,13 @@ onMounted(() => {
             pointer-events: none;
             // position: absolute;
         }
+    }
+
+    &.fixed-toolbar {
+        position: fixed;
+        bottom: 10px;
+        right: 50%;
+        transform: translateX(50%);
     }
 
     button {

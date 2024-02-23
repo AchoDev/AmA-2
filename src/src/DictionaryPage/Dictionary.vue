@@ -225,6 +225,7 @@
             <DrawingArea 
                 width="700px" 
                 height="250px"
+                :toolbar-fixed="false"
                 v-model="newWordNoteDrawing"
             />
         </PopupContainer>
@@ -252,6 +253,7 @@ import Path from '../components/path';
 import Split from 'split.js'
 
 import alphabets from './alphabets.ts'
+import { Dictionary } from '../components/dictionaryType';
 
 const noTagWordFound = computed(() => {
     return words.value.find(value => value.tag === selectedTag.value) == undefined && selectedTag.value !== ''
@@ -262,11 +264,10 @@ const noSearchWordFound = computed(() => {
 })
 
 const props = defineProps<{
-    mainLang: string,
-    secondLang: string
+    dictionary: Dictionary
 }>()
 
-const emits = defineEmits(["onSideBarOpen"])
+const emits = defineEmits(["onSideBarOpen"]) 
 
 const currentPage = ref<number>(1)
 
@@ -341,7 +342,6 @@ function createNewWord() {
 
 function saveNewWord() {
     words.value.push({
-        id: Math.random(),
         mainLang: newWordMainLang.value,
         secondLang: newWordSecondLang.value,
         notes: newWordNoteDrawing.value,
@@ -451,145 +451,12 @@ function selectLetter(letter: string) {
     selectedLetter.value = letter
 }
 
-const currentAlphabet = ref(alphabets[props.mainLang])
+const currentAlphabet = ref(alphabets[props.dictionary.mainLang])
 
-
-interface Word {
-    mainLang: string,
-    secondLang: string,
-    notes: Path[],
-    tag: string
-}
-
-const words = ref([
-    {
-        id: 94193412949123,
-        mainLang: 'mi nombre es BEERLINER',
-        secondLang: 'ich bin ein berliner',
-        notes: <Path[]>[],
-        tag: 'greetings'
-    },
-    {
-        id: 123,
-        mainLang: 'como estas',
-        secondLang: 'wie gehts dir',
-        notes: <Path[]>[],
-        tag: ''
-    },
-    {
-        id: 23442341231243,
-        mainLang: 'mi nombre es',
-        secondLang: 'mein name ist',
-        notes: <Path[]>[],
-        tag: ''
-    },
-    {
-        id: 94193412949123,
-        mainLang: 'mi nombre es BEERLINER',
-        secondLang: 'ich bin ein berliner',
-        notes: <Path[]>[],
-        tag: 'greetings'
-    },
-    {
-        id: 123,
-        mainLang: 'como estas',
-        secondLang: 'wie gehts dir',
-        notes: <Path[]>[],
-        tag: ''
-    },
-    {
-        id: 23442341231243,
-        mainLang: 'mi nombre es',
-        secondLang: 'mein name ist',
-        notes: <Path[]>[],
-        tag: ''
-    },
-    {
-        id: 94193412949123,
-        mainLang: 'mi nombre es BEERLINER',
-        secondLang: 'ich bin ein berliner',
-        notes: <Path[]>[],
-        tag: 'greetings'
-    },
-    {
-        id: 123,
-        mainLang: 'como estas',
-        secondLang: 'wie gehts dir',
-        notes: <Path[]>[],
-        tag: ''
-    },
-    {
-        id: 23442341231243,
-        mainLang: 'mi nombre es',
-        secondLang: 'mein name ist',
-        notes: <Path[]>[],
-        tag: ''
-    },
-    {
-        id: 94193412949123,
-        mainLang: 'mi nombre es BEERLINER',
-        secondLang: 'ich bin ein berliner',
-        notes: <Path[]>[],
-        tag: 'greetings'
-    },
-    {
-        id: 123,
-        mainLang: 'como estas',
-        secondLang: 'wie gehts dir',
-        notes: <Path[]>[],
-        tag: ''
-    },
-    {
-        id: 23442341231243,
-        mainLang: 'mi nombre es',
-        secondLang: 'mein name ist',
-        notes: <Path[]>[],
-        tag: ''
-    },
-    {
-        id: 94193412949123,
-        mainLang: 'mi nombre es BEERLINER',
-        secondLang: 'ich bin ein berliner',
-        notes: <Path[]>[],
-        tag: 'greetings'
-    },
-    {
-        id: 123,
-        mainLang: 'como estas',
-        secondLang: 'wie gehts dir',
-        notes: <Path[]>[],
-        tag: ''
-    },
-    {
-        id: 23442341231243,
-        mainLang: 'mi nombre es',
-        secondLang: 'mein name ist',
-        notes: <Path[]>[],
-        tag: ''
-    },
-    {
-        id: 94193412949123,
-        mainLang: 'mi nombre es BEERLINER',
-        secondLang: 'ich bin ein berliner',
-        notes: <Path[]>[],
-        tag: 'greetings'
-    },
-    {
-        id: 123,
-        mainLang: 'como estas',
-        secondLang: 'wie gehts dir',
-        notes: <Path[]>[],
-        tag: ''
-    },
-    {
-        id: 23442341231243,
-        mainLang: 'mi nombre es',
-        secondLang: 'mein name ist',
-        notes: <Path[]>[],
-        tag: ''
-    },
-
-])
+const tags = ref(props.dictionary.tags)
+const words = ref(props.dictionary.words)
+const mainLang = ref(props.dictionary.mainLang)
+const secondLang = ref(props.dictionary.secondLang)
 
 watch(totalPages, () => {
     if(currentPage.value > totalPages.value) {
@@ -597,25 +464,7 @@ watch(totalPages, () => {
     }
 })
 
-const tags = ref([
-    'greetings',
-    'nouns',
-    'verbs',
-    'adjectives',
-    'adverbs',
-    'prepositions',
-    'conjunctions',
-    'interjections',
-    'articles',
-    'determiners',
-    'pronouns',
-    'numbers',
-    'quantifiers',
-    'demonstratives',
-    'possessives',
-    'interrogatives',
-    'indefinites',
-])
+
 
 function onWordEdit(index: number, mainWord: string, secondWord: string) {
     words.value.find((word, i) => {

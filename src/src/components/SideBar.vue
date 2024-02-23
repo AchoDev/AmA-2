@@ -8,7 +8,7 @@
 
                 <!-- <hr> -->
     
-                <button> Exit to Menu </button>
+                <button @click="exitToMenu()"> Exit to Menu </button>
             </div>
 
             <br>
@@ -26,7 +26,7 @@
             <h3>Your pages</h3>
 
             <div id="page-buttons">
-                <button>Page 1</button>
+                <button @click="openPage('drawing1')">Page 1</button>
             </div>
 
 
@@ -37,6 +37,17 @@
 import { ref } from 'vue';
 
 const sideMenuOpened = ref(false)
+
+const emit = defineEmits(['exitToMenu', 'openPage'])
+
+function exitToMenu() {
+    sideMenuOpened.value = false
+    emit('exitToMenu')
+}
+
+function openPage(page: string) {
+    emit('openPage', page)
+}
 
 defineProps<{
     mainLang: string,
@@ -64,7 +75,7 @@ defineExpose({
     width: 300px;
     position: fixed;
     left: -300px;
-    z-index: 11;
+    z-index: 101;
     transition: cubic-bezier(0.23, 1, 0.320, 1) .3s;
 
     border-right: 1px solid black;

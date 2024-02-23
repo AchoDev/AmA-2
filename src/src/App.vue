@@ -3,16 +3,29 @@
   <div>
     <SideBar 
       ref="sideBar"
-      :mainLang="mainLang"
-      :secondLang="secondLang"
+      :mainLang="currentOpenDictionary?.mainLang ?? ''"
+      :secondLang="currentOpenDictionary?.secondLang ?? ''"
+      @open-page="(e) => currentPage = e"
+      @exit-to-menu="(e) => openDictionary(e)"
     />
 
-    <!-- <Menu @onSideBarOpen="openSideBar"/> -->
-
-    <Dictionary 
-      :mainLang="mainLang"
-      :secondLang="secondLang"
+    <Menu 
+      v-if="!currentOpenDictionary"
       @onSideBarOpen="openSideBar"
+      @open-book="(e) => openDictionary(e)"
+    />
+
+    <Dictionary
+      v-if="currentOpenDictionary && currentPage === 'dictionary'"
+      :dictionary="currentOpenDictionary"
+      @onSideBarOpen="openSideBar()"
+    />
+
+    <DrawingPage 
+      v-if="currentOpenDictionary && currentPage === 'drawing1'"
+
+
+      @open-side-bar="openSideBar()"
     />
   </div>
 </template>
@@ -21,15 +34,22 @@
 import { ref } from 'vue';
 import Dictionary from './DictionaryPage/Dictionary.vue'
 import SideBar from './components/SideBar.vue';
-// import Menu from './Menu/Menu.vue';
+import Menu from './Menu/Menu.vue';
+import DrawingPage from './DictionaryPage/DrawingPage.vue';
+import type { Dictionary as DictionaryType } from './components/dictionaryType.ts';
 
-const mainLang = ref('spanish')
-const secondLang = ref('german')
+const currentOpenDictionary = ref<DictionaryType | undefined>(undefined);
+const currentPage = ref('dictionary');
 
 const sideBar = ref()
 
 function openSideBar() {
   sideBar.value.openSideMenu()
+}
+
+function openDictionary(dictionary: DictionaryType) {
+  currentOpenDictionary.value = dictionary
+  currentPage.value = 'dictionary'
 }
 
 </script>

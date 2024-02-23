@@ -20,12 +20,12 @@
                 :key="i"
                 :main-lang="dictionary.mainLang"
                 :second-lang="dictionary.secondLang"
-                :words="dictionary.words"
+                :word-count="dictionary.words.length"
                 :page-open="false"
                 class="book"
 
-                @book-open="bookOpen = true"
-                @book-close="bookOpen = false"
+                @begin-open="bookOpen = true"
+                @completed-open="openBook(dictionary)"
             />
         </div>
         
@@ -38,60 +38,159 @@
 
 import { ref } from 'vue';
 import Book from './Book.vue';
+import {Dictionary, Page} from '../components/dictionaryType.ts'
+import Path from '../components/path';
 
+const emit = defineEmits(['openBook']);
 const bookOpen = ref(false);
 
-const dictionaries = ref([
-    {
+function openBook(dictionary: Dictionary) {
+    emit('openBook', dictionary);
+}
+
+const dictionaries = ref<Dictionary[]>([
+    {   
+        pages: <Page[]>[],
+        title: 'Spanish - German',
+        tags: [
+            'greetings',
+            'nouns',
+            'verbs',
+            'adjectives',
+            'adverbs',
+            'prepositions',
+            'conjunctions',
+            'interjections',
+            'articles',
+            'determiners',
+            'pronouns',
+            'numbers',
+            'quantifiers',
+            'demonstratives',
+            'possessives',
+            'interrogatives',
+            'indefinites',
+        ],
         mainLang: 'spanish',
         secondLang: 'german',
         words: [
             {
-                main: 'hola',
-                second: 'hallo'
+                mainLang: 'mi nombre es BEERLINER',
+                secondLang: 'ich bin ein berliner',
+                notes: <Path[]>[],
+                tag: 'greetings'
             },
             {
-                main: 'adios',
-                second: 'tschüss'
+                mainLang: 'como estas',
+                secondLang: 'wie gehts dir',
+                notes: <Path[]>[],
+                tag: ''
             },
             {
-                main: 'casa',
-                second: 'haus'
-            }
+                mainLang: 'mi nombre es',
+                secondLang: 'mein name ist',
+                notes: <Path[]>[],
+                tag: ''
+            },
+            {
+                mainLang: 'mi nombre es BEERLINER',
+                secondLang: 'ich bin ein berliner',
+                notes: <Path[]>[],
+                tag: 'greetings'
+            },
+            {
+                mainLang: 'como estas',
+                secondLang: 'wie gehts dir',
+                notes: <Path[]>[],
+                tag: ''
+            },
+            {
+                mainLang: 'mi nombre es',
+                secondLang: 'mein name ist',
+                notes: <Path[]>[],
+                tag: ''
+            },
+            {
+                mainLang: 'mi nombre es BEERLINER',
+                secondLang: 'ich bin ein berliner',
+                notes: <Path[]>[],
+                tag: 'greetings'
+            },
+            {
+                mainLang: 'como estas',
+                secondLang: 'wie gehts dir',
+                notes: <Path[]>[],
+                tag: ''
+            },
+            {
+                mainLang: 'mi nombre es',
+                secondLang: 'mein name ist',
+                notes: <Path[]>[],
+                tag: ''
+            },
+            {
+                mainLang: 'mi nombre es BEERLINER',
+                secondLang: 'ich bin ein berliner',
+                notes: <Path[]>[],
+                tag: 'greetings'
+            },
+            {
+                mainLang: 'como estas',
+                secondLang: 'wie gehts dir',
+                notes: <Path[]>[],
+                tag: ''
+            },
+            {
+                mainLang: 'mi nombre es',
+                secondLang: 'mein name ist',
+                notes: <Path[]>[],
+                tag: ''
+            },
+            {
+                mainLang: 'mi nombre es BEERLINER',
+                secondLang: 'ich bin ein berliner',
+                notes: <Path[]>[],
+                tag: 'greetings'
+            },
+            {
+                mainLang: 'como estas',
+                secondLang: 'wie gehts dir',
+                notes: <Path[]>[],
+                tag: ''
+            },
+            {
+                mainLang: 'mi nombre es',
+                secondLang: 'mein name ist',
+                notes: <Path[]>[],
+                tag: ''
+            },
+            {
+                mainLang: 'mi nombre es BEERLINER',
+                secondLang: 'ich bin ein berliner',
+                notes: <Path[]>[],
+                tag: 'greetings'
+            },
+            {
+                mainLang: 'como estas',
+                secondLang: 'wie gehts dir',
+                notes: <Path[]>[],
+                tag: ''
+            },
+            {
+                mainLang: 'mi nombre es',
+                secondLang: 'mein name ist',
+                notes: <Path[]>[],
+                tag: ''
+            },
         ]
     },
-    {
-        mainLang: 'spanish',
-        secondLang: 'german',
-        words: [1, 2, 3]
-    },
-    {
-        mainLang: 'spanish',
-        secondLang: 'german',
-        words: [1, 2, 3]
-    },
-    {
-        mainLang: 'spanish',
-        secondLang: 'german',
-        words: [1, 2, 3]
-    },
-    {
-        mainLang: 'spanish',
-        secondLang: 'german',
-        words: [1, 2, 3]
-    },
+    
 ])
 
 </script>
 
 <style scoped lang="scss">
 
-#aaaa {
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 100;
-}
 
 #menu {
     display: flex;

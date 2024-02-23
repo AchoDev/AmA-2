@@ -14,43 +14,59 @@
                 <path id="right-top-pageblock" d="M750 150 C1240 150, 1250 150, 1250 150 L1275 125 C775 125, 775 125, 775 125" :stroke="secondHalfOpen ? 'black' : 'white'" fill="white"/>
                 <path id="right-side-pageblock" d="M1275 875 L1275 125 L1250 150 L1250 900 L1275 875" :stroke="secondHalfOpen ? 'black' : 'white'" fill="white"/>
                 
-                <path id="middle-page" v-show="open" :class="middlePageOpen ? 'middle-open' : ''" d="M775 125 C1275 125, 1275 125, 1275 125 L1275 875 C 775 875, 775 875, 775 875" fill="white" fill-rule="nonzero" opacity="1" stroke="black" stroke-linecap="round"/>
                 <path id="left-top-pageblock" d="M750 150 C1250 150, 1250 150, 1250 150 L1275 125 C775 125, 775 125, 775 125" :stroke="secondHalfOpen ? 'black' : 'white'" fill="white"/>
                 <path id="left-side-pageblock" d="M1275 875 L1275 125 L1250 150 L1250 900 L1275 875" :stroke="secondHalfOpen ? 'black' : 'white'" fill="white"/>
                 
                 <path id="left-page-inner" :style="`visibility: ${secondHalfOpen ? 'visible' : 'hidden'}`" d="M775 125 C1275 125, 1275 125, 1275 125 L1275 875 C 775 875, 775 875, 775 875 L775 125" fill="white" fill-rule="nonzero" opacity="1" stroke="black" />
-                
-                <path id="middle-page-inner" :class="middlePageOpen ? 'middle-open' : ''" :style="`visibility: ${middlePageHalfOpen && open ? 'visible' : 'hidden'}`" d="M775 125 C1275 125, 1275 125, 1275 125 L1275 875 C 775 875, 775 875, 775 875 L775 125" fill="white" fill-rule="nonzero" opacity="1" stroke="black" />
             </svg>
+
+            <div id="lang-description" :class="open ? 'desc-open' : ''" :style="`visibility: ${secondHalfOpen ? 'hidden' : 'visible'}`">
+                <div id="content-wrapper">
+                    <div>
+                        <h1>{{mainLang}}</h1>
+                        <span>-</span>
+                        <h1>{{secondLang}}</h1>
+                        <h3>{{ wordCount }} words</h3>
+                    </div>
+                    <div>
+                        <img :src="mainFlagPath" :alt="mainLang">
+                        <img :src="secondFlagPath" :alt="secondLang">
+                    </div>
+                </div>
+            </div>
             
 
             <div id="clicker" @click="clicker">
                 &nbsp;
             </div>
         </div>
-
-        <button id="right-button" @click="toggleMiddlePage">
-            <img src="../assets/arrow.svg" alt="Go to pages">
-        </button>
     </div>
 </template>
 
 <script setup lang="ts">
 
-import {ref, watch} from 'vue';
+import {computed, ref, watch} from 'vue';
 
 const props = defineProps<{
     mainLang: string,
     secondLang: string,
-    pageOpen: boolean
+    pageOpen: boolean,
+    wordCount: number
 }>()
+
+const emit = defineEmits(['beginOpen', 'completedOpen'])
+
+const mainFlagPath = computed(() => {
+    return `/flags/${props.mainLang}.png`
+})
+const secondFlagPath = computed(() => {
+    return `/flags/${props.secondLang}.png`
+})
 
 const open = ref(false)
 const secondHalfOpen = ref(false);
 
 
-const middlePageOpen = ref(false);
-const middlePageHalfOpen = ref(false);
 
 function clicker() {
     togglePage()
@@ -61,70 +77,107 @@ function clicker() {
 function togglePage() {
     const duration = 1500;
     if(open.value) {
-        emit('bookClose')
-        middlePageOpen.value = false;
+        // emit('bookClose')
         setTimeout(() => {
-            middlePageHalfOpen.value = false;
             secondHalfOpen.value = false;
             console.log("HALF CLOSED")
         }, 1350);
     } else {
-        emit('bookOpen')
+        emit('beginOpen')
         setTimeout(() => {
             secondHalfOpen.value = true;
             console.log("HALF open")
         }, duration / 3);
+
+        setTimeout(() => {
+            emit('completedOpen')
+        }, duration * 1.5);
     }
 
 
     open.value = !open.value;
 }
 
-function toggleMiddlePage() {
-    const duration = 1500;
-    if(middlePageHalfOpen.value) {
-        middlePageOpen.value = false;
-        setTimeout(() => {
-            middlePageHalfOpen.value = false;
-            console.log("MIDDLE HALF CLOSED")
-        }, 1350);
-    } else {
-        middlePageOpen.value = true;
-        setTimeout(() => {
-            middlePageHalfOpen.value = true;
-            console.log("MIDDLE HALF open")
-        }, duration / 3);
-    }
-}
+
 
 watch(() => props.pageOpen, () => {
     togglePage()
 })
 
-const emit = defineEmits(['bookOpen', 'bookClose'])
+
 
 </script>
 
 <style scoped lang="scss">
 
-#right-button {
+$transition-duration: 1500ms;
+
+#lang-description {
+    perspective: 1914px;
     position: absolute;
-    right: 20px;
-    height: 70%;
-    cursor: pointer;
-    width: 80px;
+    
+    width: 300px;
+    height: 500px;
 
-    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 
-    img {
+    #content-wrapper{
+
         width: 100%;
         height: 100%;
+
+        transition: transform cubic-bezier(0.4, 0, 0.2, 1) $transition-duration;
+        transform: translateY(-10px) translateZ(0px);
+        transform-origin: -25px center;
+        div:first-child {
+            height: 350px;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+            color: white;
+            h1 {
+                font-size: 3em;
+                margin: 0px 0;
+            }
+            h3 {
+                margin: 20px 0;
+            }
+            span {
+                font-size: 2em;
+                // margin: 0 10px;
+            }
+        }
+    
+        div:last-child {
+            display: flex;
+            height: 150px;
+            justify-content: space-between;
+            img {
+                width: 60%;
+                height: 100%;
+                object-fit: fill;
+            
+                &:first-child {
+                    clip-path: polygon(0 0, 100% 0, 65% 100%, 0 100%);
+                }
+                
+                &:last-child {
+                    clip-path: polygon(35% 0, 100% 0, 100% 100%, 0 100%);
+                    transform: translateX(-35%)
+                }
+            }
+        }
+        
     }
 
-    transition: ease-out .1s;
 
-    &:active {
-        transform: scale(0.95) translateX(5px);
+    &.desc-open {
+        #content-wrapper {
+            transform: translateY(-10px) translateX(160px) rotateY(-180deg);
+        }
     }
 }
 
@@ -168,14 +221,13 @@ const emit = defineEmits(['bookOpen', 'bookClose'])
 
 }
 
-$transition-duration: 1500ms;
-
 svg {
     -webkit-perspective: 2814px;
     width: 2000px;
     height: 1000px;
     transform: scale(0.6) ;
-    transition: cubic-bezier(0.4, 0, 0.2, 1) 1.7s;
+    // transition: cubic-bezier(0.4, 0, 0.2, 1) 2.7s;
+    transition: cubic-bezier(0.95, 0.05, 0.795, 0.035) 2s;
 
 
     path {
@@ -186,7 +238,7 @@ svg {
         // transition: cubic-bezier(0.55, 0.085, 0.68, 0.53) $transition-duration, d cubic-bezier(0.55, 0.085, 0.68, 0.53) $transition-duration;
     }
 
-    #left-page, #left-page-inner, #right-page, #middle-page, #middle-page-inner, #left-top-pageblock, #left-side-pageblock, #right-top-pageblock, #right-side-pageblock {
+    #left-page, #left-page-inner, #right-page, #left-top-pageblock, #left-side-pageblock, #right-top-pageblock, #right-side-pageblock {
         transform-origin: 775px center;
         transform: translateZ(10px);
         // -webkit-perspective: 4000px;
@@ -211,7 +263,7 @@ svg {
 
 .open {
 
-    transform: scale(0.9) translateY(0px);
+    transform: scale(1.6) translateY(0px);
 
     $right-movement: 220px;
 
@@ -264,13 +316,9 @@ svg {
     }
     
     
-    #right-page, #middle-page, #middle-page-inner{
+    #right-page {
         transform: translateX($right-movement) translateY(-25px);
         d: path('M775 125 C800 150, 925 190, 1275 190 L1275 925 C 875 950, 775 875, 775 875')
-    }
-
-    .middle-open {
-        transform: rotateY(180deg) translateX(-$right-movement) translateY(-25px) translateZ(10px) !important;
     }
 }
 
