@@ -22,7 +22,6 @@
 import DrawingArea from '../components/DrawingArea.vue';
 import NavBar from './NavBar.vue';
 
-
 const emit = defineEmits(['openSideBar'])
 
 function openSideBar() {
@@ -35,14 +34,15 @@ function openSideBar() {
 
 #container {
     width: 100%;
-    height: 100%;
+    height: 100vh;
     min-height: 100vh;
-    padding: 40px 0;
+    // margin-top: 50px;
+    // padding: 40px 0;
     display: flex;
     justify-content: center;
-    align-items: center;
+    // align-items: center;
     background: orange;
-    // overflow: hidden;
+    overflow: hidden;
 }
 
 </style>

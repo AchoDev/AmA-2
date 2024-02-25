@@ -9,7 +9,7 @@
 
         current tool: {{ currentTool }}
 
-        <svg>
+        <svg :style="`transform: translateY(${currentScrollY}px)`">
             <path
                 v-for="path in paths"
                 :d="path.path.map((p, index) => (index === 0 ? 'M' : 'L') + p.x + ' ' + p.y).join(' ')"
@@ -135,6 +135,8 @@ const colors = ref(['black', 'red', 'blue', 'green'])
 
 const toolBarMinimized = ref(false)
 
+const currentScrollY = ref(0)
+
 const paths = defineModel<Array<Path>>()
 paths.value = [
     {
@@ -233,6 +235,11 @@ onMounted(() => {
     })  
     
     drawingArea.addEventListener('touchmove', (e) => {
+
+        if(e.touches.length > 1) {
+            currentScrollY.value += e.touches[0].clientY
+            return
+        }
         
         // TODO fix eraser glitching below 320px for some reason
 
