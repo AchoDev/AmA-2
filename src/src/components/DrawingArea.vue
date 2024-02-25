@@ -135,8 +135,14 @@ const colors = ref(['black', 'red', 'blue', 'green'])
 
 const toolBarMinimized = ref(false)
 
-const paths = defineModel< Array<Path> >()
-paths.value = []
+const paths = defineModel<Array<Path>>()
+paths.value = [
+    {
+        path: [{x: 100, y: 100}, {x: 200, y: 200}],
+        color: 'black',
+        width: 5
+    }
+]
 const currentPath = ref<Path>({path: [], color: currentColor.value, width: penSize.value})
 
 function catmullRomSpline(P0: { x: number; y: number; }, P1: { x: number; y: number; }, P2: { x: number; y: number; }, P3: { x: number; y: number; }, t: number) {
@@ -246,7 +252,6 @@ onMounted(() => {
                 let newPath: Array<Point> = []
                 element.path.forEach(point => {
 
-                    
                     // let newPath
 
                     if(pointFound) {
@@ -258,7 +263,7 @@ onMounted(() => {
                     
                     const absPos = drawingArea.getBoundingClientRect()
 
-                    if(point.x > touchX - absPos.top - eraserSize.value / 2 && point.x < touchX - absPos.top + eraserSize.value / 2
+                    if(point.x > touchX - absPos.left - eraserSize.value / 2 && point.x < touchX - absPos.left + eraserSize.value / 2
                     && point.y > touchY - absPos.top - eraserSize.value / 2 && point.y < touchY - absPos.top + eraserSize.value / 2) {
                         
                         
@@ -307,7 +312,8 @@ onMounted(() => {
         }
 
         paths.value!.push({
-            path: simplify(generateCurve(currentPath.value.path), 0.5),
+            // path: simplify(generateCurve(currentPath.value.path), 0.1),
+            path: simplify(generateCurve(simplify(currentPath.value.path, 1)), 0.1),
             color: currentColor.value,
             width: penSize.value
         })
