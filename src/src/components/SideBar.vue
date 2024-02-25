@@ -26,7 +26,17 @@
             <h3>Your pages</h3>
 
             <div id="page-buttons">
-                <button @click="openPage('drawing1')">Page 1</button>
+                <button 
+                    v-for="page in pages"
+                    @click="openPage(page)"
+                >
+                    {{page}}
+                </button>
+
+
+                <button id="new-page-button" @click="createPage()">
+                    New page
+                </button>
             </div>
 
 
@@ -38,7 +48,7 @@ import { ref } from 'vue';
 
 const sideMenuOpened = ref(false)
 
-const emit = defineEmits(['exitToMenu', 'openPage'])
+const emit = defineEmits(['exitToMenu', 'openPage', 'createNewPage'])
 
 function exitToMenu() {
     sideMenuOpened.value = false
@@ -50,9 +60,14 @@ function openPage(page: string) {
     emit('openPage', page)
 }
 
+function createPage() {
+    emit('createNewPage')
+}
+
 defineProps<{
     mainLang: string,
     secondLang: string,
+    pages: string[],
 }>()
 
 defineExpose({
@@ -78,7 +93,7 @@ defineExpose({
     left: -300px;
     z-index: 101;
     transition: cubic-bezier(0.23, 1, 0.320, 1) .3s;
-
+    top: 0;
     border-right: 1px solid black;
 
     &.opened {
@@ -100,6 +115,7 @@ defineExpose({
 hr {
     width: 80%;
     border-color: rgb(175, 114, 64);
+    // border-color: white;
     // margin: 20px 0;
     // border-color: black;
 }
@@ -128,6 +144,18 @@ h3 {
         font-size: 17pt;
         margin-top: 10px;
         cursor: pointer;
+    }
+
+    #new-page-button {
+        background: linear-gradient(150deg, rgb(255, 167, 35), #ffb663);
+        font-size: 19pt;
+        font-weight: bold;
+        color: white;
+        transition: ease-out .1s;
+
+        &:active {
+            transform: scale(0.95)
+        }
     }
 	
 }

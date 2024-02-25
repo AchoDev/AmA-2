@@ -43,7 +43,7 @@ const emit = defineEmits(['onClose'])
     top: 0;
     left: 0;
     pointer-events: none;
-    z-index: 100;
+    z-index: 110;
 
     opacity: 0;
     transition: cubic-bezier(0.165, 0.84, 0.44, 1) 0.2s;

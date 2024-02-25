@@ -34,10 +34,10 @@ function openSideBar() {
 
 #container {
     width: 100%;
-    height: 100vh;
-    min-height: 100vh;
-    // margin-top: 50px;
-    // padding: 40px 0;
+    height: calc(100vh - 130px);
+    // min-height: 100vh;
+    margin-top: 50px;
+    padding: 40px 0;
     display: flex;
     justify-content: center;
     // align-items: center;
