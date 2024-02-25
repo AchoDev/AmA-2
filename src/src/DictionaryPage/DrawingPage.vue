@@ -10,6 +10,7 @@
     <DrawingArea 
         width="297mm"
         height="420mm"
+        :grid="page.settings"
 
         :toolbar-fixed="true"
     />
@@ -20,9 +21,15 @@
 
 <script setup lang="ts">
 import DrawingArea from '../components/DrawingArea.vue';
+import { Page } from '../components/dictionaryType';
 import NavBar from './NavBar.vue';
 
+
 const emit = defineEmits(['openSideBar'])
+
+defineProps<{
+    page: Page
+}>()
 
 function openSideBar() {
     emit('openSideBar')

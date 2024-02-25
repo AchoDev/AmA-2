@@ -9,12 +9,13 @@ interface Word {
 
 enum GridType {
     none,
-    list,
-    grid,
+    lined,
+    checkered,
 }
 
 interface PageSettings {
     gridType: GridType
+    gridSize: number
 }
 
 interface Page {
@@ -32,4 +33,5 @@ interface Dictionary {
     pages: Page[]
 }
 
-export type { Dictionary, Word, Page, PageSettings, GridType }
+export {GridType}
+export type { Dictionary, Word, Page, PageSettings }

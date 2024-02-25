@@ -11,6 +11,15 @@
 
         <svg :style="`transform: translateY(${currentScrollY}px)`">
             <path
+                v-if="grid != undefined"
+                v-for="i in Math.trunc(20 / grid?.gridSize)"
+                :d="`M0 ${i * grid!.gridSize} L${width} ${i * grid!.gridType}`"
+                fill="none"
+                stroke="black"
+                stroke-width="1"
+            />
+
+            <path
                 v-for="path in paths"
                 :d="path.path.map((p, index) => (index === 0 ? 'M' : 'L') + p.x + ' ' + p.y).join(' ')"
                 fill="none"
@@ -110,6 +119,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import Path from './path';
+import { PageSettings } from './dictionaryType';
 
 interface Point {
     x: number,
@@ -120,6 +130,7 @@ defineProps<{
     width: string,
     height: string,
     toolbarFixed: boolean
+    grid?: PageSettings
 }>()
 
 const touching = ref(false)
@@ -138,13 +149,7 @@ const toolBarMinimized = ref(false)
 const currentScrollY = ref(0)
 
 const paths = defineModel<Array<Path>>()
-paths.value = [
-    {
-        path: [{x: 100, y: 100}, {x: 200, y: 200}],
-        color: 'black',
-        width: 5
-    }
-]
+paths.value = []
 const currentPath = ref<Path>({path: [], color: currentColor.value, width: penSize.value})
 
 function catmullRomSpline(P0: { x: number; y: number; }, P1: { x: number; y: number; }, P2: { x: number; y: number; }, P3: { x: number; y: number; }, t: number) {

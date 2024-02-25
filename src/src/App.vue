@@ -25,76 +25,69 @@
     />
 
     <DrawingPage 
-      v-if="currentOpenDictionary && currentPage === 'drawing1'"
-
+      v-if="currentOpenDictionary && currentOpenDictionary.pages.find(p => p.title === currentPage)"
+      :grid="currentOpenDictionary.pages.find(p => p.title === currentPage)?.settings"
       @open-side-bar="openSideBar()"
     />
 
-    <PopupContainer ref="newPagePopup"> 
+    <PopupContainer ref="newPagePopup">
       <div id="new-page">
         <h1>New page</h1>
   
         Title
-        <input type="text" />
+        <input type="text" v-model="currentPageTitle"/>
 
         Grid
 
-        <div id="grid-type-picker">
+        <div id="grid-picker">
           <label>
-            <input type="radio" name="gridType" value="none">
-            None
-          </label>
-
-          <label>
-            <input type="radio" name="gridType" value="checkered">
-            Checkered
+            <input type="radio" name="gridType" value="checkeredLarge" v-model="selectedGrid">
+            <div class="grid-img">
+              <img src="./assets/grid/checkerlarge.svg" alt="Checkered large">
+            </div>
           </label>
           
           <label>
-            <input type="radio" name="gridType" value="lined">
-            Lined
+            <input type="radio" name="gridType" value="checkeredMedium" v-model="selectedGrid">
+            <div class="grid-img">
+              <img src="./assets/grid/checkermedium.svg" alt="Checkered medium">
+            </div>
           </label>
-        </div>
-
-        Size
-
-        <div id="checkered-size">
           <label>
-            <input type="radio" name="checkeredSize" value="small">
-            Small
-          </label>
-
-          <label>
-            <input type="radio" name="checkeredSize" value="medium">
-            Medium
+            <input type="radio" name="gridType" value="checkeredSmall" v-model="selectedGrid">
+            <div class="grid-img">
+              <img src="./assets/grid/checkermedium.svg" alt="Checkered small">
+            </div>
           </label>
           
           <label>
-            <input type="radio" name="checkeredSize" value="large">
-            Large
-          </label>
-        </div>
-
-        <div id="lined-size">
-          <label>
-            <input type="radio" name="linedSize" value="small">
-            Small
-          </label>
-
-          <label>
-            <input type="radio" name="linedSize" value="medium">
-            Medium
+            <input type="radio" name="gridType" value="linedLarge" v-model="selectedGrid">
+            <div class="grid-img">
+              <img src="./assets/grid/linedlarge.svg" alt="Lined large">
+            </div>
           </label>
           
           <label>
-            <input type="radio" name="linedSize" value="large">
-            Large
+            <input type="radio" name="gridType" value="linedMedium" v-model="selectedGrid">
+            <div class="grid-img">
+              <img src="./assets/grid/linedmedium.svg" alt="Lined medium">
+            </div>
+          
+          </label>
+          
+          <label>
+            <input type="radio" name="gridType" value="linedSmall" v-model="selectedGrid">
+            <div class="grid-img">
+              <img src="./assets/grid/linedsmall.svg" alt="Lined small">
+            </div>
           </label>
         </div>
 
-        <button>Cancel</button>
+        <button id="no-grid" @click="selectedGrid = ''">No grid</button>
 
-        <button>Save</button>
+        <button @click="cancelPageCreation()">Cancel</button>
+
+        <button @click="saveNewPage()">Save</button>
 
       </div>
     </PopupContainer>
@@ -108,7 +101,7 @@ import SideBar from './components/SideBar.vue';
 import Menu from './Menu/Menu.vue';
 import DrawingPage from './DictionaryPage/DrawingPage.vue';
 import PopupContainer from './components/PopupContainer.vue';
-import type { Dictionary as DictionaryType } from './components/dictionaryType.ts';
+import { GridType, type Dictionary as DictionaryType } from './components/dictionaryType.ts';
 
 const currentOpenDictionary = ref<DictionaryType | undefined>(undefined);
 const currentPage = ref('dictionary');
@@ -131,6 +124,61 @@ function createPage() {
   }
 }
 
+function cancelPageCreation() {
+  newPagePopup.value.closePopup()
+  currentPageTitle.value = ''
+  selectedGrid.value = ''
+}
+
+function saveNewPage() {
+  if (currentOpenDictionary.value) {
+    currentOpenDictionary.value.pages.push({
+      title: currentPageTitle.value,
+      settings: grids[selectedGrid.value],
+      content: []
+    })
+  }
+
+  newPagePopup.value.closePopup()
+  currentPageTitle.value = ''
+  selectedGrid.value = ''
+}
+
+const selectedGrid = ref('')
+const currentPageTitle = ref('')
+
+const grids: {[key: string]: {gridSize: number, gridType: GridType}} = {
+  '': {
+    gridSize: 0,
+    gridType: GridType.none
+  },
+  'checkeredLarge': {
+    gridSize: 2,
+    gridType: GridType.checkered
+  },
+  'checkeredMedium': {
+    gridSize: 1,
+    gridType: GridType.checkered
+  },
+  'checkeredSmall': {
+    gridSize: 0,
+    gridType: GridType.checkered
+  },
+  'linedLarge': {
+    gridSize: 2,
+    gridType: GridType.lined
+  },
+  'linedMedium': {
+    gridSize: 1,
+    gridType: GridType.lined
+  },
+  'linedSmall': {
+    gridSize: 0,
+    gridType: GridType.lined
+  }
+
+}
+
 </script>
 
 <style lang="scss">
@@ -139,6 +187,7 @@ function createPage() {
 
 html {
   min-height: 100vh;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
 body > * {
@@ -197,6 +246,55 @@ body {
     border: none;
     border-radius: 100px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  }
+
+  #no-grid {
+    width: 100%;
+    margin: 10px;
+    height: 40px;
+    font-size: 14pt;
+    margin-bottom: 20px;
+  }
+
+  #grid-picker {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0 10px;
+
+    width: 320px;
+
+    input[type="radio"] {
+      appearance: none;
+
+      &:checked + div{
+        background: rgb(255, 180, 75);
+        img {
+          filter: invert(1)
+        }
+      }
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+
+      .grid-img {
+        width: 100px;
+        height: 100px;
+        border-radius: 10px;
+        // background: white;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        transition: ease .1s;
+
+
+        background: white;
+        cursor: pointer;
+      }
+    }
   }
 }
 
