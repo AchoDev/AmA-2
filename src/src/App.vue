@@ -27,6 +27,7 @@
     <DrawingPage 
       v-if="currentOpenDictionary && currentOpenDictionary.pages.find(p => p.title === currentPage)"
       :grid="currentOpenDictionary.pages.find(p => p.title === currentPage)?.settings"
+      :page="(currentOpenPage as Page)"
       @open-side-bar="openSideBar()"
     />
 
@@ -95,19 +96,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import Dictionary from './DictionaryPage/Dictionary.vue'
 import SideBar from './components/SideBar.vue';
 import Menu from './Menu/Menu.vue';
 import DrawingPage from './DictionaryPage/DrawingPage.vue';
 import PopupContainer from './components/PopupContainer.vue';
-import { GridType, type Dictionary as DictionaryType } from './components/dictionaryType.ts';
+import { GridType, type Dictionary as DictionaryType, Page } from './components/dictionaryType.ts';
 
 const currentOpenDictionary = ref<DictionaryType | undefined>(undefined);
 const currentPage = ref('dictionary');
 
 const sideBar = ref()
 const newPagePopup = ref()
+
+const currentOpenPage = computed(() => {
+  if (currentOpenDictionary.value) {
+    return currentOpenDictionary.value.pages.find(p => p.title === currentPage.value)
+  }
+  return undefined
+})
 
 function openSideBar() {
   sideBar.value.openSideMenu()
@@ -147,33 +155,37 @@ function saveNewPage() {
 const selectedGrid = ref('')
 const currentPageTitle = ref('')
 
+const smallSize = 1
+const mediumSize = 1.5
+const largeSize = 2
+
 const grids: {[key: string]: {gridSize: number, gridType: GridType}} = {
   '': {
-    gridSize: 0,
+    gridSize: smallSize,
     gridType: GridType.none
   },
   'checkeredLarge': {
-    gridSize: 2,
+    gridSize: largeSize,
     gridType: GridType.checkered
   },
   'checkeredMedium': {
-    gridSize: 1,
+    gridSize: mediumSize,
     gridType: GridType.checkered
   },
   'checkeredSmall': {
-    gridSize: 0,
+    gridSize: smallSize,
     gridType: GridType.checkered
   },
   'linedLarge': {
-    gridSize: 2,
+    gridSize: largeSize,
     gridType: GridType.lined
   },
   'linedMedium': {
-    gridSize: 1,
+    gridSize: mediumSize,
     gridType: GridType.lined
   },
   'linedSmall': {
-    gridSize: 0,
+    gridSize: smallSize,
     gridType: GridType.lined
   }
 

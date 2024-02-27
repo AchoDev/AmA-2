@@ -4,18 +4,27 @@
         id="drawing-area" 
         :style="{width: width, height: height}"
     >  
-        {{ width }} x {{ height }}
+        <!-- {{ width }} x {{ height }}
         touching: {{ touching }}
 
-        current tool: {{ currentTool }}
+        current tool: {{ currentTool }} -->
 
         <svg :style="`transform: translateY(${currentScrollY}px)`">
             <path
-                v-if="grid != undefined"
-                v-for="i in Math.trunc(20 / grid?.gridSize)"
-                :d="`M0 ${i * grid!.gridSize} L${width} ${i * grid!.gridType}`"
+                v-if="grid != undefined && grid?.gridType != GridType.none"
+                v-for="i in Math.trunc(pageHeight / (grid.gridSize * gridSizeMultiplier))"
+                :d="`M0 ${i * grid.gridSize * gridSizeMultiplier} L${pageWidth} ${i * grid.gridSize * gridSizeMultiplier}`"
                 fill="none"
-                stroke="black"
+                stroke="rgb(200, 200, 200)"
+                stroke-width="1"
+            />
+
+            <path
+                v-if="grid != undefined && grid?.gridType === GridType.checkered"
+                v-for="i in Math.trunc(pageWidth / (grid.gridSize * gridSizeMultiplier))"
+                :d="`M${i * grid.gridSize * gridSizeMultiplier} 0 L${i * grid.gridSize * gridSizeMultiplier} ${pageHeight}`"
+                fill="none"
+                stroke="rgb(200, 200, 200)"
                 stroke-width="1"
             />
 
@@ -117,9 +126,9 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import Path from './path';
-import { PageSettings } from './dictionaryType';
+import { GridType, PageSettings } from './dictionaryType';
 
 interface Point {
     x: number,
@@ -132,6 +141,8 @@ defineProps<{
     toolbarFixed: boolean
     grid?: PageSettings
 }>()
+
+const gridSizeMultiplier = ref(35)
 
 const touching = ref(false)
 
@@ -147,6 +158,10 @@ const colors = ref(['black', 'red', 'blue', 'green'])
 const toolBarMinimized = ref(false)
 
 const currentScrollY = ref(0)
+
+
+const pageWidth = ref(0)
+const pageHeight = ref(0)
 
 const paths = defineModel<Array<Path>>()
 paths.value = []
@@ -206,6 +221,10 @@ function simplify(points: any[], epsilon: number): Array<Point> {
 
 
 onMounted(() => {
+
+    const domPage = document.getElementById('drawing-area')!
+    pageWidth.value = domPage.offsetWidth
+    pageHeight.value = domPage.offsetHeight
 
     document.getElementById("pen-size-range")?.addEventListener('change', (e) => {
         e.stopPropagation()
