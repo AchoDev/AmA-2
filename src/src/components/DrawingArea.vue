@@ -45,7 +45,7 @@
             />
         </svg>
 
-        <div id="tool-bar" :class="(toolBarMinimized ? 'minimized' : '') + (toolbarFixed ? 'fixed-toolbar' : '')">
+        <div id="tool-bar" :class="(toolBarMinimized ? 'minimized ' : '') + (toolbarFixed ? 'fixed-toolbar' : '')">
 
             <button @click="currentTool = toolBarMinimized ? 'eraser' : 'pen'" :class="currentTool == 'pen' ? 'active' : ''">
                 <img src="../assets/pen.svg" alt="">
@@ -126,7 +126,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import Path from './path';
 import { GridType, PageSettings } from './dictionaryType';
 
@@ -470,6 +470,12 @@ onMounted(() => {
         bottom: 10px;
         right: 50%;
         transform: translateX(50%);
+    }
+
+    &.fixed-toolbar.minimized {
+        bottom: 10px;
+        right: 10px;
+        transform: none;
     }
 
     button {

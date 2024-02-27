@@ -56,6 +56,7 @@ nav {
         justify-content: center;
         text-align: center;
         // letter-spacing: -5px;
+        font-weight: bold;
 
         transition: ease-out .1s;
 

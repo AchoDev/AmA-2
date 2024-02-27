@@ -7,6 +7,11 @@
         />
 
         <main>
+
+            <div id="white-flash" :style="`opacity: ${whiteFlashOpacity}`">
+                &nbsp;
+            </div>
+
             <div id="main-wrapper">
                 <div id="letter-container">
                     <div 
@@ -302,6 +307,8 @@ const drawingPopup = ref()
 const newWordNoteDrawing = ref<Path[]>([])
 const newWordTag = ref('')
 
+const whiteFlashOpacity = ref(1)
+
 function openSideBar() {
     emits('onSideBarOpen')
 }
@@ -504,6 +511,7 @@ function orderWords() {
 
 onMounted(() => {
 
+    whiteFlashOpacity.value = 0
     orderWords()  
 
     Split(['#lang1', '#lang2', '#notes'], {
@@ -532,6 +540,17 @@ hr {
     margin-bottom: 30px;
     border-top: 2px solid #ffca67;
     box-shadow: none;
+}
+
+#white-flash {
+    width: 100%;
+    height: 100%;
+    transition: ease-in 0.5s;
+    background: white;
+    pointer-events: none;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
 }
 
 main {

@@ -3,7 +3,7 @@
 <div id="container">
 
     <NavBar 
-        title="test name name"
+        :title="page.title"
         @openSideBar="openSideBar"
     />
 
@@ -48,7 +48,7 @@ function openSideBar() {
     display: flex;
     justify-content: center;
     // align-items: center;
-    background: orange;
+    background: linear-gradient(130deg, rgb(255, 204, 110), rgb(255, 174, 81));
     overflow: hidden;
 }
 

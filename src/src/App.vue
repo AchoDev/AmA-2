@@ -138,10 +138,52 @@ function cancelPageCreation() {
   selectedGrid.value = ''
 }
 
+function getRandomPageName() {
+  const names = [
+    'Extraordinary Page',
+    'New Page',
+    'Page of Wonders',
+    'Page of Dreams',
+    'Dream Page',
+    'Untitled',
+    'Unknown Endavour',
+    'New Beginnings',
+    'Page of Hope',
+    'Very new Page',
+    'Page of Pages',
+    'This is it',
+    'Wow, a new page',
+    'My new page',
+    'Your new page',
+    'Our new page',
+    'The new page',
+    'Super Page',
+    'Page of Vought',
+    'Page of the Seven',
+    'Missing exception',
+    'Page of Lugunica',
+    'Page of Kararagi',
+    'Page of the Clover Kingdom',
+    'Page of me',
+    'MY Page',
+    'Dont touch this page',
+    "Heisenberg's Page",
+    "Slippin Jimmy's Page",
+    'Page of the Blue Sky',
+    '404 Not found',
+    'The last page',
+    'The first page',
+    'Learners Page',
+    'Page of the Wise',
+  ]
+
+  return names[Math.floor(Math.random() * names.length)]
+}
+
 function saveNewPage() {
   if (currentOpenDictionary.value) {
     currentOpenDictionary.value.pages.push({
-      title: currentPageTitle.value,
+      title: currentPageTitle.value === '' ? getRandomPageName() + ' ' + (currentOpenDictionary.value.pages.length + 1) : currentPageTitle.value,
       settings: grids[selectedGrid.value],
       content: []
     })

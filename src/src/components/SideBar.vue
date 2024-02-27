@@ -30,7 +30,7 @@
                     v-for="page in pages"
                     @click="openPage(page)"
                 >
-                    {{page}}
+                    {{page.length > 20 ? page.slice(0, 18) + '...' : page}}
                 </button>
 
 
@@ -96,6 +96,8 @@ defineExpose({
     top: 0;
     border-right: 1px solid black;
 
+    overflow-y: scroll;
+
     &.opened {
         left: 0;
     }
@@ -104,6 +106,7 @@ defineExpose({
 #dict {
     width: 90%;
     height: 100px;
+    flex-shrink: 0;
     margin-top: 20px;
     border: none;
     border-radius: 20px;
@@ -134,7 +137,10 @@ h3 {
     align-items: flex-start;
     margin-top: 10px;
 
+    margin-bottom: 100px;
+
     button {
+        flex-shrink: 0;
         width: 100%;
         height: 40px;
         border-radius: 100px;
@@ -186,6 +192,7 @@ h3 {
             border: none;
             // background: none;
             font-size: 20pt;
+            font-weight: bold;
             cursor: pointer;
         }
     }
@@ -203,6 +210,7 @@ h3 {
         color: white;
         display: grid;
         place-items: center;
+        font-weight: bold;
         cursor: pointer;
     }
 }

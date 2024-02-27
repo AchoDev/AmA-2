@@ -92,7 +92,7 @@ function togglePage() {
 
         setTimeout(() => {
             emit('completedOpen')
-        }, duration * 1.7);
+        }, duration * 1.4);
     }
 
 
@@ -292,7 +292,7 @@ svg {
 
     #left-page, #left-page-inner {
         transform: rotateY(180deg) translateX(-$right-movement) translateY(-25px) translateZ(10px);
-        d: path('M775 125 C800 150, 925 190, 1275 190 L1275 925 C 875 950, 775 875, 775 875')
+        d: path('M774 125 C800 150, 925 190, 1275 190 L1275 925 C 875 950, 775 875, 774 875')
         // L775 125
     }
 
