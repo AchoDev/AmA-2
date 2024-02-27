@@ -5,6 +5,7 @@
         
         
         <div id="top-bar" :class="bookOpen ? 'open-navbar' : ''">
+            {{ currentScrollItem }}
             <div>
                 <img src="../assets/logo.svg" alt="Logo">
                 <h1>Your dictionary</h1>
@@ -36,7 +37,7 @@
 
 <script setup lang="ts">
 
-import { ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import Book from './Book.vue';
 import {Dictionary, Page} from '../components/dictionaryType.ts'
 import Path from '../components/path';
@@ -186,6 +187,28 @@ const dictionaries = ref<Dictionary[]>([
     },
     
 ])
+
+dictionaries.value[1] = dictionaries.value[0];
+dictionaries.value[2] = dictionaries.value[0];
+dictionaries.value[3] = dictionaries.value[0];
+
+let domBookWrapper: HTMLElement | null = null;
+
+
+// TODO domBookWrapper always null for some reason
+const currentScrollItem = computed(() => {
+    if(domBookWrapper === null) {
+        domBookWrapper = document.getElementById('book-wrapper');
+    }
+    if(domBookWrapper === null) return 0;
+    // return Math.round((domBookWrapper.scrollLeft / domBookWrapper.clientWidth) * dictionaries.value.length);
+    return domBookWrapper.scrollLeft
+})
+
+onMounted(() => {
+    domBookWrapper = document.getElementById('book-wrapper');
+    console.log(domBookWrapper);
+})
 
 </script>
 
