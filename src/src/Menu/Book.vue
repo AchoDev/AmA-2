@@ -24,9 +24,10 @@
             <div id="lang-description" :class="open ? 'desc-open' : ''" :style="`visibility: ${secondHalfOpen ? 'hidden' : 'visible'}`">
                 <div id="content-wrapper">
                     <div>
-                        <h1>{{mainLang}}</h1>
-                        <span>-</span>
-                        <h1>{{secondLang}}</h1>
+                        <h1>{{ title }}</h1>
+                        <h3>
+                            {{mainLang}} - {{secondLang}} 
+                        </h3>
                         <h3>{{ wordCount }} words</h3>
                     </div>
                     <div>
@@ -51,6 +52,7 @@ import {computed, ref, watch} from 'vue';
 const props = defineProps<{
     mainLang: string,
     secondLang: string,
+    title: string,
     pageOpen: boolean,
     wordCount: number
 }>()
@@ -140,8 +142,10 @@ $transition-duration: 1500ms;
             justify-content: center;
             color: white;
             h1 {
-                font-size: 3em;
+                padding-top: 10px;
+                font-size: 2.5em;
                 margin: 0px 0;
+                text-align: center;
             }
             h3 {
                 margin: 20px 0;
@@ -188,6 +192,7 @@ $transition-duration: 1500ms;
     align-items: center;
     width: 100vw;
     position: relative;
+    pointer-events: none;
 
 }
 
@@ -200,6 +205,7 @@ $transition-duration: 1500ms;
     height: 500px;
     cursor: pointer;
     z-index: 5;
+    pointer-events: all;
     // background-color: red;
 
 
@@ -215,6 +221,8 @@ $transition-duration: 1500ms;
     // width: 100%;
     // overflow: hidden;
     position: relative;
+
+    pointer-events: none;
 
     width: auto;
     // transform: scale(0.7);
@@ -264,7 +272,7 @@ svg {
 
 .open {
 
-    transform: scale(1.6) translateY(0px);
+    transform: scale(1.66) translateY(0px);
 
     $right-movement: 220px;
 

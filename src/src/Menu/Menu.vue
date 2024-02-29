@@ -7,15 +7,59 @@
             background="white"
         >
             <div id="new-dict">
-                <div id="language-selector">
-                    <h1>Choose the language <span class="highlight">You</span> want to learn</h1>
-                    
-                    <div>
-                        <button></button>
+                <Transition name="slide">
+                    <div id="language-selector" v-if="creationStep === 0">
+                        <h1>Choose the language <span class="highlight">You</span> want to learn</h1>
+                        
+                        <div>
+                            <button 
+                                v-for="language in Object.keys(alphabets)"
+                                @click="selectLanguage(language)"
+                            >
+                                <img :src="`/cultures/${language}.png`" alt="">
+                                <span>{{ language }}</span>
+                            </button>
+                        </div>
                     </div>
+                    <div id="language-selector" v-else-if="creationStep === 1">
+                        <h1>Choose the language you are <span class="highlight">familiar</span> with</h1>
+                        
+                        <div>
+                            <button 
+                                v-for="language in Object.keys(alphabets)"
+                                @click="selectSecondLanguage(language)"
+                            >
+                                <img :src="`/cultures/${language}.png`" alt="">
+                                <span>{{ language }}</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="name-selector" v-else-if="creationStep === 2">
 
-                    <button @click="creationStep++">Next</button>
-                </div>
+                        <Book 
+                            :main-lang="selectedLang"
+                            :second-lang="secondSelectedLang"
+                            :word-count="0"
+                            :page-open="false"
+                            :title="newDictName"
+                            class="book" 
+                        />
+
+                        <h2>Title for <span class="highlight">your new</span> dicionary</h2>
+                        <div>
+                            <input type="text" v-model="newDictName">
+                            <button @click="selectRandomName()">
+                                <img src="../assets/dice.svg" alt="Random name">
+                            </button>
+                        </div>
+    
+                        <br>
+    
+                        <h2></h2>
+                    </div>
+                </Transition>
+
             </div>
         </PopupContainer>
         
@@ -51,6 +95,7 @@
                 :second-lang="dictionary.secondLang"
                 :word-count="dictionary.words.length"
                 :page-open="false"
+                :title="dictionary.title"
                 class="book"
 
                 @begin-open="bookOpen = true"
@@ -70,6 +115,7 @@ import Book from './Book.vue';
 import {Dictionary, Page} from '../components/dictionaryType.ts'
 import Path from '../components/path';
 import PopupContainer from '../components/PopupContainer.vue';
+import alphabets from '../DictionaryPage/alphabets';
 
 const emit = defineEmits(['openBook']);
 const bookOpen = ref(false);
@@ -224,12 +270,65 @@ dictionaries.value[3] = dictionaries.value[0];
 const domBookWrapper = ref<HTMLElement>();
 const currentScrollItem = ref(0)
 
+// New dictionary
+
 const newDictPopup = ref<typeof PopupContainer>();
 const creationStep = ref(0)
+const selectedLang = ref('')
+const secondSelectedLang = ref('')
+const newDictName = ref('')
+
+function selectRandomName() {
+
+    const names = [
+        'Learning journey',
+        'My new book',
+        'Vocabulary book',
+        'Book of words',
+        'Dictionary',
+        'My dictionary',
+        'My words',
+        'Me VS ' + selectedLang.value,
+        'I love ' + selectedLang.value,
+        'My ' + selectedLang.value + ' words',
+        'My ' + selectedLang.value + ' dictionary',
+        'Orange book',
+        'Book of the UA',
+        selectedLang.value + ' words',
+        selectedLang.value + ' - ' + secondSelectedLang.value,
+        'Book of Lugunica',
+        'Book of the Clover Kingdom',
+        'My book, for me',
+        'My book, for you',
+        'My book, for us',
+        'Fluency test',
+        'My fluency test',
+        'My next language',
+        'My next language book',
+        'I love AmA',
+    ]
+
+    newDictName.value = names[Math.floor(Math.random() * names.length)];
+
+    return newDictName.value;
+}
+
+function selectLanguage(lang: string) {
+    selectedLang.value = lang;
+    creationStep.value = 1;
+}
+
+function selectSecondLanguage(lang: string) {
+    secondSelectedLang.value = lang
+    newDictName.value = selectRandomName();
+    creationStep.value = 2;
+}
 
 function createNew() {
     newDictPopup.value?.openPopup();
 }
+
+// new dictionary end
 
 function moveRight() {
     domBookWrapper.value?.scrollTo({left: domBookWrapper.value.clientWidth * (currentScrollItem.value + 1), behavior: 'smooth'});
@@ -338,7 +437,6 @@ onMounted(() => {
             height: 100%;
         }
     }
-
 }
 
 #new-dict {
@@ -348,13 +446,45 @@ onMounted(() => {
     display: grid;
     place-items: center;
 
+    transition: ease-in-out .2s;
+
+    overflow-x: hidden;
+    
     div {
+
+        grid-column: 1;
+        grid-row: 1;
+
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: space-between;
-        height: 95%;
-        width: 95%;
+        height: 100%;
+        width: 100%;
+        
+
+        $move-amount: 500px;
+        transition: ease-in .3s;
+        &.slide-enter-active {
+            transform: translateX($move-amount);
+            opacity: 0;
+        }
+        
+        &.slide-enter-to {
+            transform: translateX(0);
+            opacity: 1;
+            transition: ease-out .3s;
+            transition-delay: .3s;
+        }
+
+        &.slide-leave-active {
+            transform: translateX(0px);
+            opacity: 0;
+        }
+        
+        &.slide-leave-to {
+            transform: translateX(-$move-amount);
+        }
     }
 
     .highlight {
@@ -369,6 +499,120 @@ onMounted(() => {
         font-size: 32pt;
         letter-spacing: -2px;
         margin-bottom: 20px;
+    }
+
+    #language-selector {
+        overflow: hidden;
+        height: 100%;
+        width: 80%;
+
+        div {
+            padding: 20px 30px;
+            width: auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-column-gap: 30px;
+            grid-row-gap: 30px;
+            height: 100%;
+            // width: 80%;
+            overflow-y: scroll;
+
+
+            button {
+                width: 100%;
+                height: 100%;
+                background: transparent;
+                border: none;
+                padding: 0;
+                margin: 0;
+                border-radius: 30px;
+                // overflow: hidden;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    border-radius: 30px;
+                }
+
+                transition: ease .2s;
+                &:active {
+                    transform: scale(0.9)
+                    
+                }
+            }
+
+        }
+    }
+
+    #name-selector {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: end;
+        height: 100%;
+        width: 80%;
+
+        input[type="text"] {
+            width: 40%;
+            height: 50px;
+            border: none;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            font-size: 20pt;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            font-family: Maven Pro, sans-serif !important;
+
+            &:focus {
+                outline: none;
+            }
+        }
+
+        &:before {
+            content: '';
+            width: 320px;
+            transform: translateX(20px);
+            height: 400px;
+            top: 190px;
+            
+            box-shadow: 0 0 100px rgba(0, 0, 0, 0.507);
+            z-index: -1;
+            position: absolute;
+        }
+
+        div {
+            flex-direction: row;
+            height: auto;
+            justify-content: center;
+            gap: 10px;
+
+            button {
+                width: 60px;
+                height: 60px;
+                border: none;
+                background: orange;
+                border-radius: 100px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    
+                }
+
+                transition: ease-out .1s;
+                &:active {
+                    transform: scale(0.9);
+                }
+            }
+        }
+
+
+        .book {
+            position: absolute;
+            top: -100px;
+        }
     }
 }
 

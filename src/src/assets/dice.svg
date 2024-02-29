@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Created with Vectornator (http://vectornator.io/) -->
+<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" version="1.1" viewBox="0 0 1000 1000" width="100%" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs/>
+<g id="Ebene-1">
+<path d="M190.698 100C140.607 100 100 140.607 100 190.698L100 809.302C100 859.393 140.607 900 190.698 900L809.302 900C859.393 900 900 859.393 900 809.302L900 190.698C900 140.607 859.393 100 809.302 100L190.698 100Z" fill="#ffffff" fill-rule="nonzero" opacity="1" stroke="#000000" stroke-linecap="butt" stroke-linejoin="round" stroke-width="10"/>
+<path d="M325 200C283.579 200 250 233.579 250 275L250 275C250 316.421 283.579 350 325 350L325 350C366.421 350 400 316.421 400 275L400 275C400 233.579 366.421 200 325 200L325 200Z" fill="#ffae1d" fill-rule="nonzero" opacity="1" stroke="#000000" stroke-linecap="butt" stroke-linejoin="round" stroke-width="10"/>
+<path d="M325 650C283.579 650 250 683.579 250 725L250 725C250 766.421 283.579 800 325 800L325 800C366.421 800 400 766.421 400 725L400 725C400 683.579 366.421 650 325 650L325 650Z" fill="#ffae1d" fill-rule="nonzero" opacity="1" stroke="#000000" stroke-linecap="butt" stroke-linejoin="round" stroke-width="10"/>
+<path d="M325 425C283.579 425 250 458.579 250 500L250 500C250 541.421 283.579 575 325 575L325 575C366.421 575 400 541.421 400 500L400 500C400 458.579 366.421 425 325 425L325 425Z" fill="#ffae1d" fill-rule="nonzero" opacity="1" stroke="#000000" stroke-linecap="butt" stroke-linejoin="round" stroke-width="10"/>
+<path d="M675 200C633.579 200 600 233.579 600 275L600 275C600 316.421 633.579 350 675 350L675 350C716.421 350 750 316.421 750 275L750 275C750 233.579 716.421 200 675 200L675 200Z" fill="#ffae1d" fill-rule="nonzero" opacity="1" stroke="#000000" stroke-linecap="butt" stroke-linejoin="round" stroke-width="10"/>
+<path d="M675 650C633.579 650 600 683.579 600 725L600 725C600 766.421 633.579 800 675 800L675 800C716.421 800 750 766.421 750 725L750 725C750 683.579 716.421 650 675 650L675 650Z" fill="#ffae1d" fill-rule="nonzero" opacity="1" stroke="#000000" stroke-linecap="butt" stroke-linejoin="round" stroke-width="10"/>
+<path d="M675 425C633.579 425 600 458.579 600 500L600 500C600 541.421 633.579 575 675 575L675 575C716.421 575 750 541.421 750 500L750 500C750 458.579 716.421 425 675 425L675 425Z" fill="#ffae1d" fill-rule="nonzero" opacity="1" stroke="#000000" stroke-linecap="butt" stroke-linejoin="round" stroke-width="10"/>
+</g>
+</svg>
