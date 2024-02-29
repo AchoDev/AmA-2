@@ -1,6 +1,6 @@
 <template>
     <div id="popup-background" @click="closePopup" :class="open ? 'opened' : ''">
-        <div id="popup-container" @click.stop>
+        <div id="popup-container" @click.stop :style="background != undefined ? `background: ${background}` : ''">
             <slot></slot>    
         </div>
     </div>
@@ -14,6 +14,10 @@ function closePopup() {
     open.value = false
     emit('onClose')
 }
+
+defineProps({
+    background: String,
+})
 
 defineExpose({
     openPopup() {
