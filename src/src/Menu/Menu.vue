@@ -5,6 +5,8 @@
         <PopupContainer 
             ref="newDictPopup"
             background="white"
+
+            @on-close-end="resetCreation()"
         >
             <div id="new-dict">
                 <Transition name="slide">
@@ -70,7 +72,6 @@
         </PopupContainer>
         
         <div id="top-bar" :class="bookOpen ? 'open-navbar' : ''">
-            {{ currentScrollItem }}
             <div>
                 <img src="../assets/logo.svg" alt="Logo">
                 <h1>Your dictionar{{ dictionaries.length > 1 ? 'ies' : 'y' }}</h1>
@@ -506,6 +507,11 @@ onMounted(() => {
         img {
             height: 100%;
         }
+
+        transition: ease .2s;
+        &:active {
+            transform: scale(0.9);
+        }
     }
 }
 
@@ -643,18 +649,24 @@ onMounted(() => {
             content: '';
             width: 320px;
             transform: translateX(20px);
-            height: 400px;
-            top: 190px;
+            height: 500px;
+            top: 160px;
             
-            box-shadow: 0 0 100px rgba(0, 0, 0, 0.507);
+            // box-shadow: 0 0 100px rgba(0, 0, 0, 0.507);
             z-index: -1;
             position: absolute;
+            background: rgba(0, 0, 0, 0.342);
+            filter: blur(30px);
 
-            transition: ease .2s;
+            transition: width cubic-bezier(0.4, 0, 0.2, 1) 1s, filter ease-in 1.3s, background ease-in 1.3s;
+            transition-delay: .3s;
+            // transition-delay: 1s;
         }
 
-        &.visible::before {
-            opacity: 0;
+        &.visible:before {
+            width: 600px;
+            filter: blur(100px);
+            background: rgba(0, 0, 0, 0.185);
         }
 
         div {

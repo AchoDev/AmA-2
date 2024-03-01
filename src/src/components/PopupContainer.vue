@@ -13,6 +13,10 @@ const open = ref(false)
 function closePopup() {
     open.value = false
     emit('onClose')
+
+    setTimeout(() => {
+        emit('onCloseEnd')
+    }, 250)
 }
 
 defineProps({
@@ -23,17 +27,10 @@ defineExpose({
     openPopup() {
         open.value = true
     },
-    async closePopup(): Promise<void> {
-        open.value = false
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve()
-            }, 250)
-        })
-    },
+    closePopup
 })
 
-const emit = defineEmits(['onClose'])
+const emit = defineEmits(['onClose', 'onCloseEnd'])
 
 </script>
 

@@ -7,7 +7,7 @@
                 
                 <path id="right-page" d="M775 125 C1275 125, 1275 125, 1275 125 L1275 875 C 775 875, 775 875, 775 875" fill="white" fill-rule="nonzero" opacity="1" stroke="black" stroke-linecap="round"/>
                 
-                <path :style="`visibility: ${secondHalfOpen ? 'hidden' : 'visible'}`" id="left-page" d="M775 125 C1275 125, 1275 125, 1275 125 L1275 875 C 775 875, 775 875, 775 875 L775 125" fill="white" fill-rule="nonzero" opacity="1" stroke="black" stroke-linejoin="round"/>
+                <path :style="`visibility: ${secondHalfOpen ? 'hidden' : 'visible'}`" id="left-page" d="M775 125 C1275 125, 1275 125, 1275 125 L1275 875 C 775 875, 775 875, 775 875" fill="white" fill-rule="nonzero" opacity="1" stroke="black" stroke-linejoin="round"/>
                 
                 <path id="front-cover" d="M750 100L1250 100L1250 850L750 850L750 100Z" fill="#ffa633" fill-rule="nonzero" opacity="1" stroke="white" stroke-width="5" stroke-linejoin="round"/>
                 
@@ -301,6 +301,7 @@ svg {
     #left-page, #left-page-inner {
         transform: rotateY(180deg) translateX(-$right-movement) translateY(-25px) translateZ(10px);
         d: path('M774 125 C800 150, 925 190, 1275 190 L1275 925 C 875 950, 775 875, 774 875')
+        //       M775 125 C1275 125, 1275 125, 1275 125 L1275 875 C 775 875, 775 875, 775 875 L775 125
         // L775 125
     }
 
