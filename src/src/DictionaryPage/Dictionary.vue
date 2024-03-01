@@ -1,9 +1,10 @@
 <template>
     <div>
 
+        <!-- :title="mainLang + ' - ' + secondLang" -->
         <NavBar 
-            :title="mainLang + ' - ' + secondLang"
-            @openSideBar="openSideBar" 
+            :title="dictionary.title"
+            @openSideBar="openSideBar"
         />
 
         <main>

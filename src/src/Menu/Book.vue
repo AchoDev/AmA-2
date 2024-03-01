@@ -232,6 +232,7 @@ $transition-duration: 1500ms;
 
 svg {
     -webkit-perspective: 2814px;
+    perspective: 2814px;
     width: 2000px;
     height: 1000px;
     transform: scale(0.6) ;
