@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Created with Vectornator (http://vectornator.io/) -->
+<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" version="1.1" viewBox="0 0 1000 1000" width="100%" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:vectornator="http://vectornator.io" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs/>
+<g id="Ebene-1" vectornator:layerName="Ebene 1">
+<path d="M25 205.797C25 191.92 39.8536 183.102 52.0362 189.747L565.472 469.803C571.346 473.007 575 479.163 575 485.853L575 514.147C575 520.837 571.346 526.993 565.472 530.197L52.0362 810.253C39.8536 816.898 25 808.08 25 794.203L25 710.609C25 704.049 28.5153 697.991 34.2115 694.736L375 500L34.2115 305.264C28.5153 302.009 25 295.951 25 289.391L25 205.797Z" fill="#ffae1d" fill-rule="nonzero" opacity="1" stroke="#000000" stroke-linecap="butt" stroke-linejoin="round" stroke-width="10" vectornator:layerName="Kurve 2"/>
+<path d="M425 205.797C425 191.92 439.854 183.102 452.036 189.747L965.472 469.803C971.346 473.007 975 479.163 975 485.853L975 514.147C975 520.837 971.346 526.993 965.472 530.197L452.036 810.253C439.854 816.898 425 808.08 425 794.203L425 710.609C425 704.049 428.515 697.991 434.212 694.736L775 500L434.212 305.264C428.515 302.009 425 295.951 425 289.391L425 205.797Z" fill="#ffae1d" fill-rule="nonzero" opacity="1" stroke="#000000" stroke-linecap="butt" stroke-linejoin="round" stroke-width="10" vectornator:layerName="Kurve 3"/>
+</g>
+</svg>

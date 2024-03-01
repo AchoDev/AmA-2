@@ -1,7 +1,7 @@
 <template>
     <nav>
         <div>
-            <button id="sidebar-button" @click="openSideBar()"> >> </button>
+            <button id="sidebar-button" @click="openSideBar()"> <img src="../assets/sidebar.svg" alt="Sidebar button"> </button>
         </div>
     
         <div id="title">{{title}}</div>
@@ -62,6 +62,11 @@ nav {
 
         &:active {
             transform: translateX(10px);
+        }
+
+        img {
+            width: 35px;
+            height: auto;
         }
     }
 

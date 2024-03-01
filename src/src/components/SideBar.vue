@@ -3,7 +3,7 @@
             <div id="top-section">
                 <div>
                     <img src="../assets/logo.svg" alt="Logo">
-                    <button @click="sideMenuOpened = false"> &lt;&lt; </button>
+                    <button @click="sideMenuOpened = false"> <img src="../assets/sidebar.svg" alt="Close sidebar"> </button>
                 </div>
 
                 <!-- <hr> -->
@@ -194,6 +194,16 @@ h3 {
             font-size: 20pt;
             font-weight: bold;
             cursor: pointer;
+
+            display: grid;
+            place-items: center;
+
+            img {
+                width: 30px;
+                height: auto;
+                filter: brightness(10);
+                transform: rotate(180deg);
+            }
         }
     }
 
