@@ -35,7 +35,10 @@
                         </div>
                     </div>
                     
-                    <div id="name-selector" v-else-if="creationStep === 2">
+                    <div id="name-selector" 
+                        v-else-if="creationStep === 2"
+                        :class="newBookOpen ? 'visible' : ''"
+                    >
 
                         <Book 
                             :main-lang="selectedLang"
@@ -43,7 +46,10 @@
                             :word-count="0"
                             :page-open="false"
                             :title="newDictName"
-                            class="book" 
+                            class="book"
+
+                            @begin-open="beginOpen()"
+                            @completed-open="createBook()"
                         />
 
                         <h2>Title for <span class="highlight">your new</span> dicionary</h2>
@@ -73,8 +79,12 @@
         </div>
 
         <div id="move-buttons">
-            <button @click="moveLeft()">Left</button>
-            <button @click="moveRight()">Right</button>
+            <button :class="currentScrollItem <= 0 ? 'hidden' : ''" @click="moveLeft()">
+                <img src="../assets/arrow.svg" alt="Left">
+            </button>
+            <button :class="currentScrollItem >= dictionaries.length - 1 ? 'hidden' : ''" @click="moveRight()">
+                <img src="../assets/arrow.svg" alt="Right">
+            </button>
         </div>
 
         <div id="new-dict-button">
@@ -127,7 +137,7 @@ function openBook(dictionary: Dictionary) {
 const dictionaries = ref<Dictionary[]>([
     {   
         pages: <Page[]>[],
-        title: 'Spanish - German',
+        title: 'hehehehaw',
         tags: [
             'greetings',
             'nouns',
@@ -263,9 +273,9 @@ const dictionaries = ref<Dictionary[]>([
     
 ])
 
-dictionaries.value[1] = dictionaries.value[0];
-dictionaries.value[2] = dictionaries.value[0];
-dictionaries.value[3] = dictionaries.value[0];
+dictionaries.value[1] = dictionaries.value[0]
+dictionaries.value[2] = dictionaries.value[0]
+dictionaries.value[3] = dictionaries.value[0]
 
 const domBookWrapper = ref<HTMLElement>();
 const currentScrollItem = ref(0)
@@ -277,6 +287,8 @@ const creationStep = ref(0)
 const selectedLang = ref('')
 const secondSelectedLang = ref('')
 const newDictName = ref('')
+
+const newBookOpen = ref(false);
 
 function selectRandomName() {
 
@@ -326,6 +338,32 @@ function selectSecondLanguage(lang: string) {
 
 function createNew() {
     newDictPopup.value?.openPopup();
+}
+
+function beginOpen() {
+    newBookOpen.value = true
+}
+
+function resetCreation() {
+    creationStep.value = 0;
+    selectedLang.value = '';
+    secondSelectedLang.value = '';
+    newDictName.value = '';
+    newBookOpen.value = false;
+}
+
+function createBook() {
+    dictionaries.value.push({
+        pages: <Page[]>[],
+        title: newDictName.value,
+        tags: [],
+        mainLang: selectedLang.value,
+        secondLang: secondSelectedLang.value,
+        words: []
+    })
+
+    resetCreation();
+    openBook(dictionaries.value[dictionaries.value.length - 1]);
 }
 
 // new dictionary end
@@ -410,6 +448,38 @@ onMounted(() => {
 
     button {
         pointer-events: all;
+        margin: 20px;
+        border: none;
+        width: 100px;
+        height: 100px;
+        border-radius: 100px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        transition: ease .2s;
+
+        &.hidden {
+            opacity: 0;
+        }
+
+        &:first-child img {
+            transform: rotate(180deg);
+        }
+
+        display: grid;
+        place-items: center;
+
+        img {
+            width: 60%;
+            height: 60%;
+        }
+
+        &:active {
+            filter: brightness(1.3);
+            transform: translateX(20px);
+        }
+        
+        &:first-child:active {
+            transform: translateX(-20px);
+        }
     }
 }
 
@@ -579,6 +649,12 @@ onMounted(() => {
             box-shadow: 0 0 100px rgba(0, 0, 0, 0.507);
             z-index: -1;
             position: absolute;
+
+            transition: ease .2s;
+        }
+
+        &.visible::before {
+            opacity: 0;
         }
 
         div {
