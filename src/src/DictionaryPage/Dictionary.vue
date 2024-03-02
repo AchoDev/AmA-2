@@ -62,20 +62,22 @@
                     </center>
 
                     <div v-if="words.length !== 0">
-                        <center v-if="noTagWordFound && !noSearchWordFound">
-                            <h2>No word with the tag "{{ selectedTag }}" :(</h2>
+
+                        <center v-if="noLetterWordFound">
+                            <h2>No word found starting with the Letter "{{ selectedLetter }}" :(</h2>
                             <span>You can edit existing words to give them tags or select a tag upon creating a new word</span>
                         </center>
                         
-                        <center v-if="noSearchWordFound && !noTagWordFound">
+                        <center v-else-if="noSearchWordFound">
                             <h2>No word called "{{ searchingFor }}" was found :(</h2>
                             <span>Maybe you mispelled it? Make sure </span>
                         </center>
 
-                        <center v-if="noSearchWordFound && noTagWordFound">
-                            <h2>No word with the Tag "{{ selectedTag }}" OR with the name "{{ searchingFor }}"</h2>
-                            <span>You are searching in an empty tag for something? That's... terrifying...</span>
+                        <center v-else-if="noTagWordFound">
+                            <h2>No word with the tag "{{ selectedTag }}" :(</h2>
+                            <span>You can edit existing words to give them tags or select a tag upon creating a new word</span>
                         </center>
+
                     </div>                
 
                     <!-- <center>
@@ -259,6 +261,10 @@ const noTagWordFound = computed(() => {
 
 const noSearchWordFound = computed(() => {
     return words.value.find(value => value.mainLang.toLowerCase().includes(searchingFor.value.toLowerCase())) == undefined && searchingFor.value !== ''
+})
+
+const noLetterWordFound = computed(() => {
+    return words.value.find(value => value.mainLang.charAt(0).toLowerCase() === selectedLetter.value.toLowerCase()) == undefined && selectedLetter.value !== ''
 })
 
 const props = defineProps<{
