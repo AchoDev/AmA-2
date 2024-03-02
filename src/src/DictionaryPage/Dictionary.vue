@@ -5,6 +5,7 @@
         <NavBar 
             :title="dictionary.title"
             @openSideBar="openSideBar"
+            @changeSettings="changeSettings"
         />
 
         <main>
@@ -294,6 +295,10 @@ function getVisibleWords() {
     return visibleWords
 }
 
+function changeSettings() {
+
+}
+
 const maxWordsPerPage = ref<number>(10)
 
 const selectedLetter = ref('')
@@ -367,7 +372,6 @@ function closeWordCreator() {
     wordCreator.value.closePopup()
 }
 
-
 const yesNo = ref()
 const ok = ref()
 
@@ -376,7 +380,6 @@ function addNewTag() {
     while(tags.value.find(tag => tag === `New tag ${currentNum}`)) {
         currentNum++
     }
-
     
     tags.value.push(`New tag ${currentNum}`)
 }

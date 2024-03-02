@@ -31,12 +31,12 @@
 
                 <div>
                     <span>Divider between words</span>
-                    <input type="checkbox" v-model="dividerVisible">
+                    <Switch v-model="dividerVisible" />
                 </div>
 
                 <div>
                     <span>Dark mode</span>
-                    <input type="checkbox" v-model="dividerVisible">
+                    <Switch v-model="darkMode" />
                 </div>
 
                 <hr>
@@ -56,10 +56,11 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
+import Switch from '../components/Switch.vue';
+import Settings from '../components/settings';
 
-
-const emit = defineEmits(['openSideBar'])
+const emit = defineEmits(['openSideBar', 'changeSettings'])
 
 defineProps<{
     title: string,
@@ -72,6 +73,18 @@ function openSideBar() {
 const wordsPerPage = ref(45)
 const wordSize = ref(15)
 const dividerVisible = ref(false)
+const darkMode = ref(false)
+
+watch([wordsPerPage, wordSize, dividerVisible, darkMode], () => {
+    const value: Settings = {
+        wordsPerPage: wordsPerPage.value,
+        wordSize: wordSize.value,
+        dividerbetweenWords: dividerVisible.value,
+        darkmode: darkMode.value
+    }
+    emit('changeSettings', value)
+})
+
 
 const settingsOpen = ref(false)
 

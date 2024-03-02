@@ -5,7 +5,7 @@
     <author email="dev@cordova.apache.org" href="https://cordova.apache.org">
         Apache Cordova Team
     </author>
-    <!-- <content src="index.html" /> -->
+    <content src="index.html" />
 
     <platform name="ios">
         <allow-intent href="itms:*" />
@@ -13,7 +13,7 @@
         <!-- <hook type="after_prepare" src="hooks/copyCordova.js" /> -->
     </platform>
 
-    <content src="http://localhost:5173" />
+    <!-- <content src="http://localhost:5173" /> -->
     
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />

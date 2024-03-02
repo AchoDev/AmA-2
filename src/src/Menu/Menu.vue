@@ -124,9 +124,14 @@
 import { onMounted, ref } from 'vue';
 import Book from './Book.vue';
 import {Dictionary, Page} from '../components/dictionaryType.ts'
-import Path from '../components/path';
 import PopupContainer from '../components/PopupContainer.vue';
 import alphabets from '../DictionaryPage/alphabets';
+
+import raw from '../dictionaries.json';
+
+const dictionaries = ref<Dictionary[]>(raw);
+
+console.log(dictionaries.value)
 
 const emit = defineEmits(['openBook']);
 const bookOpen = ref(false);
@@ -135,148 +140,7 @@ function openBook(dictionary: Dictionary) {
     emit('openBook', dictionary);
 }
 
-const dictionaries = ref<Dictionary[]>([
-    {   
-        pages: <Page[]>[],
-        title: 'hehehehaw',
-        tags: [
-            'greetings',
-            'nouns',
-            'verbs',
-            'adjectives',
-            'adverbs',
-            'prepositions',
-            'conjunctions',
-            'interjections',
-            'articles',
-            'determiners',
-            'pronouns',
-            'numbers',
-            'quantifiers',
-            'demonstratives',
-            'possessives',
-            'interrogatives',
-            'indefinites',
-        ],
-        mainLang: 'spanish',
-        secondLang: 'german',
-        words: [
-            {
-                mainLang: 'mi nombre es BEERLINER',
-                secondLang: 'ich bin ein berliner',
-                notes: <Path[]>[],
-                tag: 'greetings'
-            },
-            {
-                mainLang: 'como estas',
-                secondLang: 'wie gehts dir',
-                notes: <Path[]>[],
-                tag: ''
-            },
-            {
-                mainLang: 'mi nombre es',
-                secondLang: 'mein name ist',
-                notes: <Path[]>[],
-                tag: ''
-            },
-            {
-                mainLang: 'mi nombre es BEERLINER',
-                secondLang: 'ich bin ein berliner',
-                notes: <Path[]>[],
-                tag: 'greetings'
-            },
-            {
-                mainLang: 'como estas',
-                secondLang: 'wie gehts dir',
-                notes: <Path[]>[],
-                tag: ''
-            },
-            {
-                mainLang: 'mi nombre es',
-                secondLang: 'mein name ist',
-                notes: <Path[]>[],
-                tag: ''
-            },
-            {
-                mainLang: 'mi nombre es BEERLINER',
-                secondLang: 'ich bin ein berliner',
-                notes: <Path[]>[],
-                tag: 'greetings'
-            },
-            {
-                mainLang: 'como estas',
-                secondLang: 'wie gehts dir',
-                notes: <Path[]>[],
-                tag: ''
-            },
-            {
-                mainLang: 'mi nombre es',
-                secondLang: 'mein name ist',
-                notes: <Path[]>[],
-                tag: ''
-            },
-            {
-                mainLang: 'mi nombre es BEERLINER',
-                secondLang: 'ich bin ein berliner',
-                notes: <Path[]>[],
-                tag: 'greetings'
-            },
-            {
-                mainLang: 'como estas',
-                secondLang: 'wie gehts dir',
-                notes: <Path[]>[],
-                tag: ''
-            },
-            {
-                mainLang: 'mi nombre es',
-                secondLang: 'mein name ist',
-                notes: <Path[]>[],
-                tag: ''
-            },
-            {
-                mainLang: 'mi nombre es BEERLINER',
-                secondLang: 'ich bin ein berliner',
-                notes: <Path[]>[],
-                tag: 'greetings'
-            },
-            {
-                mainLang: 'como estas',
-                secondLang: 'wie gehts dir',
-                notes: <Path[]>[],
-                tag: ''
-            },
-            {
-                mainLang: 'mi nombre es',
-                secondLang: 'mein name ist',
-                notes: <Path[]>[],
-                tag: ''
-            },
-            {
-                mainLang: 'mi nombre es BEERLINER',
-                secondLang: 'ich bin ein berliner',
-                notes: <Path[]>[],
-                tag: 'greetings'
-            },
-            {
-                mainLang: 'como estas',
-                secondLang: 'wie gehts dir',
-                notes: <Path[]>[],
-                tag: ''
-            },
-            {
-                mainLang: 'mi nombre es',
-                secondLang: 'mein name ist',
-                notes: <Path[]>[],
-                tag: ''
-            },
-        ]
-    },
-    
-])
 
-dictionaries.value[1] = dictionaries.value[0]
-dictionaries.value[2] = dictionaries.value[0]
-dictionaries.value[3] = dictionaries.value[0]
 
 const domBookWrapper = ref<HTMLElement>();
 const currentScrollItem = ref(0)

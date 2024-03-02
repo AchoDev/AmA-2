@@ -31,8 +31,8 @@
                         <h3>{{ wordCount }} words</h3>
                     </div>
                     <div>
-                        <img :src="mainFlagPath" :alt="mainLang">
-                        <img :src="secondFlagPath" :alt="secondLang">
+                        <img :src="`/flags/${props.mainLang}.png`" :alt="mainLang">
+                        <img :src="`/flags/${props.secondLang}.png`" :alt="secondLang">
                     </div>
                 </div>
             </div>
@@ -47,7 +47,7 @@
 
 <script setup lang="ts">
 
-import {computed, ref, watch} from 'vue';
+import {ref, watch} from 'vue';
 
 const props = defineProps<{
     mainLang: string,
@@ -59,17 +59,8 @@ const props = defineProps<{
 
 const emit = defineEmits(['beginOpen', 'completedOpen'])
 
-const mainFlagPath = computed(() => {
-    return `/flags/${props.mainLang}.png`
-})
-const secondFlagPath = computed(() => {
-    return `/flags/${props.secondLang}.png`
-})
-
 const open = ref(false)
 const secondHalfOpen = ref(false);
-
-
 
 function clicker() {
     togglePage()
