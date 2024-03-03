@@ -18,7 +18,7 @@
                                 v-for="language in Object.keys(alphabets)"
                                 @click="selectLanguage(language)"
                             >
-                                <img :src="`/cultures/${language}.png`" alt="">
+                                <img :src="`./cultures/${language}.png`" alt="">
                                 <span>{{ language }}</span>
                             </button>
                         </div>
@@ -31,7 +31,7 @@
                                 v-for="language in Object.keys(alphabets)"
                                 @click="selectSecondLanguage(language)"
                             >
-                                <img :src="`/cultures/${language}.png`" alt="">
+                                <img :src="`./cultures/${language}.png`" alt="">
                                 <span>{{ language }}</span>
                             </button>
                         </div>
@@ -127,9 +127,9 @@ import {Dictionary, Page} from '../components/dictionaryType.ts'
 import PopupContainer from '../components/PopupContainer.vue';
 import alphabets from '../DictionaryPage/alphabets';
 
-import raw from '../dictionaries.json';
+// import raw from '../dictionaries.json';
 
-const dictionaries = ref<Dictionary[]>(raw);
+const dictionaries = ref<Dictionary[]>([]);
 
 console.log(dictionaries.value)
 

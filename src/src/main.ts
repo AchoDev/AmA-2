@@ -34,12 +34,14 @@ document.addEventListener('deviceready', () => {
 
 function load() {
     createApp(App).mount('#app')
-    window.resolveLocalFileSystemURL(cordova.file.dataDirectory + 'dictionary.json', gotFile, fail);
+    window.resolveLocalFileSystemURL(cordova.file.applicationDirectory + 'dictionary.json', gotFile, fail);
 }
 
 function fail(e: any) {
     alert("FileSystem Error");
     console.log(e);
+    console.log(e.code)
+    console.log("error ^^^^^^")
 }
 
 function gotFile(fileEntry: any) {

@@ -31,8 +31,8 @@
                         <h3>{{ wordCount }} words</h3>
                     </div>
                     <div>
-                        <img :src="`/flags/${props.mainLang}.png`" :alt="mainLang">
-                        <img :src="`/flags/${props.secondLang}.png`" :alt="secondLang">
+                        <img :src="`./flags/${props.mainLang}.png`" :alt="mainLang">
+                        <img :src="`./flags/${props.secondLang}.png`" :alt="secondLang">
                     </div>
                 </div>
             </div>
