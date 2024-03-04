@@ -34,6 +34,7 @@ document.addEventListener('deviceready', () => {
 
 function load() {
     createApp(App).mount('#app')
+    if(typeof cordova == 'undefined') return
     window.resolveLocalFileSystemURL(cordova.file.applicationDirectory + 'dictionary.json', gotFile, fail);
 }
 

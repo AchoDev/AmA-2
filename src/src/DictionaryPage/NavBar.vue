@@ -1,5 +1,5 @@
 <template>
-    <nav>
+    <nav :class="settings.darkmode ? 'darkmode' : ''">
         <div>
             <button id="sidebar-button" @click="openSideBar()"> <img src="../assets/sidebar.svg" alt="Sidebar button"> </button>
         </div>
@@ -21,12 +21,20 @@
 
                 <div>
                     <span>Words per page</span>
-                    <input type="number" v-model="wordsPerPage">
+                    <div class="input-wrapper">
+                        <button @click="wordsPerPage--">-</button>
+                        <input type="number" v-model="wordsPerPage">
+                        <button @click="wordsPerPage++">+</button>
+                    </div>
                 </div>
 
                 <div>
                     <span>Word size</span>
-                    <input type="number" v-model="wordSize">
+                    <div class="input-wrapper">
+                        <button @click="wordSize--">-</button>
+                        <input type="number" v-model="wordSize">
+                        <button @click="wordSize++">+</button>
+                    </div>
                 </div>
 
                 <div>
@@ -62,27 +70,30 @@ import Settings from '../components/settings';
 
 const emit = defineEmits(['openSideBar', 'changeSettings'])
 
-defineProps<{
+const props = defineProps<{
     title: string,
+
+    settings: Settings
 }>()
 
 function openSideBar() {
     emit('openSideBar')
 }
 
-const wordsPerPage = ref(45)
-const wordSize = ref(15)
-const dividerVisible = ref(false)
-const darkMode = ref(false)
+const wordsPerPage = ref(props.settings.wordsPerPage)
+const wordSize = ref(props.settings.wordSize)
+const dividerVisible = ref(props.settings.dividerBetweenWords)
+const darkMode = ref(props.settings.darkmode)
 
 watch([wordsPerPage, wordSize, dividerVisible, darkMode], () => {
     const value: Settings = {
         wordsPerPage: wordsPerPage.value,
         wordSize: wordSize.value,
-        dividerbetweenWords: dividerVisible.value,
+        dividerBetweenWords: dividerVisible.value,
         darkmode: darkMode.value
     }
     emit('changeSettings', value)
+    console.log(value)
 })
 
 
@@ -99,7 +110,7 @@ onMounted(() => {
 <style scoped lang="scss">
 nav {
     height: 70px;
-    background: white;
+    background: var(--background);
     position: fixed;
     top: 0;
     display: flex;
@@ -110,6 +121,12 @@ nav {
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 
     z-index: 10;
+
+    --background: white;
+
+    &.darkmode {
+        --background: rgb(39, 39, 39);
+    }
 
     #sidebar-button, #settings #open-menu-button{
         font-size: 1.7em;
@@ -193,17 +210,43 @@ nav {
                     font-weight: bold;
                 }
 
-                input[type="number"] {
-                    width: 40px;
-                    height: 30px;
-                    border-radius: 100px;
-                    font-size: 1.1em;
-                    text-align: center;
-                    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
-                    border: none;
+                .input-wrapper {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    align-items: center;
+                    gap: 5px;
+                    width: auto;
 
-                    &:focus {
-                        outline: none;
+                    button {
+                        width: 30px;
+                        height: 30px;
+                        border-radius: 100px;
+                        box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
+                        border: none;
+
+                        &:focus {
+                            outline: none;
+                        }
+
+                        &:last-child {
+                            background: white;
+                            color: black;
+                        }
+                    }
+
+                    input[type="number"] {
+                        width: 40px;
+                        height: 30px;
+                        border-radius: 100px;
+                        font-size: 1.1em;
+                        text-align: center;
+                        box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
+                        border: none;
+
+                        &:focus {
+                            outline: none;
+                        }
                     }
                 }
 

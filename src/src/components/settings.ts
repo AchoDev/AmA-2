@@ -2,7 +2,7 @@
 interface Settings {
     wordsPerPage: number,
     wordSize: number,
-    dividerbetweenWords: boolean,
+    dividerBetweenWords: boolean,
     darkmode: boolean,
 }
 

@@ -1,9 +1,10 @@
 <template>
-    <div>
+    <div id="root" :class="settings.darkmode ? 'darkmode' : ''">
 
         <!-- :title="mainLang + ' - ' + secondLang" -->
         <NavBar 
             :title="dictionary.title"
+            :settings="settings"
             @openSideBar="openSideBar"
             @changeSettings="changeSettings"
         />
@@ -42,15 +43,18 @@
                         <hr>
                     </center>
 
-                    <Word 
+                    <Word
                         v-for="(word, i) in getVisibleWords()" 
                         :mainLangWord="word.mainLang" 
                         :secondLangWord="word.secondLang" 
                         :notes="word.notes"
                         :index="i"
                         :sizes="wordSizes"
+                        :word-size="settings.wordSize"
+                        :divider-visible="settings.dividerBetweenWords"
+                        :dark-mode="settings.darkmode"
 
-                        v-show="(i >= maxWordsPerPage * (currentPage - 1) && i < maxWordsPerPage * currentPage)"
+                        v-show="(i >= settings.wordsPerPage * (currentPage - 1) && i < settings.wordsPerPage * currentPage)"
 
                         @onWordEdit="onWordEdit"
                         @on-word-delete="deleteWord"
@@ -255,6 +259,7 @@ import Split from 'split.js'
 
 import alphabets from './alphabets.ts'
 import { Dictionary } from '../components/dictionaryType';
+import Settings from '../components/settings.ts';
 
 const noTagWordFound = computed(() => {
     return words.value.find(value => value.tag === selectedTag.value) == undefined && selectedTag.value !== ''
@@ -269,10 +274,11 @@ const noLetterWordFound = computed(() => {
 })
 
 const props = defineProps<{
+    settings: Settings,
     dictionary: Dictionary
 }>()
 
-const emits = defineEmits(["onSideBarOpen"]) 
+const emits = defineEmits(["onSideBarOpen", "changeSettings"])
 
 const currentPage = ref<number>(1)
 
@@ -281,7 +287,7 @@ const totalPages = computed(() => {
     visibleWords = visibleWords.filter(word => word.tag === selectedTag.value || selectedTag.value === '')
     visibleWords = visibleWords.filter(word => word.mainLang.charAt(0).toLowerCase() === selectedLetter.value.toLowerCase() || selectedLetter.value === '')
     visibleWords = visibleWords.filter(word => word.mainLang.toLowerCase().includes(searchingFor.value.toLowerCase()) || searchingFor.value === '')
-    const value = Math.ceil(visibleWords.length / maxWordsPerPage.value)
+    const value = Math.ceil(visibleWords.length / props.settings.wordsPerPage)
 
     if(value === 0) return 1
     return value
@@ -295,11 +301,9 @@ function getVisibleWords() {
     return visibleWords
 }
 
-function changeSettings() {
-
+function changeSettings(newSettings: Settings) {
+    emits('changeSettings', newSettings)
 }
-
-const maxWordsPerPage = ref<number>(10)
 
 const selectedLetter = ref('')
 const selectedTag = ref('')
@@ -544,6 +548,24 @@ onMounted(() => {
 
 $bar-height: 70px;
 
+#root {
+    --background: white;
+    --text-color: black;
+}
+
+#root main {
+    background: linear-gradient(100deg, #ffb25b, #ffb158);
+}
+
+#root.darkmode main {
+    background: linear-gradient(100deg, rgb(22, 22, 22), rgb(12, 12, 12));
+}
+
+#root.darkmode {
+    --background: rgb(34, 34, 34);
+    --text-color: white;
+}
+
 hr {
     width: 90%;
     margin-top: 15px;
@@ -566,7 +588,7 @@ hr {
 main {
     min-height: 100vh;
     width: 100%;
-    background: linear-gradient(100deg, #ffb25b, #ffb158);
+    transition: ease .4s;
     background-position: fixed;
 
     display: flex;
@@ -595,7 +617,8 @@ main {
                 width: 100%;
                 margin: 0 1px;
                 height: 50px;
-                background: white;
+                background: var(--background);
+                color: var(--text-color);
                 font-weight: bold;
                 
                 display: grid;
@@ -627,7 +650,7 @@ main {
 
         #page-container {
             min-height: 90%;
-            background: white;
+            background: var(--background);
             border-radius: 10px;
             border: 1px solid rgb(235, 175, 120);
             // border: 1px solid #727272;
@@ -904,7 +927,7 @@ main {
 }
 
 #bottom-bar {
-    background: white;
+    background: var(--background);
     height: $bar-height;
     position: fixed;
     bottom: 0;
@@ -917,12 +940,15 @@ main {
 
     z-index: 10;
 
+    button {
+        background: var(--background)
+    }
+
     #bottom-left-container {
         button {
             width: 45px;
             height: 45px;
             margin-left: 5px;
-            background: white;
             border: none;
             border-radius: 100px;
             box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
@@ -957,6 +983,7 @@ main {
                     padding: 5px;
                     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
                     transition: ease .1s;
+                    background: var(--background);
 
                     &:focus {
                         outline: none;
@@ -970,7 +997,6 @@ main {
         width: 55px;
         height: 55px;
         margin-right: 5px;
-        background: white;
         border: none;
         border-radius: 100px;
         box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
@@ -997,10 +1023,11 @@ main {
         right: 50%;
         transform: translateX(50%);
 
+        color: var(--text-color);
+
         button {
             width: 45px;
             height: 45px;
-            background: white;
             border: none;
             border-radius: 100px;
             
@@ -1037,7 +1064,6 @@ main {
         position: absolute;
         left: 10px;
         top: -50px;
-        background: white;
         box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
         border-radius: 5px;
         min-width: 200px;

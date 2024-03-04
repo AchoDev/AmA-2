@@ -88,7 +88,7 @@
             </button>
         </div>
 
-        <div id="new-dict-button">
+        <div id="new-dict-button" :class="bookOpen ? 'open' : ''">
             <button @click="createNew()">
                 <img src="../assets/plus.svg" alt="New"> New dictionary
             </button>
@@ -127,9 +127,9 @@ import {Dictionary, Page} from '../components/dictionaryType.ts'
 import PopupContainer from '../components/PopupContainer.vue';
 import alphabets from '../DictionaryPage/alphabets';
 
-// import raw from '../dictionaries.json';
+import raw from '../dictionaries.json';
 
-const dictionaries = ref<Dictionary[]>([]);
+const dictionaries = ref<Dictionary[]>(raw);
 
 console.log(dictionaries.value)
 
@@ -376,6 +376,11 @@ onMounted(() => {
         &:active {
             transform: scale(0.9);
         }
+    }
+
+    transition: cubic-bezier(0.47, 0, 0.745, 0.715) .7s;
+    &.open {
+        bottom: -100px;
     }
 }
 

@@ -1,8 +1,8 @@
 <template>
 
-    <div>
+    <div :style="`--wordSize: ${wordSize}pt`">
 
-        <div id="word-container" v-show="!editing">
+        <div id="word-container" v-show="!editing" :style="`color: ${darkMode ? 'white' : 'black'}`">
             <span id="main-lang" :style="`width: ${sizes[0]}%`">
                 {{ mainLangWord }}
             </span>
@@ -44,7 +44,7 @@
             </div>
         </div>
 
-        <div id="editing-suite">
+        <div id="editing-suite" :class="darkMode ? 'dark' : ''">
             <button v-show="!editing" id="edit-button" @click="startEditing()">
                 <img src="../assets/edit.svg" alt="Edit">
             </button>
@@ -64,9 +64,9 @@
         </div>
 
 
-        <!-- <center>
-            <hr>
-        </center> -->
+        <center v-if="dividerVisible">
+            <hr id="horizontal-divider">
+        </center>
 
     </div>
 
@@ -107,6 +107,9 @@ const props = defineProps<{
     index: number,
 
     sizes: Array<number>,
+    wordSize: number
+    dividerVisible: boolean,
+    darkMode: boolean
 }>()
 
 const mainWord = ref(props.mainLangWord)
@@ -120,6 +123,11 @@ const emit = defineEmits(['onWordEdit', 'onWordDelete', 'onNoteEdit'])
 
 div {
     position: relative;
+}
+
+div > * {
+    font-size: var(--wordSize) !important;
+    transition: ease-out .1s;
 }
 
 #word-container, #edit-word-container {
@@ -187,6 +195,12 @@ div {
         }
     }
 
+    &.dark {
+        button {
+            background: rgb(0, 0, 0);
+            box-shadow: 0px 0px 5px 0px rgba(255, 255, 255, 0.5);
+        }
+    }
 }
 
 hr {
@@ -203,6 +217,13 @@ hr {
 
     padding-top: 10px;
     padding-bottom: 10px;
+}
+
+#horizontal-divider {
+    margin: 5px 0;
+    max-width: 80%;
+    border-color: rgba(0, 0, 0, 0.089);
+    border-width: 1px;
 }
 
 </style>

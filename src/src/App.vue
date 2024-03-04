@@ -21,7 +21,9 @@
     <Dictionary
       v-if="currentOpenDictionary && currentPage === 'dictionary'"
       :dictionary="currentOpenDictionary"
+      :settings="settings"
       @onSideBarOpen="openSideBar()"
+      @change-settings="changeSettings"
     />
 
     <DrawingPage 
@@ -104,6 +106,11 @@ import DrawingPage from './DictionaryPage/DrawingPage.vue';
 import PopupContainer from './components/PopupContainer.vue';
 import { GridType, type Dictionary as DictionaryType, Page } from './components/dictionaryType.ts';
 
+import raw from './settings.json'
+import Settings from './components/settings.ts';
+
+const settings = ref<Settings>(raw)
+
 const currentOpenDictionary = ref<DictionaryType | undefined>(undefined);
 const currentPage = ref('dictionary');
 
@@ -119,6 +126,10 @@ const currentOpenPage = computed(() => {
 
 function openSideBar() {
   sideBar.value.openSideMenu()
+}
+
+function changeSettings(newSettings: Settings) {
+  settings.value = newSettings
 }
 
 function openDictionary(dictionary: DictionaryType) {
