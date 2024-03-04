@@ -496,8 +496,6 @@ function onWordEdit(index: number, mainWord: string, secondWord: string) {
 function editNotes(index: number, notes: Path[]) {
     drawingPopup.value.openPopup()
     newWordNoteDrawing.value = notes
-
-    index++
 }
 
 function deleteWord(index: number) {
@@ -929,12 +927,14 @@ main {
         }
 }
 
+}
+
 #drawing-area-container {
     position: relative;
     width: 100%;
-    height: 100%;
-}
-
+    height: 450px;
+    display: flex;
+    align-items: center;
 }
 
 #bottom-bar {

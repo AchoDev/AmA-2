@@ -58,7 +58,7 @@
             <button v-show="editing" id="edit-button" @click="saveWord()">
                 <img src="../assets/save.svg" alt="Save">
             </button>
-            <button v-show="editing" id="edit-button" @click="editing = false">
+            <button v-show="editing" id="edit-button" @click="cancelEditing()">
                 <img src="../assets/cancel.svg" alt="Cancel">
             </button>
         </div>
@@ -81,6 +81,8 @@ function startEditing() {
     editing.value = true
     mainWord.value = props.mainLangWord;
     secondWord.value = props.secondLangWord;
+
+    notesEdit.value = props.notes
 }
 
 function saveWord() {
@@ -95,6 +97,11 @@ function editNote() {
 function deleteWord() {
     editing.value = false
     emit('onWordDelete', props.index)
+}
+
+function cancelEditing() {
+    editing.value = false
+    notesEdit.value = props.notes
 }
 
 const editing = ref(false)
@@ -114,6 +121,7 @@ const props = defineProps<{
 
 const mainWord = ref(props.mainLangWord)
 const secondWord = ref(props.secondLangWord)
+const notesEdit = ref(props.notes)
 
 const emit = defineEmits(['onWordEdit', 'onWordDelete', 'onNoteEdit'])
 
