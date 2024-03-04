@@ -123,9 +123,11 @@ nav {
     z-index: 10;
 
     --background: white;
-
+    --text: black;
+    
     &.darkmode {
         --background: rgb(39, 39, 39);
+        --text: white;
     }
 
     #sidebar-button, #settings #open-menu-button{
@@ -135,7 +137,7 @@ nav {
         margin-left: 10px;
         border: none;
         border-radius: 100%;
-        background: rgb(255, 255, 255);
+        background: var(--background);
         color: orange;
         box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
         display: flex;
@@ -160,13 +162,14 @@ nav {
     #settings {
         margin-right: 10px;
         position: relative;
+        color: var(--text);
 
         #menu {
             position: absolute;
             top: 0;
             right: 0;
 
-            background: white;
+            background: var(--background);
             box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
             border-radius: 10px;
             padding: 10px;
@@ -230,8 +233,8 @@ nav {
                         }
 
                         &:last-child {
-                            background: white;
-                            color: black;
+                            background: var(--background);
+                            color: var(--text);
                         }
                     }
 
@@ -264,7 +267,8 @@ nav {
             }
 
             button {
-                background: white;
+                background: var(--background);
+                color: var(--text);
                 border: none;
                 margin: 5px 0;
                 height: 50px;
@@ -290,6 +294,7 @@ nav {
         font-size: 1em;
         font-weight: bold;
         justify-self: center;
+        color: var(--text);
     }
 }
 

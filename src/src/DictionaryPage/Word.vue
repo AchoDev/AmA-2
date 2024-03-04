@@ -7,7 +7,7 @@
                 {{ mainLangWord }}
             </span>
 
-            <div class="divider">
+            <div class="divider" :class="darkMode ? 'dark' : ''">
                 &nbsp;
             </div>
             
@@ -15,7 +15,7 @@
                 {{ secondLangWord }}
             </span>
 
-            <div class="divider">
+            <div class="divider" :class="darkMode ? 'dark' : ''">
                 &nbsp;
             </div>
             
@@ -28,14 +28,14 @@
             <div :style="`width: ${sizes[0]}%`">
                 <input type="text" v-model="mainWord">
             </div>
-            <div class="divider">
+            <div class="divider" :class="darkMode ? 'dark' : ''">
                 &nbsp;
             </div>
             
             <div :style="`width: ${sizes[1]}%`">
                 <input type="text" v-model="secondWord">
             </div>
-            <div class="divider">
+            <div class="divider" :class="darkMode ? 'dark' : ''">
                 &nbsp;
             </div>
 
@@ -65,7 +65,7 @@
 
 
         <center v-if="dividerVisible">
-            <hr id="horizontal-divider">
+            <hr id="horizontal-divider" :class="darkMode ? 'dark' : ''">
         </center>
 
     </div>
@@ -140,6 +140,7 @@ div > * {
 
     #note-container {
         overflow: hidden;
+        
     }
 
     span, div {
@@ -197,7 +198,7 @@ div > * {
 
     &.dark {
         button {
-            background: rgb(0, 0, 0);
+            background: rgb(31, 31, 31);
             box-shadow: 0px 0px 5px 0px rgba(255, 255, 255, 0.5);
         }
     }
@@ -206,7 +207,6 @@ div > * {
 hr {
     margin: 30px 0;
     max-width: 80%;
-    border-color: rgba(0, 0, 0, 0.089);
     border-width: 1px;
 }
 
@@ -214,7 +214,7 @@ hr {
     width: 2px;
     background: rgba(0, 0, 0, 0.089);
     height: auto;
-
+    
     padding-top: 10px;
     padding-bottom: 10px;
 }
@@ -222,8 +222,15 @@ hr {
 #horizontal-divider {
     margin: 5px 0;
     max-width: 80%;
-    border-color: rgba(0, 0, 0, 0.089);
     border-width: 1px;
+    background: rgba(0, 0, 0, 0.089);
+}
+
+.divider, #horizontal-divider {
+    &.dark {
+        background: rgba(255, 255, 255, 0.089);
+        border-color: rgba(255, 255, 255, 0.089);
+    }
 }
 
 </style>

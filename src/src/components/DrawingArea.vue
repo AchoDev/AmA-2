@@ -1,7 +1,7 @@
 <template>
 
     <div 
-        id="drawing-area" 
+        id="drawing-area"
         :style="{width: width, height: height}"
     >  
         <!-- {{ width }} x {{ height }}
@@ -248,6 +248,8 @@ onMounted(() => {
 
     drawingArea.addEventListener('touchstart', (e) => {
 
+        e.stopPropagation()
+
         touching.value = true
         setEraserPos(e.targetTouches[0].clientX, e.touches[0].clientY)
 
@@ -259,6 +261,8 @@ onMounted(() => {
     })  
     
     drawingArea.addEventListener('touchmove', (e) => {
+
+        e.stopPropagation()
 
         if(e.touches.length > 1) {
             currentScrollY.value += e.touches[0].clientY

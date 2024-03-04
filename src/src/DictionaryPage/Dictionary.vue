@@ -225,13 +225,15 @@
             </div>
         </PopupContainer>
 
-        <PopupContainer ref="drawingPopup">
-            <DrawingArea 
-                width="700px" 
-                height="250px"
-                :toolbar-fixed="false"
-                v-model="newWordNoteDrawing"
-            />
+        <PopupContainer ref="drawingPopup" background="transparent">
+            <div id="drawing-area-container">
+                <DrawingArea 
+                    width="700px" 
+                    height="250px"
+                    :toolbar-fixed="true"
+                    v-model="newWordNoteDrawing"
+                />
+            </div>
         </PopupContainer>
 
         <YesNo ref="yesNo" />
@@ -659,6 +661,8 @@ main {
 
             z-index: 1;
 
+            color: var(--text-color);
+
             // margin-bottom: 500px;
             
             #lang-desc {
@@ -687,6 +691,7 @@ main {
                         width: 140px;
 
                         user-select: none;
+
                     }
 
                     &:first-child {
@@ -924,6 +929,12 @@ main {
         }
 }
 
+#drawing-area-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
 }
 
 #bottom-bar {
@@ -984,6 +995,7 @@ main {
                     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
                     transition: ease .1s;
                     background: var(--background);
+                    color: var(--text-color);
 
                     &:focus {
                         outline: none;
