@@ -12,6 +12,7 @@ import { ref } from 'vue';
 const open = ref(false)
 function closePopup() {
     open.value = false
+    document.documentElement.classList.remove('no-scroll');
     emit('onClose')
 
     setTimeout(() => {
@@ -26,6 +27,7 @@ defineProps({
 defineExpose({
     openPopup() {
         open.value = true
+        document.documentElement.classList.add('no-scroll');
     },
     closePopup
 })

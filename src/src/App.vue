@@ -253,6 +253,11 @@ const grids: {[key: string]: {gridSize: number, gridType: GridType}} = {
 html {
   min-height: 100vh;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
+
+
+  &.no-scroll {
+    overflow: hidden;
+  }
 }
 
 body > * {
