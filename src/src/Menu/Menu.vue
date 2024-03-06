@@ -41,6 +41,7 @@
                         v-else-if="creationStep === 2"
                         :class="newBookOpen ? 'visible' : ''"
                     >
+                        <h2 style="position: absolute; top: 30px">Click the dictionary to start your journey</h2>
 
                         <Book 
                             :main-lang="selectedLang"
@@ -71,10 +72,28 @@
             </div>
         </PopupContainer>
         
+        <PopupContainer ref="infoBox">
+            <div id="info-box">
+                <h1>Info</h1>
+                <p>This app was made by Ahmed Asi (AchoDev)</p>
+                <p>Dedicated to Papa</p>
+
+                <a href="https://achodev.me/projects">Other projects</a>
+
+                <p>Free palestine &#x1f1f5;&#x1f1f8;!</p>
+            </div>
+        </PopupContainer>
+
         <div id="top-bar" :class="bookOpen ? 'open-navbar' : ''">
             <div>
                 <img src="../assets/logo.svg" alt="Logo">
                 <h1>Your dictionar{{ dictionaries.length > 1 ? 'ies' : 'y' }}</h1>
+            </div>
+
+            <div>
+                <button @click="infoBox.openPopup()">
+                    i
+                </button>
             </div>
             
         </div>
@@ -135,6 +154,7 @@ console.log(dictionaries.value)
 
 const emit = defineEmits(['openBook']);
 const bookOpen = ref(false);
+const infoBox = ref()
 
 function openBook(dictionary: Dictionary) {
     emit('openBook', dictionary);
@@ -254,6 +274,16 @@ onMounted(() => {
 <style scoped lang="scss">
 
 
+#info-box {
+    margin: 30px;
+    text-align: center;
+    font-size: 15pt;
+
+    a {
+        color: white;
+    }
+}
+
 #menu {
     display: flex;
     justify-content: center;
@@ -296,6 +326,19 @@ onMounted(() => {
 
     &.open-navbar {
         top: -100px;
+    }
+
+    button {
+        width: 50px;
+        height: 50px;
+        margin: 20px;
+        border: none;
+        border-radius: 100%;
+        background: orange;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+
+        font-size: 20pt;
+        color: white;
     }
 }
 

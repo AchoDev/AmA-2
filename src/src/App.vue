@@ -25,12 +25,15 @@
       @onSideBarOpen="openSideBar()"
       @change-settings="changeSettings"
     />
-
-    <DrawingPage 
+      
+    <DrawingPage
       v-if="currentOpenDictionary && currentOpenDictionary.pages.find(p => p.title === currentPage)"
+      :settings="settings"
       :grid="currentOpenDictionary.pages.find(p => p.title === currentPage)?.settings"
       :page="(currentOpenPage as Page)"
       @open-side-bar="openSideBar()"
+      @change-settings="changeSettings"
+      @change-page-settings="changePageSettings"
     />
 
     <PopupContainer ref="newPagePopup">
@@ -42,51 +45,9 @@
 
         Grid
 
-        <div id="grid-picker">
-          <label>
-            <input type="radio" name="gridType" value="checkeredLarge" v-model="selectedGrid">
-            <div class="grid-img">
-              <img src="./assets/grid/checkerlarge.svg" alt="Checkered large">
-            </div>
-          </label>
-          
-          <label>
-            <input type="radio" name="gridType" value="checkeredMedium" v-model="selectedGrid">
-            <div class="grid-img">
-              <img src="./assets/grid/checkermedium.svg" alt="Checkered medium">
-            </div>
-          </label>
-          <label>
-            <input type="radio" name="gridType" value="checkeredSmall" v-model="selectedGrid">
-            <div class="grid-img">
-              <img src="./assets/grid/checkermedium.svg" alt="Checkered small">
-            </div>
-          </label>
-          
-          <label>
-            <input type="radio" name="gridType" value="linedLarge" v-model="selectedGrid">
-            <div class="grid-img">
-              <img src="./assets/grid/linedlarge.svg" alt="Lined large">
-            </div>
-          </label>
-          
-          <label>
-            <input type="radio" name="gridType" value="linedMedium" v-model="selectedGrid">
-            <div class="grid-img">
-              <img src="./assets/grid/linedmedium.svg" alt="Lined medium">
-            </div>
-          
-          </label>
-          
-          <label>
-            <input type="radio" name="gridType" value="linedSmall" v-model="selectedGrid">
-            <div class="grid-img">
-              <img src="./assets/grid/linedsmall.svg" alt="Lined small">
-            </div>
-          </label>
+        <div style="width: 300px">
+          <GridPicker v-model="selectedGrid" />
         </div>
-
-        <button id="no-grid" @click="selectedGrid = ''">No grid</button>
 
         <button @click="cancelPageCreation()">Cancel</button>
 
@@ -101,10 +62,11 @@
 import { computed, ref } from 'vue';
 import Dictionary from './DictionaryPage/Dictionary.vue'
 import SideBar from './components/SideBar.vue';
+import GridPicker from './components/GridPicker.vue';
 import Menu from './Menu/Menu.vue';
 import DrawingPage from './DictionaryPage/DrawingPage.vue';
 import PopupContainer from './components/PopupContainer.vue';
-import { GridType, type Dictionary as DictionaryType, Page } from './components/dictionaryType.ts';
+import { type Dictionary as DictionaryType, Page, GridType } from './components/dictionaryType.ts';
 
 import raw from './settings.json'
 import Settings from './components/settings.ts';
@@ -116,6 +78,7 @@ const currentPage = ref('dictionary');
 
 const sideBar = ref()
 const newPagePopup = ref()
+
 
 const currentOpenPage = computed(() => {
   if (currentOpenDictionary.value) {
@@ -130,6 +93,15 @@ function openSideBar() {
 
 function changeSettings(newSettings: Settings) {
   settings.value = newSettings
+}
+
+function changePageSettings(newSettings: Page['settings']) {
+  if (currentOpenDictionary.value) {
+    const page = currentOpenDictionary.value.pages.find(p => p.title === currentPage.value)
+    if (page) {
+      page.settings = newSettings
+    }
+  }
 }
 
 function openDictionary(dictionary: DictionaryType) {
@@ -195,54 +167,22 @@ function saveNewPage() {
   if (currentOpenDictionary.value) {
     currentOpenDictionary.value.pages.push({
       title: currentPageTitle.value === '' ? getRandomPageName() + ' ' + (currentOpenDictionary.value.pages.length + 1) : currentPageTitle.value,
-      settings: grids[selectedGrid.value],
+      settings: selectedGrid.value,
       content: []
     })
   }
 
   newPagePopup.value.closePopup()
   currentPageTitle.value = ''
-  selectedGrid.value = ''
+  selectedGrid.value = {
+    gridSize: 1,
+    gridType: GridType.none
+  }
 }
 
-const selectedGrid = ref('')
+const selectedGrid = ref()
 const currentPageTitle = ref('')
 
-const smallSize = 1
-const mediumSize = 1.5
-const largeSize = 2
-
-const grids: {[key: string]: {gridSize: number, gridType: GridType}} = {
-  '': {
-    gridSize: smallSize,
-    gridType: GridType.none
-  },
-  'checkeredLarge': {
-    gridSize: largeSize,
-    gridType: GridType.checkered
-  },
-  'checkeredMedium': {
-    gridSize: mediumSize,
-    gridType: GridType.checkered
-  },
-  'checkeredSmall': {
-    gridSize: smallSize,
-    gridType: GridType.checkered
-  },
-  'linedLarge': {
-    gridSize: largeSize,
-    gridType: GridType.lined
-  },
-  'linedMedium': {
-    gridSize: mediumSize,
-    gridType: GridType.lined
-  },
-  'linedSmall': {
-    gridSize: smallSize,
-    gridType: GridType.lined
-  }
-
-}
 
 </script>
 
@@ -318,54 +258,7 @@ body {
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   }
 
-  #no-grid {
-    width: 100%;
-    margin: 10px;
-    height: 40px;
-    font-size: 14pt;
-    margin-bottom: 20px;
-  }
-
-  #grid-picker {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin: 0 10px;
-
-    width: 320px;
-
-    input[type="radio"] {
-      appearance: none;
-
-      &:checked + div{
-        background: rgb(255, 180, 75);
-        img {
-          filter: invert(1)
-        }
-      }
-    }
-
-    label {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 5px;
-
-      .grid-img {
-        width: 100px;
-        height: 100px;
-        border-radius: 10px;
-        // background: white;
-        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-        transition: ease .1s;
-
-
-        background: white;
-        cursor: pointer;
-      }
-    }
-  }
+  
 }
 
 </style>

@@ -19,7 +19,8 @@
     "cordova-ios": "^7.0.1",
     "cordova-plugin-file": "^8.0.1",
     "sass": "^1.70.0",
-    "sass-loader": "^14.1.0"
+    "sass-loader": "^14.1.0",
+    "windows": "^0.1.2"
   },
   "cordova": {
     "platforms": [

@@ -11,7 +11,7 @@
                 <img src="../assets/more.svg" alt="Add new page">
             </button>
 
-            <div id="menu" :class="settingsOpen ? 'open' : ''" @click.stop>
+            <div id="menu" :class="settingsOpen ? 'open' : ''" @click.stop :style="`--navbar-height: ${pageSettings ? '450px' : '350px'}`">
 
                 <center>
                     <h2>Settings</h2>
@@ -19,7 +19,7 @@
 
                 <hr>
 
-                <div>
+                <div v-show="!pageSettings">
                     <span>Words per page</span>
                     <div class="input-wrapper">
                         <button @click="wordsPerPage--">-</button>
@@ -28,7 +28,7 @@
                     </div>
                 </div>
 
-                <div>
+                <div v-show="!pageSettings">
                     <span>Word size</span>
                     <div class="input-wrapper">
                         <button @click="wordSize--">-</button>
@@ -37,9 +37,13 @@
                     </div>
                 </div>
 
-                <div>
+                <div v-show="!pageSettings">
                     <span>Divider between words</span>
                     <Switch v-model="dividerVisible" />
+                </div>
+
+                <div v-if="pageSettings" style="width: 80%">
+                    <GridPicker v-model="functionalPageSettings" />
                 </div>
 
                 <div>
@@ -49,7 +53,7 @@
 
                 <hr>
 
-                <button>
+                <!-- <button>
                     Edit name
                 </button>
                 <button>
@@ -57,7 +61,7 @@
                 </button>
                 <button>
                     Delete dictionary
-                </button>
+                </button> -->
             </div>
         </div>
     </nav>
@@ -67,23 +71,32 @@
 import { onMounted, ref, watch } from 'vue';
 import Switch from '../components/Switch.vue';
 import Settings from '../components/settings';
+import { PageSettings } from '../components/dictionaryType';
+import GridPicker from '../components/GridPicker.vue';
 
-const emit = defineEmits(['openSideBar', 'changeSettings'])
+const emit = defineEmits(['openSideBar', 'changeSettings', 'changePageSettings'])
 
 const props = defineProps<{
     title: string,
 
     settings: Settings
+    pageSettings?: PageSettings
 }>()
+
+const functionalPageSettings = ref(props.pageSettings)
+
+watch(functionalPageSettings, (newVal) => {
+    emit('changePageSettings', newVal)
+})
 
 function openSideBar() {
     emit('openSideBar')
 }
 
 const wordsPerPage = ref(props.settings.wordsPerPage)
-const wordSize = ref(props.settings.wordSize)
-const dividerVisible = ref(props.settings.dividerBetweenWords)
-const darkMode = ref(props.settings.darkmode)
+const wordSize = ref(props.settings?.wordSize)
+const dividerVisible = ref(props.settings?.dividerBetweenWords)
+const darkMode = ref(props.settings?.darkmode)
 
 watch([wordsPerPage, wordSize, dividerVisible, darkMode], () => {
     const value: Settings = {
@@ -192,7 +205,7 @@ nav {
             transition: cubic-bezier(0.075, 0.82, 0.165, 1) .4s;
             &.open {
                 width: 300px;
-                height: 500px;
+                height: var(--navbar-height);
                 opacity: 1;
                 filter: blur(0);
             }
@@ -204,7 +217,7 @@ nav {
                 align-items: center;
                 gap: 20px;
 
-                height: 40px;
+                // height: 40px;
                 width: 100%;
                 margin: 5px 0;
 

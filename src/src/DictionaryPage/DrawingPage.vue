@@ -2,9 +2,13 @@
 
 <div id="container">
 
-    <NavBar 
+    <NavBar
+        :settings="settings"
+        :page-settings="page.settings"
         :title="page.title"
         @openSideBar="openSideBar"
+        @change-settings="changeSettings"
+        @change-page-settings="changePageSettings"
     />
 
     <DrawingArea 
@@ -22,14 +26,24 @@
 <script setup lang="ts">
 import DrawingArea from '../components/DrawingArea.vue';
 import { Page } from '../components/dictionaryType';
+import Settings from '../components/settings';
 import NavBar from './NavBar.vue';
 
 
-const emit = defineEmits(['openSideBar'])
+const emit = defineEmits(['openSideBar', 'changeSettings', 'changePageSettings'])
 
 defineProps<{
+    settings: Settings
     page: Page
 }>()
+
+function changeSettings(newSettings: Settings) {
+    emit('changeSettings', newSettings)
+}
+
+function changePageSettings(newSettings: Page['settings']) {
+    emit('changePageSettings', newSettings)
+}
 
 function openSideBar() {
     emit('openSideBar')

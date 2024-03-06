@@ -1,5 +1,5 @@
 <template>
-    <div id="side-bar" :class="sideMenuOpened ? 'opened' : ''">
+    <div id="side-bar" :class="sideMenuOpened ? 'opened' : ''" @click.stop>
             <div id="top-section">
                 <div>
                     <img src="../assets/logo.svg" alt="Logo">
@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const sideMenuOpened = ref(false)
 
@@ -72,11 +72,20 @@ defineProps<{
 
 defineExpose({
     openSideMenu() {
-        sideMenuOpened.value = true
+        setTimeout(() => {
+            sideMenuOpened.value = true
+        }, 5)
     },
     closeSideMenu() {
         sideMenuOpened.value = false
     }
+})
+
+onMounted(() => {
+    document.addEventListener('click', () => {
+        if(!sideMenuOpened.value) return
+        sideMenuOpened.value = false
+    })
 })
 
 </script>

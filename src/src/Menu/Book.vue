@@ -49,6 +49,7 @@
 
 import {ref, watch} from 'vue';
 
+
 const props = defineProps<{
     mainLang: string,
     secondLang: string,
