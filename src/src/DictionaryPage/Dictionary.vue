@@ -494,6 +494,7 @@ function onWordEdit(index: number, mainWord: string, secondWord: string) {
 }
 
 function editNotes(index: number, notes: Path[]) {
+    console.log(index)
     drawingPopup.value.openPopup()
     newWordNoteDrawing.value = notes
 }
