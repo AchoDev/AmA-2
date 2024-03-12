@@ -287,7 +287,8 @@ onMounted(() => {
 #menu {
     display: flex;
     justify-content: center;
-    min-height: 100vh;
+    min-height: 100dvh;
+    max-height: 100dvh;
     max-height: 100vh;
     overflow: hidden;
     max-width: 100vw;
@@ -339,6 +340,9 @@ onMounted(() => {
 
         font-size: 20pt;
         color: white;
+
+        display: grid;
+        place-items: center;
     }
 }
 
@@ -627,7 +631,7 @@ onMounted(() => {
     overflow: scroll;
     scroll-snap-type: x mandatory;
 
-    overflow-y: hidden;
+    overflow-y: hidden !important;
     scroll-behavior: smooth;
 
     .book {

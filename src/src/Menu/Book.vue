@@ -1,23 +1,129 @@
 <template>
     <div id="svg-wrapper-wrapper">
         <div id="svg-wrapper">
-            <svg :class="open ? 'open' : ''">
-                <path id="back-cover" d="M800 100L1300 100L1300 850L800 850L800 100Z" fill="#ffa633" fill-rule="nonzero" opacity="1" stroke="white" stroke-width="5" stroke-linejoin="round" />
-                <path id="bind" d="M750 100L800 100L800 850L750 850" fill="#ffa633" fill-rule="nonzero" opacity="1" stroke="white" stroke-width="5" stroke-linejoin="round"/>
+            <svg :class="open ? 'open' : ''" viewBox="0 0 2000 1000">
+                <path id="back-cover" d="M800 100L1300 100L1300 850L800 850L800 100Z" fill="#ffa633" fill-rule="nonzero" opacity="1" stroke="white" stroke-width="5" stroke-linejoin="round">
+                    <animate 
+                        attributeName="d" 
+                        begin="indefinite"
+                        dur="1.5s"
+                        repeatCount="1" 
+                        fill="freeze"
+                        to="M800 100L1300 150L1300 900L800 850L800 100Z"
+                        keySplines="0.4, 0, 0.2, 1"
+                        keyTimes="0; 1"
+                        calcMode="spline"
+                    />
+                </path>
+
+                <path id="bind" d="M750 150L800 100L800 850L750 900" fill="#ffa633" fill-rule="nonzero" opacity="1" stroke="white" stroke-width="5" stroke-linejoin="round"> 
+                    <animate 
+                        attributeName="d" 
+                        begin="indefinite" 
+                        dur="1.5s"
+                        repeatCount="1"
+                        fill="freeze" 
+                        to="M750 100L800 100L800 850L750 850"
+                        calcMode="spline"
+                        keyTimes="0; 1"
+                        keySplines="0.4, 0, 0.2, 1"
+                        />
+                    </path>
+                    
+                    <path id="right-page" d="M775 125 C1275 125, 1275 125, 1275 125 L1275 875 C 775 875, 775 875, 775 875" fill="white" fill-rule="nonzero" opacity="1" stroke="black" stroke-linecap="round">
+                        <animate 
+                        attributeName="d" 
+                        begin="indefinite" 
+                        dur="1.5s" 
+                        repeatCount="1" 
+                        fill="freeze" 
+                        to="M775 125 C800 150, 925 190, 1275 190 L1275 925 C 875 950, 775 875, 775 875"
+                        calcMode="spline"
+                        keyTimes="0; 1"
+                        keySplines="0.4, 0, 0.2, 1"
+                    />
+                </path>
                 
-                <path id="right-page" d="M775 125 C1275 125, 1275 125, 1275 125 L1275 875 C 775 875, 775 875, 775 875" fill="white" fill-rule="nonzero" opacity="1" stroke="black" stroke-linecap="round"/>
+                <!-- <path :style="`visibility: ${secondHalfOpen ? 'hidden' : 'visible'}`" id="left-page" d="M775 125 C1275 125, 1275 125, 1275 125 L1275 875 C 775 875, 775 875, 775 875" fill="white" fill-rule="nonzero" opacity="1" stroke="black" stroke-linejoin="round"/> -->
                 
-                <path :style="`visibility: ${secondHalfOpen ? 'hidden' : 'visible'}`" id="left-page" d="M775 125 C1275 125, 1275 125, 1275 125 L1275 875 C 775 875, 775 875, 775 875" fill="white" fill-rule="nonzero" opacity="1" stroke="black" stroke-linejoin="round"/>
+                <path id="front-cover" d="M750 100L1250 100L1250 850L750 850L750 100Z" fill="#ffa633" fill-rule="nonzero" opacity="1" stroke="white" stroke-width="5" stroke-linejoin="round"> 
+                    <animate 
+                        attributeName="d" 
+                        begin="indefinite" 
+                        dur="1.5s" 
+                        repeatCount="1" 
+                        fill="freeze" 
+                        to="M750 100L1250 150L1250 900L750 850L750 100Z"
+                    />
+                </path>
                 
-                <path id="front-cover" d="M750 100L1250 100L1250 850L750 850L750 100Z" fill="#ffa633" fill-rule="nonzero" opacity="1" stroke="white" stroke-width="5" stroke-linejoin="round"/>
+                <path id="right-top-pageblock" d="M750 150 C1240 150, 1250 150, 1250 150 L1275 125 C775 125, 775 125, 775 125" :stroke="secondHalfOpen ? 'black' : 'white'" fill="white">
+                    <animate 
+                        attributeName="d" 
+                        begin="indefinite" 
+                        dur="1.5s" 
+                        repeatCount="1" 
+                        fill="freeze" 
+                        to="M775 125 C800 150, 925 190, 1275 190 L1290 175 C1000 165, 975 170, 800 125"
+                        calcMode="spline"
+                        keyTimes="0; 1"
+                        keySplines="0.4, 0, 0.2, 1"
+                    />
+                </path>
+                <path id="right-side-pageblock" d="M1275 875 L1275 125 L1250 150 L1250 900 L1275 875" :stroke="secondHalfOpen ? 'black' : 'white'" fill="white">
+                    <animate 
+                        attributeName="d" 
+                        begin="indefinite" 
+                        dur="1.5s" 
+                        repeatCount="1" 
+                        fill="freeze" 
+                        to="M1265 885 L1265 150 L1250 165 L1250 900 L1265 885"
+                        calcMode="spline"
+                        keyTimes="0; 1"
+                        keySplines="0.4, 0, 0.2, 1"
+                    />
+                </path>
                 
-                <path id="right-top-pageblock" d="M750 150 C1240 150, 1250 150, 1250 150 L1275 125 C775 125, 775 125, 775 125" :stroke="secondHalfOpen ? 'black' : 'white'" fill="white"/>
-                <path id="right-side-pageblock" d="M1275 875 L1275 125 L1250 150 L1250 900 L1275 875" :stroke="secondHalfOpen ? 'black' : 'white'" fill="white"/>
+                <path id="left-top-pageblock" d="M750 150 C1250 150, 1250 150, 1250 150 L1275 125 C775 125, 775 125, 775 125" :stroke="secondHalfOpen ? 'black' : 'white'" fill="white">
+                    <animate 
+                        attributeName="d" 
+                        begin="indefinite" 
+                        dur="1.5s" 
+                        repeatCount="1" 
+                        fill="freeze" 
+                        to="M775 125 C800 150, 925 190, 1275 190 L1290 175 C1000 165, 975 170, 800 125"
+                        calcMode="spline"
+                        keyTimes="0; 1"
+                        keySplines="0.4, 0, 0.2, 1"
+                    />
+                </path>
+                <path id="left-side-pageblock" d="M1275 875 L1275 125 L1250 150 L1250 900 L1275 875" :stroke="secondHalfOpen ? 'black' : 'white'" fill="white">
+                    <animate 
+                        attributeName="d" 
+                        begin="indefinite" 
+                        dur="1.5s" 
+                        repeatCount="1" 
+                        fill="freeze" 
+                        to="M1265 885 L1265 150 L1250 165 L1250 900 L1265 885"
+                        calcMode="spline"
+                        keyTimes="0; 1"
+                        keySplines="0.4, 0, 0.2, 1"
+                    />
+                </path>
                 
-                <path id="left-top-pageblock" d="M750 150 C1250 150, 1250 150, 1250 150 L1275 125 C775 125, 775 125, 775 125" :stroke="secondHalfOpen ? 'black' : 'white'" fill="white"/>
-                <path id="left-side-pageblock" d="M1275 875 L1275 125 L1250 150 L1250 900 L1275 875" :stroke="secondHalfOpen ? 'black' : 'white'" fill="white"/>
-                
-                <path id="left-page-inner" :style="`visibility: ${secondHalfOpen ? 'visible' : 'hidden'}`" d="M775 125 C1275 125, 1275 125, 1275 125 L1275 875 C 775 875, 775 875, 775 875 " fill="white" fill-rule="nonzero" opacity="1" stroke="black" /> 
+                <path id="left-page-inner" :style="`visibility: ${secondHalfOpen ? 'visible' : 'hidden'}`" d="M775 125 C1275 125, 1275 125, 1275 125 L1275 875 C 775 875, 775 875, 775 875 " fill="white" fill-rule="nonzero" opacity="1" stroke="black" >
+                    <animate 
+                        attributeName="d" 
+                        begin="indefinite" 
+                        dur="1.5s" 
+                        repeatCount="1" 
+                        fill="freeze" 
+                        to="M775 125 C800 150, 925 190, 1275 190 L1275 925 C 875 950, 775 875, 775 875"
+                        calcMode="spline"
+                        keyTimes="0; 1"
+                        keySplines="0.4, 0, 0.2, 1"
+                    />
+                </path> 
                 <!-- L775 125 -->
             </svg>
 
@@ -78,6 +184,9 @@ function togglePage() {
             console.log("HALF CLOSED")
         }, 1350);
     } else {
+        document.querySelectorAll('path').forEach((path) => {
+            path.querySelector('animate')?.beginElement();
+        })
         emit('beginOpen')
         setTimeout(() => {
             secondHalfOpen.value = true;
@@ -86,7 +195,7 @@ function togglePage() {
 
         setTimeout(() => {
             emit('completedOpen')
-        }, duration * 1.4);
+        }, duration * 1.3);
     }
 
 
@@ -234,21 +343,13 @@ svg {
 
     path {
         transform-origin: center;
-        // transform: translateX(calc(100% - 50px));
-        
         transition: stroke ease,  transform cubic-bezier(0.755, 0.05, 0.855, 0.06) $transition-duration, d cubic-bezier(0.755, 0.05, 0.855, 0.06) $transition-duration;
-        // transition: cubic-bezier(0.55, 0.085, 0.68, 0.53) $transition-duration, d cubic-bezier(0.55, 0.085, 0.68, 0.53) $transition-duration;
     }
 
     #left-page, #left-page-inner, #right-page, #left-top-pageblock, #left-side-pageblock, #right-top-pageblock, #right-side-pageblock {
         transform-origin: 775px center;
         transform: translateZ(10px);
-        // -webkit-perspective: 4000px;
     }
-
-    // #left-top-pageblock {
-    //     d: path('M775 125 C800 150, 925 190, 1275 190 L1290 175 C1000 165, 975 170, 800 125')
-    // }
 
     #right-side-pageblock, #right-top-pageblock {
         transform: translateX(25px) translateY(-25px);
@@ -257,9 +358,6 @@ svg {
     #front-cover {
         transform: translateY(50px);
         transform-origin: 750px center;
-    }
-    #bind {
-        d: path('M750 150L800 100L800 850L750 900')
     }
 }
 
@@ -273,57 +371,40 @@ svg {
         transition: transform cubic-bezier(0.4, 0, 0.2, 1) $transition-duration, d cubic-bezier(0.4, 0, 0.2, 1) $transition-duration;
     }
 
+    #bind {
+        transform: translateX($right-movement);
+    }
+
     #front-cover {
         transform: rotateY(180deg) translateX(-$right-movement);
-        d: path('M750 100L1250 150L1250 900L750 850L750 100Z');
-
-        // M750 100L1250 100L1250 850L750 850L750 100Z
     }
 
     #back-cover {
         transform: translateX($right-movement);
-        d: path('M800 100L1300 150L1300 900L800 850L800 100Z')
-    }
-
-
-    #bind {
-        transform: translateX($right-movement);
-        d: path('M750 100L800 100L800 850L750 850')
     }
 
     #left-page, #left-page-inner {
         transform: rotateY(180deg) translateX(-$right-movement) translateY(-25px) translateZ(10px);
-        d: path('M774 125 C800 150, 925 190, 1275 190 L1275 925 C 875 950, 775 875, 774 875')
-        //       M775 125 C1275 125, 1275 125, 1275 125 L1275 875 C 775 875, 775 875, 775 875 L775 125
-        // L775 125
     }
-
-    // this is a comment
     
     #right-side-pageblock {
-        d: path("M1265 885 L1265 150 L1250 165 L1250 900 L1265 885");
         transform: translateX($right-movement + 25px) translateY(0px) translateZ(10px);
     }
     
     #right-top-pageblock {
-        d: path("M775 125 C800 150, 925 190, 1275 190 L1290 175 C1000 165, 975 170, 800 125");
         transform: translateX($right-movement) translateY(-25px) translateZ(10px);
     }
     
     #left-side-pageblock {
-        d: path("M1265 885 L1265 150 L1250 165 L1250 900 L1265 885");
         transform: rotateY(180deg) translateX(-$right-movement + 25px) translateY(0px) translateZ(10px);
     }
     
     #left-top-pageblock {
-        d: path("M775 125 C800 150, 925 190, 1275 190 L1290 175 C1000 165, 975 170, 800 125");
         transform: rotateY(180deg) translateX(-$right-movement) translateY(-25px) translateZ(10px);
     }
     
-    
     #right-page {
         transform: translateX($right-movement) translateY(-25px);
-        d: path('M775 125 C800 150, 925 190, 1275 190 L1275 925 C 875 950, 775 875, 775 875')
     }
 }
 

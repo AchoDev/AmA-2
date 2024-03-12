@@ -26,13 +26,11 @@ if(env === 'development') {
     load()
 }
 
-alert("something")
 
 
 document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('deviceready', () => {
         console.log("DEVICE rrrrREADY")
-        alert("device ready")
         load()
     }, false)
 }, false);

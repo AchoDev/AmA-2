@@ -183,16 +183,24 @@ function saveNewPage() {
 const selectedGrid = ref()
 const currentPageTitle = ref('')
 
+document.addEventListener('gesturestart', (event) => { event.preventDefault(); }, false);
+
 
 </script>
 
 <style lang="scss">
 
-@import url('https://fonts.googleapis.com/css2?family=Maven+Pro&display=swap');
+// @import url('https://fonts.googleapis.com/css2?family=Maven+Pro&display=swap');
+
+@font-face {
+  font-family: 'Maven Pro';
+  src: url('./MavenPro-Regular.woff') format('woff');
+}
 
 html {
   min-height: 100vh;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
+  overscroll-behavior: none;
 
 
   &.no-scroll {
@@ -202,6 +210,7 @@ html {
 
 body > * {
   font-family: Maven Pro, sans-serif !important;
+  overscroll-behavior: none;
   /* font-family: 'Times New Roman', Times, serif; */
 }
 
