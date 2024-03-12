@@ -227,10 +227,16 @@ h3 {
         box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
         font-size: 20pt;
         color: white;
-        display: grid;
-        place-items: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         font-weight: bold;
         cursor: pointer;
+
+        img {
+            width: 100%;
+            height: 100%;
+        }
     }
 }
 

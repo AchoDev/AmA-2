@@ -216,6 +216,7 @@ body > * {
 
 button {
   font-family: Maven Pro, sans-serif !important;
+  color: black;
 }
 
 body {
