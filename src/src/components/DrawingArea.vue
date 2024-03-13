@@ -249,7 +249,7 @@ onMounted(() => {
 
     drawingArea.addEventListener('touchstart', (e) => {
 
-        e.stopPropagation()
+        // e.stopPropagation()
 
         if(props.drawingDisabled) {
             return
@@ -282,7 +282,7 @@ onMounted(() => {
 
     drawingArea.addEventListener('touchmove', (e) => {
 
-        e.stopPropagation()
+        // e.stopPropagation()
 
         if(e.touches.length > 1) {
 

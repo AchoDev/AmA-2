@@ -135,6 +135,8 @@ nav {
     align-items: center;
     width: 100%;
 
+    padding-top: 20px;
+
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 
     z-index: 10;

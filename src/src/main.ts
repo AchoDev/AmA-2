@@ -42,7 +42,7 @@ function load() {
 }
 
 function fail(e: any) {
-    alert("FileSystem Error");
+    // alert("FileSystem Error");
     console.log(e);
     console.log(e.code)
     console.log("error ^^^^^^")
