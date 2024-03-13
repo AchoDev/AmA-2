@@ -1,29 +1,39 @@
 <template>
 
-<div id="container">
+<div id="wrapper"
+    :class="{'touch-move': allowTouchMove}"
+>
+    <div id="container">
+        <NavBar
+            :settings="settings"
+            :page-settings="page.settings ?? {
+                gridType: 'none',
+            }"
+            :title="page.title"
+            @openSideBar="openSideBar"
+            @change-settings="changeSettings"
+            @change-page-settings="changePageSettings"
+        />
 
-    <NavBar
-        :settings="settings"
-        :page-settings="page.settings"
-        :title="page.title"
-        @openSideBar="openSideBar"
-        @change-settings="changeSettings"
-        @change-page-settings="changePageSettings"
-    />
-
-    <DrawingArea 
-        width="297mm"
-        height="420mm"
-        :grid="page.settings"
-
-        :toolbar-fixed="true"
-    />
+        <div id="page-container">
+            <DrawingArea 
+                :width="`${297 / 1.5}mm`"
+                :height="`${420 / 1.5}mm`"
+                :grid="page.settings"
+            
+                :drawing-disabled="allowTouchMove"
+                :toolbar-fixed="true"
+            />
+        </div>
+    
+    </div>
 </div>
 
 
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref } from 'vue';
 import DrawingArea from '../components/DrawingArea.vue';
 import { Page } from '../components/dictionaryType';
 import Settings from '../components/settings';
@@ -49,13 +59,46 @@ function openSideBar() {
     emit('openSideBar')
 }
 
+const allowTouchMove = ref(true)
+
+onMounted(() => {
+
+    function checkTouchMove(e: PointerEvent) {
+        if(e.pointerType !== 'pen') {
+            e.preventDefault()
+            allowTouchMove.value = true
+            // e.stopPropagation()
+        } else {
+            allowTouchMove.value = false
+        }
+    }
+
+    document.addEventListener('pointerdown', checkTouchMove)
+    document.addEventListener('pointercancel', checkTouchMove)
+    document.addEventListener('pointermove', checkTouchMove)
+
+    document.addEventListener('touchend', () => {
+        allowTouchMove.value = true
+    })
+})
+
 </script>
 
 <style scoped lang="scss">
 
+#wrapper {
+    height: 100dvh;
+    overflow: hidden;
+    // touch-action: none;
+
+    &.touch-move {
+        overflow: auto;
+    }
+}
+
 #container {
     width: 100%;
-    height: calc(100vh - 130px);
+    height: auto;
     // min-height: 100vh;
     margin-top: 50px;
     padding: 40px 0;
@@ -64,6 +107,7 @@ function openSideBar() {
     // align-items: center;
     background: linear-gradient(130deg, rgb(255, 204, 110), rgb(255, 174, 81));
     overflow: hidden;
+
 }
 
 </style>

@@ -113,9 +113,13 @@ watch([wordsPerPage, wordSize, dividerVisible, darkMode], () => {
 const settingsOpen = ref(false)
 
 onMounted(() => {
-    document.addEventListener('click', (_) => {
+    document.addEventListener('click', (e) => {
+        if(!settingsOpen.value) return
+
         settingsOpen.value = false
-    })
+
+        e.stopImmediatePropagation();
+    })  
 })
 
 </script>
@@ -199,10 +203,10 @@ nav {
             }
 
             overflow: hidden;
-            opacity: 0.5;
-            filter: blur(30px);
+            opacity: 0.8;
+            filter: blur(10px);
             
-            transition: cubic-bezier(0.075, 0.82, 0.165, 1) .4s;
+            transition: cubic-bezier(0.23, 1, 0.320, 1) .3s;
             &.open {
                 width: 300px;
                 height: var(--navbar-height);

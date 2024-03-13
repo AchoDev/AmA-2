@@ -100,6 +100,11 @@
                 <span>Selected tag: <b>{{ selectedTag }}</b></span>
             </div>
 
+            <div id="tag-indicator" v-show="searchingFor != ''">
+                <button @click="searchingFor=''">X</button>
+                <span>Searching for: "{{ searchingFor }}"</span>
+            </div>
+
             <div id="bottom-left-container">
                 <!-- <button>search</button> -->
 
@@ -540,6 +545,18 @@ onMounted(() => {
             wordSizes.value = sizes
         },
     })
+
+    let inputField = document.getElementById("search-bar")
+
+    /*
+    * Method 1: Briefly change the opacity.
+    * Element might "blink" on focus in some scenarios.
+    */
+    inputField?.addEventListener("focus", () => {
+        if(!inputField) return
+        inputField.style.opacity = '0';
+        setTimeout(() => {if(inputField) inputField.style.opacity = '1'});
+    });
 })
 
 
@@ -1087,6 +1104,18 @@ main {
         justify-content: center;
         align-items: center;
         gap: 5px;
+
+        background: var(--background);
+        color: var(--text-color);
+        
+        button {
+            color: var(--text-color);
+            // main col background
+            background: #ff7c24;
+            height: 100%;
+            border-radius: 5px;
+            border: none;
+        }
     }
 }
 

@@ -135,11 +135,12 @@ interface Point {
     y: number
 }
 
-defineProps<{
+const props = defineProps<{
     width: string,
     height: string,
     toolbarFixed: boolean
     grid?: PageSettings
+    drawingDisabled?: boolean
 }>()
 
 const gridSizeMultiplier = ref(35)
@@ -198,7 +199,7 @@ function distanceFromPointToLine(point: { x: number; y: number; }, lineStart: { 
   return Math.sqrt(Math.pow(closestPoint.x - point.x, 2) + Math.pow(closestPoint.y - point.y, 2));
 }
 
-function simplify(points: any[], epsilon: number): Array<Point> {
+async function simplify(points: any[], epsilon: number): Promise<Array<Point>> {
     if (points.length <= 2) return points;
     const end = points.length - 1;
     let index = -1;
@@ -211,8 +212,8 @@ function simplify(points: any[], epsilon: number): Array<Point> {
         }
     }
     if (dist > epsilon) {
-        const left = simplify(points.slice(0, index + 1), epsilon);
-        const right = simplify(points.slice(index), epsilon);
+        const left = await simplify(points.slice(0, index + 1), epsilon);
+        const right = await simplify(points.slice(index), epsilon);
         return left.slice(0, left.length - 1).concat(right);
     } else {
         return [points[0], points[end]];
@@ -250,6 +251,10 @@ onMounted(() => {
 
         e.stopPropagation()
 
+        if(props.drawingDisabled) {
+            return
+        }
+
         touching.value = true
         setEraserPos(e.targetTouches[0].clientX, e.touches[0].clientY)
 
@@ -258,14 +263,35 @@ onMounted(() => {
         }
 
         currentPath.value.path.push(evaluatePoint(e.touches[0].clientX, e.touches[0].clientY))
-    })  
-    
+    })
+
+    async function pushPath() {
+        if(currentPath.value.path.length < 2) {
+            currentPath.value = {path: [], color: currentColor.value, width: penSize.value}
+            return
+        }
+
+        paths.value!.push({
+            path: await simplify(generateCurve(await simplify(currentPath.value.path, 1)), 0.1),
+            color: currentColor.value,
+            width: penSize.value
+        })
+        currentPath.value = {path: [], color: currentColor.value, width: penSize.value}
+    }
+
+
     drawingArea.addEventListener('touchmove', (e) => {
 
         e.stopPropagation()
 
         if(e.touches.length > 1) {
-            currentScrollY.value += e.touches[0].clientY
+
+            if(currentPath.value.path.length < 2) {
+                currentPath.value = {path: [], color: currentColor.value, width: penSize.value}
+                return
+            }
+
+            // currentScrollY.value += e.touches[0].clientY
             return
         }
         
@@ -341,18 +367,7 @@ onMounted(() => {
             return
         }
 
-        if(currentPath.value.path.length < 2) {
-            currentPath.value = {path: [], color: currentColor.value, width: penSize.value}
-            return
-        }
-
-        paths.value!.push({
-            // path: simplify(generateCurve(currentPath.value.path), 0.1),
-            path: simplify(generateCurve(simplify(currentPath.value.path, 1)), 0.1),
-            color: currentColor.value,
-            width: penSize.value
-        })
-        currentPath.value = {path: [], color: currentColor.value, width: penSize.value}
+        pushPath().then()
     })
 })
 
@@ -381,6 +396,13 @@ onMounted(() => {
 }
 
 #tool-bar {
+
+    &>* {
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+
     position: absolute;
     bottom: 0;
     right: 50%;

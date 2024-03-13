@@ -2,6 +2,8 @@
 
     <div id="menu">
 
+        <HelpBox @create-new="createNew()" />
+
         <PopupContainer 
             ref="newDictPopup"
             background="white"
@@ -41,7 +43,7 @@
                         v-else-if="creationStep === 2"
                         :class="newBookOpen ? 'visible' : ''"
                     >
-                        <h2 style="position: absolute; top: 30px">Click the dictionary to start your journey</h2>
+                        <h2 style="position: absolute; bottom: 0px">Click the dictionary to start your journey</h2>
 
                         <Book 
                             :main-lang="selectedLang"
@@ -145,10 +147,11 @@ import Book from './Book.vue';
 import {Dictionary, Page} from '../components/dictionaryType.ts'
 import PopupContainer from '../components/PopupContainer.vue';
 import alphabets from '../DictionaryPage/alphabets';
+import HelpBox from './HelpBox.vue';
 
-import raw from '../dictionaries.json';
+// import raw from '../dictionaries.json';
 
-const dictionaries = ref<Dictionary[]>(raw);
+const dictionaries = ref<Dictionary[]>([]);
 
 console.log(dictionaries.value)
 
@@ -566,7 +569,7 @@ onMounted(() => {
             width: 320px;
             transform: translateX(20px);
             height: 500px;
-            top: 160px;
+            top: 30px;
             
             // box-shadow: 0 0 100px rgba(0, 0, 0, 0.507);
             z-index: -1;
@@ -615,7 +618,7 @@ onMounted(() => {
 
         .book {
             position: absolute;
-            top: -100px;
+            top: -230px;
         }
     }
 }

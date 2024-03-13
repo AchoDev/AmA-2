@@ -198,7 +198,7 @@ document.addEventListener('gesturestart', (event) => { event.preventDefault(); }
 }
 
 html {
-  min-height: 100vh;
+  min-height: 100dvh;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
   overscroll-behavior: none;
 
@@ -211,6 +211,9 @@ html {
 body > * {
   font-family: Maven Pro, sans-serif !important;
   overscroll-behavior: none;
+
+  user-select: none;
+  -webkit-user-select: none;
   /* font-family: 'Times New Roman', Times, serif; */
 }
 
