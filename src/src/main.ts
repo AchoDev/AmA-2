@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+// @ts-ignore
 import App from './App.vue'
 
 declare global {
@@ -37,26 +38,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function load() {
     createApp(App).mount('#app')
-    if(typeof cordova == 'undefined') return
-    window.resolveLocalFileSystemURL(cordova.file.applicationDirectory + 'dictionary.json', gotFile, fail);
-}
-
-function fail(e: any) {
-    // alert("FileSystem Error");
-    console.log(e);
-    console.log(e.code)
-    console.log("error ^^^^^^")
-}
-
-function gotFile(fileEntry: any) {
-    fileEntry.file(function(file: any) { 
-
-        let reader = new FileReader();
-        
-        reader.onloadend = function() {
-            console.log(this.result);
-        }
-
-        reader.readAsText(file);
-    })
+    if(typeof cordova == 'undefined') return;
 }

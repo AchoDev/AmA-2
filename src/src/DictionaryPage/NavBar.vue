@@ -106,7 +106,6 @@ watch([wordsPerPage, wordSize, dividerVisible, darkMode], () => {
         darkmode: darkMode.value
     }
     emit('changeSettings', value)
-    console.log(value)
 })
 
 

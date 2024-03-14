@@ -46,28 +46,15 @@ defineExpose({
 
             const checkAnswer = async () => {
                 if(answer.value != undefined || !open.value) {
-                    console.log('resolved')
                     this.closePopup().then(() => {
                         resolve(answer.value || false)
                     })
-
-                    console.log('closed')
                 } else {
                     setTimeout(checkAnswer, 50)
                 }
             }
             
             checkAnswer()
-            // const interval = setInterval(async () => {
-            //     if(answer.value != undefined || !open.value) {
-            //         resolve(answer.value || false)
-            //         console.log('resolved')
-            //         await this.closePopup()
-
-            //         console.log('closed')
-            //         clearInterval(interval)
-            //     }
-            // }, 50)
         })
     },
     async closePopup() {

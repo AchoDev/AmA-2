@@ -181,7 +181,6 @@ function togglePage() {
         // emit('bookClose')
         setTimeout(() => {
             secondHalfOpen.value = false;
-            console.log("HALF CLOSED")
         }, 1350);
     } else {
         document.querySelectorAll('path').forEach((path) => {
@@ -190,7 +189,6 @@ function togglePage() {
         emit('beginOpen')
         setTimeout(() => {
             secondHalfOpen.value = true;
-            console.log("HALF open")
         }, duration / 3);
 
         setTimeout(() => {

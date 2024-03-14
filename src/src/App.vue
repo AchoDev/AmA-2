@@ -12,29 +12,34 @@
       @exit-to-menu="(e) => openDictionary(e)"
     />
 
-    <Menu 
-      v-if="!currentOpenDictionary"
-      @onSideBarOpen="openSideBar"
-      @open-book="(e) => openDictionary(e)"
-    />
+    <div v-if="settings != undefined && dictionaries != undefined">
+      <Menu 
+        v-if="!currentOpenDictionary"
+        :dictionaries="dictionaries!"
+        @onSideBarOpen="openSideBar"
+        @open-book="(e) => openDictionary(e)"
+        @create-dictionary="saveNewDictionary"
+      />
+  
+      <Dictionary
+        v-if="currentOpenDictionary && currentPage === 'dictionary'"
+        :dictionary="currentOpenDictionary"
+        :settings="settings"
+        @onSideBarOpen="openSideBar()"
+        @change-settings="changeSettings"
+      />
+        
+      <DrawingPage
+        v-if="currentOpenDictionary && currentOpenDictionary.pages.find(p => p.title === currentPage)"
+        :settings="settings"
+        :grid="currentOpenDictionary.pages.find(p => p.title === currentPage)?.settings"
+        :page="(currentOpenPage as Page)"
+        @open-side-bar="openSideBar()"
+        @change-settings="changeSettings"
+        @change-page-settings="changePageSettings"
+      />
+    </div>
 
-    <Dictionary
-      v-if="currentOpenDictionary && currentPage === 'dictionary'"
-      :dictionary="currentOpenDictionary"
-      :settings="settings"
-      @onSideBarOpen="openSideBar()"
-      @change-settings="changeSettings"
-    />
-      
-    <DrawingPage
-      v-if="currentOpenDictionary && currentOpenDictionary.pages.find(p => p.title === currentPage)"
-      :settings="settings"
-      :grid="currentOpenDictionary.pages.find(p => p.title === currentPage)?.settings"
-      :page="(currentOpenPage as Page)"
-      @open-side-bar="openSideBar()"
-      @change-settings="changeSettings"
-      @change-page-settings="changePageSettings"
-    />
 
     <PopupContainer ref="newPagePopup">
       <div id="new-page">
@@ -59,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import Dictionary from './DictionaryPage/Dictionary.vue'
 import SideBar from './components/SideBar.vue';
 import GridPicker from './components/GridPicker.vue';
@@ -68,10 +73,13 @@ import DrawingPage from './DictionaryPage/DrawingPage.vue';
 import PopupContainer from './components/PopupContainer.vue';
 import { type Dictionary as DictionaryType, Page, GridType } from './components/dictionaryType.ts';
 
-import raw from './settings.json'
+// import raw from './settings.json'
+import { loadStorage, save } from './storage.ts';
+
 import Settings from './components/settings.ts';
 
-const settings = ref<Settings>(raw)
+const settings = ref<Settings>()
+const dictionaries = ref<DictionaryType[]>();
 
 const currentOpenDictionary = ref<DictionaryType | undefined>(undefined);
 const currentPage = ref('dictionary');
@@ -185,6 +193,39 @@ const currentPageTitle = ref('')
 
 document.addEventListener('gesturestart', (event) => { event.preventDefault(); }, false);
 
+function saveNewDictionary(d: DictionaryType) {
+  dictionaries.value!.push(d)
+  save({
+    lastOpenDict: dictionaries.value!.indexOf(currentOpenDictionary.value!),
+    settings: settings.value!,
+    dictionaries: dictionaries.value!,
+  })
+}
+
+onMounted(async () => {
+  const raw = await loadStorage()
+
+  if(raw == null || raw === "") {
+    dictionaries.value = []
+    settings.value = {
+      wordsPerPage: 10,
+      wordSize: 20,
+      dividerBetweenWords: true,
+      darkmode: false
+    }
+    save({
+      lastOpenDict: -1,
+      settings: settings.value,
+      dictionaries: dictionaries.value,
+    })
+    return
+  }
+
+  const storage = JSON.parse(raw)
+
+  dictionaries.value = storage.dictionaries
+  settings.value = storage.settings
+})
 
 </script>
 

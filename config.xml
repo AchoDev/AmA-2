@@ -18,6 +18,8 @@
         <splash src="res/splash.png" />
 
         <preference name="FadeSplashScreen" value="true"/>
+        <preference name="iosPersistentFileLocation" value="Library" />
+
         <!-- <hook type="after_prepare" src="hooks/copyCordova.js" /> -->
     </platform>
 

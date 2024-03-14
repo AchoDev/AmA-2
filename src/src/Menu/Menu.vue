@@ -2,7 +2,7 @@
 
     <div id="menu">
 
-        <HelpBox @create-new="createNew()" />
+        <HelpBox v-if="dictionaries == undefined || dictionaries.length <= 0" @create-new="createNew()" />
 
         <PopupContainer 
             ref="newDictPopup"
@@ -149,20 +149,17 @@ import PopupContainer from '../components/PopupContainer.vue';
 import alphabets from '../DictionaryPage/alphabets';
 import HelpBox from './HelpBox.vue';
 
-// import raw from '../dictionaries.json';
+const props = defineProps<{
+    dictionaries: Dictionary[]
+}>()
 
-const dictionaries = ref<Dictionary[]>([]);
-
-console.log(dictionaries.value)
-
-const emit = defineEmits(['openBook']);
+const emit = defineEmits(['openBook', 'createDictionary']);
 const bookOpen = ref(false);
 const infoBox = ref()
 
 function openBook(dictionary: Dictionary) {
     emit('openBook', dictionary);
 }
-
 
 
 const domBookWrapper = ref<HTMLElement>();
@@ -241,7 +238,7 @@ function resetCreation() {
 }
 
 function createBook() {
-    dictionaries.value.push({
+    emit("createDictionary", {
         pages: <Page[]>[],
         title: newDictName.value,
         tags: [],
@@ -251,7 +248,7 @@ function createBook() {
     })
 
     resetCreation();
-    openBook(dictionaries.value[dictionaries.value.length - 1]);
+    openBook(props.dictionaries[props.dictionaries.length - 1]);
 }
 
 // new dictionary end
@@ -265,8 +262,6 @@ function moveLeft() {
 }
 
 onMounted(() => {
-    // console.log(domBookWrapper.value!.clientWidth);
-
     domBookWrapper.value!.addEventListener('scroll', () => {
         currentScrollItem.value = Math.round(domBookWrapper.value!.scrollLeft / domBookWrapper.value!.clientWidth);
     })

@@ -453,7 +453,6 @@ function deleteTag(tag: string) {
                 })
     
                 tags.value.splice(tags.value.indexOf(tag), 1)
-                console.log(tags.value)
             }, 200)
 
         }
@@ -505,11 +504,9 @@ function editNotes(index: number, notes: Path[]) {
 }
 
 function deleteWord(index: number) {
-    console.log(index)
     yesNo.value.ask(`Are you sure you want to delete the word "${words.value[index].mainLang}"?`, 'This action cannot be undone').then((answer: boolean) => {
         if(answer) {
             words.value.splice(index, 1)
-            console.log(words.value)
         }
     })
 
