@@ -245,6 +245,7 @@ $transition-duration: 1500ms;
                 font-size: 2.5em;
                 margin: 0px 0;
                 text-align: center;
+                z-index: 1;
             }
             h3 {
                 margin: 20px 0;

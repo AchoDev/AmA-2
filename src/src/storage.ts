@@ -5,6 +5,11 @@ declare let cordova: any;
 
 export function loadStorage(): Promise<string> {
     console.log("LOADING STORAGE")
+
+    if(typeof cordova === 'undefined') {
+        return Promise.resolve("")
+    }
+
     return new Promise((resolve, reject) => {
         window.resolveLocalFileSystemURL(cordova.file.syncedDataDirectory, (fs: any) => {
             console.log("resolved local file system")
@@ -38,6 +43,9 @@ export function save(Data: {
     settings: Settings;
     dictionaries: Dictionary[];
 }) {
+    if(typeof cordova === 'undefined') {
+        return;
+    }
     window.resolveLocalFileSystemURL(cordova.file.syncedDataDirectory, (fs: any) => {
         fs.getFile("amaStorage.json", { create: true, exclusive: false }, (entry: any) => {
             entry.createWriter((writer: any) => {
