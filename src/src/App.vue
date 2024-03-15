@@ -6,6 +6,7 @@
       :mainLang="currentOpenDictionary?.mainLang ?? ''"
       :secondLang="currentOpenDictionary?.secondLang ?? ''"
       :pages="currentOpenDictionary?.pages.map(p => p.title) ?? []"
+      :darkMode="settings?.darkmode ?? false"
 
       @create-new-page="createPage()"
       @open-page="(e) => currentPage = e"
@@ -16,6 +17,7 @@
       <Menu 
         v-if="!currentOpenDictionary"
         :dictionaries="dictionaries!"
+        :dark-mode="settings?.darkmode ?? false"
         @onSideBarOpen="openSideBar"
         @open-book="(e) => openDictionary(e)"
         @create-dictionary="saveNewDictionary"
@@ -34,6 +36,7 @@
         :settings="settings"
         :grid="currentOpenDictionary.pages.find(p => p.title === currentPage)?.settings"
         :page="(currentOpenPage as Page)"
+        :darkMode="settings?.darkmode ?? false"
         @open-side-bar="openSideBar()"
         @change-settings="changeSettings"
         @change-page-settings="changePageSettings"
@@ -41,8 +44,8 @@
     </div>
 
 
-    <PopupContainer ref="newPagePopup">
-      <div id="new-page">
+    <PopupContainer ref="newPagePopup" :background="settings?.darkmode ? '#070707' : undefined">
+      <div id="new-page" :style="{color: settings?.darkmode ? 'white' : 'black'}">
         <h1>New page</h1>
   
         Title
@@ -126,7 +129,10 @@ function createPage() {
 function cancelPageCreation() {
   newPagePopup.value.closePopup()
   currentPageTitle.value = ''
-  selectedGrid.value = ''
+  selectedGrid.value = {
+    gridSize: 1,
+    gridType: GridType.none
+  }
 }
 
 function getRandomPageName() {

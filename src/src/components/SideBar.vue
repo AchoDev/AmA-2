@@ -1,6 +1,11 @@
 <template>
-    <div id="side-bar" :class="sideMenuOpened ? 'opened' : ''" @click.stop>
-            <div id="top-section">
+    <div id="side-bar" :class="{'opened': sideMenuOpened, 'dark': darkMode}" @click.stop>
+            <div id="top-section"
+                :style="{
+                    background: darkMode ? 'rgb(50, 50, 50)' : 'white',
+                    color: darkMode ? 'white' : 'black'
+                }"
+            >
                 <div>
                     <img src="../assets/logo.svg" alt="Logo">
                     <button @click="sideMenuOpened = false"> <img src="../assets/sidebar.svg" alt="Close sidebar"> </button>
@@ -68,6 +73,7 @@ defineProps<{
     mainLang: string,
     secondLang: string,
     pages: string[],
+    darkMode: boolean
 }>()
 
 defineExpose({
@@ -91,11 +97,25 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+
+#side-bar {
+    --background: linear-gradient(10deg, rgb(255, 185, 80), rgb(255, 161, 72));
+    --secondary-color: white;
+    --text: black;
+}
+
+#side-bar.dark {
+    --background: linear-gradient(10deg, rgb(45, 45, 45), rgb(34, 34, 34));
+    --secondary-color: rgb(60, 60, 60);
+    --text: white;
+}
+
 #side-bar {
     display: flex;
     align-items: center;
     flex-direction: column;
-    background: linear-gradient(10deg, rgb(255, 185, 80), rgb(255, 161, 72));
+    background: var(--background);
+    color: var(--text);
     height: 100%;
     width: 300px;
     position: fixed;
@@ -120,7 +140,8 @@ onMounted(() => {
     border: none;
     border-radius: 20px;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
-    background: white;
+    background: var(--secondary-color);
+    color: var(--text);
     font-size: 20pt;
 }
 
@@ -154,7 +175,8 @@ h3 {
         height: 40px;
         border-radius: 100px;
         border: none;
-        background: rgb(255, 255, 255);
+        background: var(--secondary-color);
+        color: var(--text);
         box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
         font-size: 17pt;
         margin-top: 10px;
@@ -183,6 +205,8 @@ h3 {
     width: calc(100% - 20px);
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
     gap: 20px;
+
+    padding-top: 30px;
 
     div {
         display: flex;
@@ -215,8 +239,6 @@ h3 {
             }
         }
     }
-
-   
 
     button {
         width: 100%;

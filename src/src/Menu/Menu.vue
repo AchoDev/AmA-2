@@ -1,8 +1,12 @@
 <template>
 
-    <div id="menu">
+    <div id="menu" :class="{dark: darkMode}">
 
-        <HelpBox v-if="dictionaries == undefined || dictionaries.length <= 0" @create-new="createNew()" />
+        <HelpBox 
+            v-if="dictionaries == undefined || dictionaries.length <= 0" 
+            @create-new="createNew()"
+            :darkMode="darkMode"
+        />
 
         <PopupContainer 
             ref="newDictPopup"
@@ -52,6 +56,7 @@
                             :word-count="0"
                             :page-open="false"
                             :title="newDictName"
+                            :dark-mode="darkMode"
                             class="book"
 
                             @begin-open="beginOpen()"
@@ -75,7 +80,7 @@
             </div>
         </PopupContainer>
         
-        <PopupContainer ref="infoBox">
+        <PopupContainer ref="infoBox" :background="darkMode ? '#070707' : undefined">
             <div id="info-box">
                 <h1>Info</h1>
                 <p>This app was made by Ahmed Asi (AchoDev)</p>
@@ -129,6 +134,7 @@
                 :word-count="dictionary.words.length"
                 :page-open="false"
                 :title="dictionary.title"
+                :dark-mode="darkMode"
                 class="book"
 
                 @begin-open="bookOpen = true"
@@ -151,7 +157,8 @@ import alphabets from '../DictionaryPage/alphabets';
 import HelpBox from './HelpBox.vue';
 
 const props = defineProps<{
-    dictionaries: Dictionary[]
+    dictionaries: Dictionary[],
+    darkMode: boolean,
 }>()
 
 const emit = defineEmits(['openBook', 'createDictionary']);
@@ -304,6 +311,41 @@ onMounted(() => {
         rgb(255, 178, 35),
         rgb(255, 174, 81),
     );
+
+    &.dark {
+        background: linear-gradient(
+            90deg,
+            rgb(34, 34, 34),
+            rgb(23, 23, 23),
+        );
+        color: white;
+
+        #top-bar {
+            background-color: #141414;
+
+            button {
+                background: #070707;
+                color: white;
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            }
+        }
+
+        #new-dict-button button {
+            background: #070707;
+            color: white;
+        }
+
+        #new-dict {
+            background: #070707;
+            color: white;
+
+            button {
+                background: white;
+                color: black;
+            }
+        
+        }
+    }
 }
 
 #top-bar {
@@ -334,7 +376,7 @@ onMounted(() => {
     }
 
     &.open-navbar {
-        top: -100px;
+        top: -120px;
     }
 
     button {
@@ -345,6 +387,7 @@ onMounted(() => {
         border-radius: 100%;
         background: orange;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        padding: 0;
 
         font-size: 20pt;
         color: white;
@@ -442,6 +485,7 @@ onMounted(() => {
 #new-dict {
     width: 90vw;
     height: 90vh;
+
 
     display: grid;
     place-items: center;

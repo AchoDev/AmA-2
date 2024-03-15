@@ -1,14 +1,28 @@
 <template>
-    <div id="help">
+    <div id="help"
+        :style="{
+            'color': darkMode ? 'white' : 'black'
+        }"
+    >
             <h1>Welcome to AmA!</h1>
             <p>Click the button below to create your first dictionary</p>
-            <button @click="createNew()">Create new dictionary</button>
+            <button 
+                @click="createNew()"
+                :style="{
+                    'background': darkMode ? 'rgb(50, 50, 50)' : 'white',
+                    'color': darkMode ? 'white' : 'black'
+                }"
+            >Create new dictionary</button>
         </div>
 </template>
 
 <script setup lang="ts">
 
 const emits = defineEmits(['createNew'])
+
+defineProps<{
+    darkMode: boolean
+}>()
 
 function createNew() {
     emits('createNew')

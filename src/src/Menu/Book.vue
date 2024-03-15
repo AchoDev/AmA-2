@@ -2,7 +2,7 @@
     <div id="svg-wrapper-wrapper">
         <div id="svg-wrapper">
             <svg :class="open ? 'open' : ''" viewBox="0 0 2000 1000">
-                <path id="back-cover" d="M800 100L1300 100L1300 850L800 850L800 100Z" fill="#ffa633" fill-rule="nonzero" opacity="1" stroke="white" stroke-width="5" stroke-linejoin="round">
+                <path id="back-cover" d="M800 100L1300 100L1300 850L800 850L800 100Z" :fill="fill" fill-rule="nonzero" opacity="1" stroke="white" stroke-width="5" stroke-linejoin="round">
                     <animate 
                         attributeName="d" 
                         begin="indefinite"
@@ -16,7 +16,7 @@
                     />
                 </path>
 
-                <path id="bind" d="M750 150L800 100L800 850L750 900" fill="#ffa633" fill-rule="nonzero" opacity="1" stroke="white" stroke-width="5" stroke-linejoin="round"> 
+                <path id="bind" d="M750 150L800 100L800 850L750 900" :fill="fill" fill-rule="nonzero" opacity="1" stroke="white" stroke-width="5" stroke-linejoin="round"> 
                     <animate 
                         attributeName="d" 
                         begin="indefinite" 
@@ -46,7 +46,7 @@
                 
                 <!-- <path :style="`visibility: ${secondHalfOpen ? 'hidden' : 'visible'}`" id="left-page" d="M775 125 C1275 125, 1275 125, 1275 125 L1275 875 C 775 875, 775 875, 775 875" fill="white" fill-rule="nonzero" opacity="1" stroke="black" stroke-linejoin="round"/> -->
                 
-                <path id="front-cover" d="M750 100L1250 100L1250 850L750 850L750 100Z" fill="#ffa633" fill-rule="nonzero" opacity="1" stroke="white" stroke-width="5" stroke-linejoin="round"> 
+                <path id="front-cover" d="M750 100L1250 100L1250 850L750 850L750 100Z" :fill="fill" fill-rule="nonzero" opacity="1" stroke="white" stroke-width="5" stroke-linejoin="round"> 
                     <animate 
                         attributeName="d" 
                         begin="indefinite" 
@@ -153,7 +153,7 @@
 
 <script setup lang="ts">
 
-import {ref, watch} from 'vue';
+import {computed, ref, watch} from 'vue';
 
 
 const props = defineProps<{
@@ -162,7 +162,10 @@ const props = defineProps<{
     title: string,
     pageOpen: boolean,
     wordCount: number
+    darkMode: boolean,
 }>()
+
+const fill = computed(() => props.darkMode ? 'rgb(40, 40, 40)' : '#ffa633')
 
 const emit = defineEmits(['beginOpen', 'completedOpen'])
 

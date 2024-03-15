@@ -1,7 +1,7 @@
 <template>
 
 <div id="wrapper"
-    :class="{'touch-move': allowTouchMove}"
+    :class="{'touch-move': allowTouchMove, 'dark': darkMode}"
 >
     <div id="container">
         <NavBar
@@ -45,6 +45,7 @@ const emit = defineEmits(['openSideBar', 'changeSettings', 'changePageSettings']
 defineProps<{
     settings: Settings
     page: Page
+    darkMode: boolean
 }>()
 
 function changeSettings(newSettings: Settings) {
@@ -90,9 +91,15 @@ onMounted(() => {
     height: 100dvh;
     overflow: hidden;
     // touch-action: none;
+    background: linear-gradient(130deg, rgb(255, 204, 110), rgb(255, 174, 81));
+    background-attachment: fixed;
 
     &.touch-move {
         overflow: auto;
+    }
+
+    &.dark {
+        background: linear-gradient(130deg, rgb(45, 45, 45), rgb(34, 34, 34));
     }
 }
 
@@ -105,7 +112,6 @@ onMounted(() => {
     display: flex;
     justify-content: center;
     // align-items: center;
-    background: linear-gradient(130deg, rgb(255, 204, 110), rgb(255, 174, 81));
     overflow: hidden;
 
 }
