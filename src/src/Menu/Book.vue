@@ -134,7 +134,8 @@
                         <h3>
                             {{mainLang}} - {{secondLang}} 
                         </h3>
-                        <h3>{{ wordCount }} words</h3>
+                        <h3 v-if="wordCount > 0">{{ wordCount }} words</h3>
+                        <h3 v-else>No words yet</h3>
                     </div>
                     <div>
                         <img :src="`./flags/${props.mainLang}.png`" :alt="mainLang">
