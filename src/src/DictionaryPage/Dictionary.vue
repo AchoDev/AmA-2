@@ -285,7 +285,7 @@ const props = defineProps<{
     dictionary: Dictionary
 }>()
 
-const emits = defineEmits(["onSideBarOpen", "changeSettings"])
+const emits = defineEmits(["onSideBarOpen", "changeSettings", "saveWord"])
 
 const currentPage = ref<number>(1)
 
@@ -372,6 +372,8 @@ function saveNewWord() {
 
     closeWordCreator()
     orderWords()
+
+    emits('saveWord', words.value)
 }
 
 function closeWordCreator() {

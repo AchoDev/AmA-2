@@ -29,6 +29,7 @@
         :settings="settings"
         @onSideBarOpen="openSideBar()"
         @change-settings="changeSettings"
+        @save-word="saveDictionary"
       />
         
       <DrawingPage
@@ -74,7 +75,7 @@ import GridPicker from './components/GridPicker.vue';
 import Menu from './Menu/Menu.vue';
 import DrawingPage from './DictionaryPage/DrawingPage.vue';
 import PopupContainer from './components/PopupContainer.vue';
-import { type Dictionary as DictionaryType, Page, GridType } from './components/dictionaryType.ts';
+import { type Dictionary as DictionaryType, Page, GridType, Word } from './components/dictionaryType.ts';
 
 // import raw from './settings.json'
 import { loadStorage, save } from './storage.ts';
@@ -89,7 +90,6 @@ const currentPage = ref('dictionary');
 
 const sideBar = ref()
 const newPagePopup = ref()
-
 
 const currentOpenPage = computed(() => {
   if (currentOpenDictionary.value) {
@@ -203,6 +203,17 @@ function saveNewDictionary(d: DictionaryType) {
   dictionaries.value!.push(d)
   save({
     lastOpenDict: dictionaries.value!.indexOf(currentOpenDictionary.value!),
+    settings: settings.value!,
+    dictionaries: dictionaries.value!,
+  })
+}
+
+function saveDictionary(d: DictionaryType) {
+  const index = dictionaries.value!.indexOf(currentOpenDictionary.value!)
+  dictionaries.value![index] = d
+
+  save({
+    lastOpenDict: index,
     settings: settings.value!,
     dictionaries: dictionaries.value!,
   })
