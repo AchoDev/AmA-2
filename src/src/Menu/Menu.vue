@@ -45,7 +45,8 @@
                     >
                         <h2 style="position: absolute; bottom: 0px">Click the dictionary to start your journey</h2>
 
-                        <Book 
+                        <Book
+                            v-if="!reloadingNewDict"
                             :main-lang="selectedLang"
                             :second-lang="secondSelectedLang"
                             :word-count="0"
@@ -175,6 +176,8 @@ const newDictName = ref('')
 
 const newBookOpen = ref(false);
 
+const reloadingNewDict = ref(false);
+
 function selectRandomName() {
 
     const names = [
@@ -206,6 +209,11 @@ function selectRandomName() {
     ]
 
     newDictName.value = names[Math.floor(Math.random() * names.length)];
+    reloadingNewDict.value = true;
+
+    setTimeout(() => {
+        reloadingNewDict.value = false;
+    })
 
     return newDictName.value;
 }

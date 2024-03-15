@@ -206,8 +206,6 @@ watch(() => props.pageOpen, () => {
     togglePage()
 })
 
-
-
 </script>
 
 <style scoped lang="scss">
