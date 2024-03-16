@@ -42,17 +42,22 @@ export function save(Data: {
     lastOpenDict: number;
     settings: Settings;
     dictionaries: Dictionary[];
-}) {
+}): Promise<void> {
+
     if(typeof cordova === 'undefined') {
-        return;
+        return Promise.resolve();
     }
-    window.resolveLocalFileSystemURL(cordova.file.syncedDataDirectory, (fs: any) => {
-        fs.getFile("amaStorage.json", { create: true, exclusive: false }, (entry: any) => {
-            entry.createWriter((writer: any) => {
-                writer.onwriteend = () => {
-                    console.log("Successful file write...");
-                }
-                writer.write(JSON.stringify(Data));
+
+    return new Promise((resolve, _) => {
+        window.resolveLocalFileSystemURL(cordova.file.syncedDataDirectory, (fs: any) => {
+            fs.getFile("amaStorage.json", { create: true, exclusive: false }, (entry: any) => {
+                entry.createWriter((writer: any) => {
+                    writer.onwriteend = () => {
+                        console.log("Successful file write...");
+                        resolve()
+                    }
+                    writer.write(JSON.stringify(Data));
+                })
             })
         })
     })

@@ -7,6 +7,7 @@
             :settings="settings"
             @openSideBar="openSideBar"
             @changeSettings="changeSettings"
+            @import-from-ama="(data) => "
         />
 
         <main>
@@ -198,8 +199,8 @@
             </div>
         </PopupContainer>
 
-        <PopupContainer ref="wordCreator">
-            <div id="word-creator">
+        <PopupContainer ref="wordCreator" :background="settings.darkmode ? '#070707' : undefined">
+            <div id="word-creator" :style="{color: settings.darkmode ? 'white' : 'black '}">
                 <h1>Create a new word</h1>
                 
                 {{ mainLang }}
@@ -362,6 +363,34 @@ function createNewWord() {
     wordCreator.value.openPopup();
 }
 
+function getDict() {
+    const value: Dictionary = {
+        title: props.dictionary.title,
+        pages: props.dictionary.pages,
+        mainLang: mainLang.value,
+        secondLang: secondLang.value,
+        tags: tags.value,
+        words: words.value
+    }
+    return value;
+}
+
+function saveAmaData(data: any) {
+    words.value = [];
+    data.forEach((word: any) => {
+        words.value.push({
+            mainLang: word.mainLang,
+            secondLang: word.secondLang,
+            notes: word.notes,
+            tag: word.tag
+        })
+    })
+}
+
+function save() {
+    emits('saveWord', getDict())
+}
+
 function saveNewWord() {
     words.value.push({
         mainLang: newWordMainLang.value,
@@ -373,7 +402,7 @@ function saveNewWord() {
     closeWordCreator()
     orderWords()
 
-    emits('saveWord', words.value)
+    save()
 }
 
 function closeWordCreator() {
@@ -395,6 +424,8 @@ function addNewTag() {
     }
     
     tags.value.push(`New tag ${currentNum}`)
+
+    save()
 }
 
 function openTagMenu() {
@@ -427,6 +458,9 @@ function saveTag(tag: string, newTag: string) {
             word.tag = newTag
         }
     })
+
+    save()
+
     tagEditor.value.closePopup()
 }
 
@@ -455,6 +489,8 @@ function deleteTag(tag: string) {
                 })
     
                 tags.value.splice(tags.value.indexOf(tag), 1)
+
+                save()
             }, 200)
 
         }
@@ -488,6 +524,7 @@ watch(totalPages, () => {
 
 
 function onWordEdit(index: number, mainWord: string, secondWord: string) {
+    console.log("edit word", index, mainWord, secondWord)
     words.value.find((word, i) => {
         if(i === index) {
             word.mainLang = mainWord
@@ -497,18 +534,21 @@ function onWordEdit(index: number, mainWord: string, secondWord: string) {
     })
 
     orderWords()
+    save()
 }
 
 function editNotes(index: number, notes: Path[]) {
     console.log(index)
     drawingPopup.value.openPopup()
     newWordNoteDrawing.value = notes
+    save()
 }
 
 function deleteWord(index: number) {
     yesNo.value.ask(`Are you sure you want to delete the word "${words.value[index].mainLang}"?`, 'This action cannot be undone').then((answer: boolean) => {
         if(answer) {
             words.value.splice(index, 1)
+            save()
         }
     })
 

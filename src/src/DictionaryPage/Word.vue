@@ -148,7 +148,6 @@ div > * {
 
     #note-container {
         overflow: hidden;
-        
     }
 
     span, div {
@@ -231,7 +230,7 @@ hr {
     margin: 5px 0;
     max-width: 80%;
     border-width: 1px;
-    background: rgba(0, 0, 0, 0.089);
+    border-color: rgba(0, 0, 0, 0.248);
 }
 
 .divider, #horizontal-divider {

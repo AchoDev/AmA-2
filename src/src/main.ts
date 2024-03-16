@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 // @ts-ignore
 import App from './App.vue'
+import Error from './Error.vue'
 
 declare global {
     interface Window {
@@ -37,6 +38,10 @@ document.addEventListener('DOMContentLoaded', function() {
 }, false);
 
 function load() {
-    createApp(App).mount('#app')
+    try {
+        createApp(App).mount('#app')
+    } catch(e) {
+        createApp(Error, {error: e}).mount('#error')
+    }
     if(typeof cordova == 'undefined') return;
 }

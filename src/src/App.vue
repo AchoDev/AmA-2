@@ -1,6 +1,9 @@
 
 <template>
   <div>
+
+    <Error v-if="error" :error="error" />
+
     <SideBar 
       ref="sideBar"
       :mainLang="currentOpenDictionary?.mainLang ?? ''"
@@ -13,7 +16,7 @@
       @exit-to-menu="(e) => openDictionary(e)"
     />
 
-    <div v-if="settings != undefined && dictionaries != undefined">
+    <div v-if="settings != undefined && dictionaries != undefined && !error">
       <Menu 
         v-if="!currentOpenDictionary"
         :dictionaries="dictionaries!"
@@ -75,12 +78,13 @@ import GridPicker from './components/GridPicker.vue';
 import Menu from './Menu/Menu.vue';
 import DrawingPage from './DictionaryPage/DrawingPage.vue';
 import PopupContainer from './components/PopupContainer.vue';
-import { type Dictionary as DictionaryType, Page, GridType, Word } from './components/dictionaryType.ts';
+import { type Dictionary as DictionaryType, Page, GridType } from './components/dictionaryType.ts';
 
 // import raw from './settings.json'
 import { loadStorage, save } from './storage.ts';
 
 import Settings from './components/settings.ts';
+import Error from './Error.vue';
 
 const settings = ref<Settings>()
 const dictionaries = ref<DictionaryType[]>();
@@ -208,8 +212,23 @@ function saveNewDictionary(d: DictionaryType) {
   })
 }
 
+function validateDictionary(d: DictionaryType[]) {
+  for (const dict of d) {
+    if (!('mainLang' in dict && 'secondLang' in dict && 'pages' in dict)) return false
+  }
+
+  return true
+}
+
 function saveDictionary(d: DictionaryType) {
   const index = dictionaries.value!.indexOf(currentOpenDictionary.value!)
+
+  if(validateDictionary(dictionaries.value!)) {
+    dictionaries.value![index] = d
+  } else {
+    error.value = "Trying to save invalid dictionary!"
+  }
+
   dictionaries.value![index] = d
 
   save({
@@ -219,7 +238,14 @@ function saveDictionary(d: DictionaryType) {
   })
 }
 
+
 onMounted(async () => {
+  load()
+})
+
+const error = ref<string>();
+
+async function load() {
   const raw = await loadStorage()
 
   if(raw == null || raw === "") {
@@ -238,11 +264,37 @@ onMounted(async () => {
     return
   }
 
+
   const storage = JSON.parse(raw)
+
+  console.log(storage)
+
+  
+  try {
+    for(const dict of storage.dictionaries) {
+      if(!('mainLang' in dict) || !('secondLang' in dict) || !('pages' in dict)) {
+        error.value = "Invalid dictionary"
+        console.error("Invalid dictionary")
+        return
+      }
+    }
+  } catch(e) {
+    error.value = "Invalid dictionary"
+    console.error("Invalid dictionary")
+    return
+  }
+  
+
+    // console.log(instanceOf(storage))
 
   dictionaries.value = storage.dictionaries
   settings.value = storage.settings
-})
+  return
+  
+
+  error.value = "Invalid storage map"
+  console.error("Invalid storage map")
+}
 
 </script>
 

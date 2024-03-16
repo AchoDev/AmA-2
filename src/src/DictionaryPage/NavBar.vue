@@ -11,7 +11,7 @@
                 <img src="../assets/more.svg" alt="Add new page">
             </button>
 
-            <div id="menu" :class="settingsOpen ? 'open' : ''" @click.stop :style="`--navbar-height: ${pageSettings ? '450px' : '350px'}`">
+            <div id="menu" :class="settingsOpen ? 'open' : ''" @click.stop :style="`--navbar-height: ${pageSettings ? '450px' : '400px'}`">
 
                 <center>
                     <h2>Settings</h2>
@@ -53,6 +53,14 @@
 
                 <hr>
 
+                <button 
+                    v-if="!pageSettings" 
+                    style="font-size: 14pt;"
+                    @click="openImportPopup()"
+                >
+                    Import from AmA
+                </button>
+
                 <!-- <button>
                     Edit name
                 </button>
@@ -64,6 +72,20 @@
                 </button> -->
             </div>
         </div>
+
+
+        <PopupContainer ref="importPopup" :background="darkMode ? '#070707' : undefined">
+            <div id="import-page" :style="{color: darkMode ? 'white' : 'black'}">
+                <center>
+                    <h1>Import from AmA</h1>
+                    <p>Use this option to import data from the old AmA</p>
+                    
+                    <small>JSON</small> <br>
+                    <textarea v-model="amaImportInput" cols="60" rows="20"></textarea> <br>
+                    <button @click="importFromAmA()">Import</button>
+                </center>
+            </div>
+        </PopupContainer>
     </nav>
 </template>
 
@@ -73,8 +95,9 @@ import Switch from '../components/Switch.vue';
 import Settings from '../components/settings';
 import { PageSettings } from '../components/dictionaryType';
 import GridPicker from '../components/GridPicker.vue';
+import PopupContainer from '../components/PopupContainer.vue';
 
-const emit = defineEmits(['openSideBar', 'changeSettings', 'changePageSettings'])
+const emit = defineEmits(['openSideBar', 'changeSettings', 'changePageSettings', 'importFromAma'])
 
 const props = defineProps<{
     title: string,
@@ -108,6 +131,16 @@ watch([wordsPerPage, wordSize, dividerVisible, darkMode], () => {
     emit('changeSettings', value)
 })
 
+const amaImportInput = ref('')
+const importPopup = ref()
+
+function openImportPopup() {
+    importPopup.value.openPopup()
+}
+
+function importFromAmA() {
+    emit('importFromAma', JSON.parse(amaImportInput.value))
+}
 
 const settingsOpen = ref(false)
 
@@ -294,10 +327,10 @@ nav {
                 box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
                 border-radius: 100px;
 
-                &:last-child {
-                    background: red;
-                    color: white;
-                }
+                // &:last-child {
+                //     background: red;
+                //     color: white;
+                // }
 
                 transition: ease-out .1s;
                 &:active {
