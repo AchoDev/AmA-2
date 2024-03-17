@@ -17,6 +17,8 @@
 
         <div id="page-container">
             <DrawingArea 
+                v-model="paths"
+
                 :width="`${297 / 1.5}mm`"
                 :height="`${420 / 1.5}mm`"
                 :grid="page.settings"
@@ -33,20 +35,41 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
 import DrawingArea from '../components/DrawingArea.vue';
 import { Page } from '../components/dictionaryType';
 import Settings from '../components/settings';
 import NavBar from './NavBar.vue';
+import Path from '../components/path';
 
 
-const emit = defineEmits(['openSideBar', 'changeSettings', 'changePageSettings'])
+const emit = defineEmits(['openSideBar', 'changeSettings', 'changePageSettings', 'savePath'])
 
-defineProps<{
+
+const props = defineProps<{
     settings: Settings
     page: Page
     darkMode: boolean
 }>()
+
+const paths = ref<Path[]>()
+const title = ref()
+
+watch(() => [paths.value?.length, props.page], (_) => {
+
+    console.log(props.page.title, title.value, "THIS IS THE TITLE")
+
+    console.log(paths.value, props.page.content, "THIS IS THE PATHS")
+    
+    if(props.page.title !== title.value) {
+        title.value = props.page.title
+        paths.value = props.page.content
+        // console.log("new page")
+        return
+    }
+    // console.log(paths.value, "THIS IS THE PATHS")
+    emit('savePath', paths.value)
+})
 
 function changeSettings(newSettings: Settings) {
     emit('changeSettings', newSettings)
@@ -62,18 +85,15 @@ function openSideBar() {
 
 const allowTouchMove = ref(true)
 
-onMounted(() => {
-
-    function checkTouchMove(e: PointerEvent) {
-        if(e.pointerType !== 'pen') {
-            e.preventDefault()
-            allowTouchMove.value = true
-            // e.stopPropagation()
-        } else {
-            allowTouchMove.value = false
-        }
+function checkTouchMove(e: PointerEvent) {
+    if(e.pointerType !== 'pen') {
+        allowTouchMove.value = true
+    } else {
+        allowTouchMove.value = false
     }
+}
 
+onMounted(() => {
     document.addEventListener('pointerdown', checkTouchMove)
     document.addEventListener('pointercancel', checkTouchMove)
     document.addEventListener('pointermove', checkTouchMove)
@@ -81,6 +101,19 @@ onMounted(() => {
     document.addEventListener('touchend', () => {
         allowTouchMove.value = true
     })
+    paths.value = props.page.content
+})
+
+onUnmounted(() => {
+    document.removeEventListener('pointerdown', checkTouchMove)
+    document.removeEventListener('pointercancel', checkTouchMove)
+    document.removeEventListener('pointermove', checkTouchMove)
+    document.removeEventListener('touchend', () => {
+        allowTouchMove.value = true
+    })
+
+    title.value = ''
+    console.log("unmount")
 })
 
 </script>

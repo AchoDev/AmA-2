@@ -537,7 +537,6 @@ watch(totalPages, () => {
 
 
 function onWordEdit(index: number, mainWord: string, secondWord: string) {
-    console.log("edit word", index, mainWord, secondWord)
     words.value.find((word, i) => {
         if(i === index) {
             word.mainLang = mainWord
@@ -551,7 +550,6 @@ function onWordEdit(index: number, mainWord: string, secondWord: string) {
 }
 
 function editNotes(index: number, notes: Path[]) {
-    console.log(index)
     drawingPopup.value.openPopup()
     newWordNoteDrawing.value = notes
     save()

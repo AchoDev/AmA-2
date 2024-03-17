@@ -4,7 +4,6 @@ import Settings from "./components/settings";
 declare let cordova: any;
 
 export function loadStorage(): Promise<string> {
-    console.log("LOADING STORAGE")
 
     if(typeof cordova === 'undefined') {
         return Promise.resolve("")

@@ -32,7 +32,6 @@ if(env === 'development') {
 
 document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('deviceready', () => {
-        console.log("DEVICE rrrrREADY")
         load()
     }, false)
 }, false);

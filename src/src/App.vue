@@ -44,7 +44,7 @@
         @open-side-bar="openSideBar()"
         @change-settings="changeSettings"
         @change-page-settings="changePageSettings"
-        @save-path="saveDictionary"
+        @save-path="savePage"
       />
     </div>
 
@@ -255,6 +255,31 @@ function saveDictionary(d: DictionaryType) {
   })
 }
 
+function savePage(newContent: any) {
+  if (!currentOpenDictionary.value) {
+    return
+  }
+
+  const index = dictionaries.value!.indexOf(currentOpenDictionary.value!)
+
+  if(validateDictionary(dictionaries.value!)) {
+    
+    const page = currentOpenDictionary.value.pages.find(p => p.title === currentPage.value)
+    page!.content = newContent
+
+  } else {
+    error.value = "Trying to save invalid dictionary!"
+  }
+
+  console.log("SAVE PAGE", newContent)
+
+  save({
+    lastOpenDict: index,
+    settings: settings.value!,
+    dictionaries: dictionaries.value!,
+  })
+}
+
 
 onMounted(async () => {
   load()
@@ -300,9 +325,6 @@ async function load() {
     console.error("Invalid dictionary")
     return
   }
-  
-
-    // console.log(instanceOf(storage))
 
   dictionaries.value = storage.dictionaries
   settings.value = storage.settings
