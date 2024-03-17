@@ -174,8 +174,8 @@ const open = ref(false)
 const secondHalfOpen = ref(false);
 
 function clicker() {
-    togglePage()
     if(!open.value) {
+        togglePage()
     }
 }
 
