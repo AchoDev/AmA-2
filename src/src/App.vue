@@ -184,6 +184,7 @@ function getRandomPageName() {
     'The first page',
     'Learners Page',
     'Page of the Wise',
+    'HOOOOOOOG RIIIDAAAAAAAAAAHHH'
   ]
 
   return names[Math.floor(Math.random() * names.length)]
