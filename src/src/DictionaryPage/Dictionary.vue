@@ -7,7 +7,7 @@
             :settings="settings"
             @openSideBar="openSideBar"
             @changeSettings="changeSettings"
-            @import-from-ama="(data) => "
+            @import-from-ama="saveAmaData"
         />
 
         <main>
@@ -71,7 +71,7 @@
 
                         <center v-if="noLetterWordFound">
                             <h2>No word found starting with the Letter "{{ selectedLetter }}" :(</h2>
-                            <span>You can edit existing words to give them tags or select a tag upon creating a new word</span>
+                            <span>You can create a word with the + button in the bottom right corner, that starts with {{ selectedLetter }}</span>
                         </center>
                         
                         <center v-else-if="noSearchWordFound">
@@ -135,8 +135,11 @@
             </button>
         </div>
 
-        <PopupContainer ref="tagSelector" @onClose="editingTags = false">
-            <div id="tag-selector-popup">
+        <PopupContainer ref="tagSelector" 
+            @onClose="editingTags = false"
+            :background="settings.darkmode ? '#070707' : undefined"
+        >
+            <div id="tag-selector-popup" :style="{color: settings.darkmode ? 'white' : 'black'}">
                 <div id="tag-top">
                     <h1>Select tag</h1>
 
@@ -152,6 +155,11 @@
                         </button>
                     </div>
                 </div>
+
+                <center v-if="tags.length === 0">
+                    <h2>No tags yet!</h2>
+                    <p>Create a new tag with the + button</p>
+                </center>
 
                 <div id="tag-button-wrapper"  @click="editingTags = false">
                     
@@ -487,9 +495,14 @@ function deleteTag(tag: string) {
                         })
                     }
                 })
-    
+                
+                if(selectedTag.value === tag) {
+                    selectedTag.value = ''
+                }
                 tags.value.splice(tags.value.indexOf(tag), 1)
-
+                if(tags.value.length === 0) {
+                    editingTags.value = false;
+                }
                 save()
             }, 200)
 
