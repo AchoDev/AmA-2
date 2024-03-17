@@ -44,6 +44,7 @@
         @open-side-bar="openSideBar()"
         @change-settings="changeSettings"
         @change-page-settings="changePageSettings"
+        @save-path="saveDictionary"
       />
     </div>
 
@@ -67,6 +68,10 @@
 
       </div>
     </PopupContainer>
+
+    <Ok ref="pageAlreadyExists"
+    
+    />
   </div>
 </template>
 
@@ -85,6 +90,7 @@ import { loadStorage, save } from './storage.ts';
 
 import Settings from './components/settings.ts';
 import Error from './Error.vue';
+import Ok from './components/Ok.vue';
 
 const settings = ref<Settings>()
 const dictionaries = ref<DictionaryType[]>();
@@ -94,6 +100,8 @@ const currentPage = ref('dictionary');
 
 const sideBar = ref()
 const newPagePopup = ref()
+
+const pageAlreadyExists = ref()
 
 const currentOpenPage = computed(() => {
   if (currentOpenDictionary.value) {
@@ -182,13 +190,21 @@ function getRandomPageName() {
 }
 
 function saveNewPage() {
-  if (currentOpenDictionary.value) {
-    currentOpenDictionary.value.pages.push({
-      title: currentPageTitle.value === '' ? getRandomPageName() + ' ' + (currentOpenDictionary.value.pages.length + 1) : currentPageTitle.value,
-      settings: selectedGrid.value,
-      content: []
-    })
+  if (!currentOpenDictionary.value) {
+    return;
   }
+
+  if(currentOpenDictionary.value.pages.find(p => p.title === currentPageTitle.value)) {
+    pageAlreadyExists.value.notify("Page name already exists", "Choose a different name")
+    return
+  }
+
+  currentOpenDictionary.value.pages.push({
+    title: currentPageTitle.value === '' ? getRandomPageName() + ' ' + (currentOpenDictionary.value.pages.length + 1) : currentPageTitle.value,
+    settings: selectedGrid.value,
+    content: []
+  })
+  
 
   newPagePopup.value.closePopup()
   currentPageTitle.value = ''
