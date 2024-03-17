@@ -80,8 +80,11 @@
                     <h1>Import from AmA</h1>
                     <p>Use this option to import data from the old AmA</p>
                     
-                    <small>JSON</small> <br>
-                    <textarea v-model="amaImportInput" cols="60" rows="20"></textarea> <br>
+                    <small>Words JSON</small> <br>
+                    <textarea v-model="amaImportInput" cols="60" rows="10"></textarea> <br>
+                    <small>Tags JSON</small> <br>
+                    <textarea v-model="amaImportTags" cols="60" rows="10"></textarea> <br>
+
                     <button @click="importFromAmA()">Import</button>
                 </center>
             </div>
@@ -132,6 +135,8 @@ watch([wordsPerPage, wordSize, dividerVisible, darkMode], () => {
 })
 
 const amaImportInput = ref('')
+const amaImportTags = ref('')
+
 const importPopup = ref()
 
 function openImportPopup() {
@@ -139,7 +144,8 @@ function openImportPopup() {
 }
 
 function importFromAmA() {
-    emit('importFromAma', JSON.parse(amaImportInput.value))
+    // console.log(amaImportInput.value, amaImportTags.value, "IMPORTING")
+    emit('importFromAma', {words: JSON.parse(amaImportInput.value), tags: JSON.parse(amaImportTags.value)})
 }
 
 const settingsOpen = ref(false)

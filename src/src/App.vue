@@ -369,6 +369,7 @@ body > * {
 button {
   font-family: Maven Pro, sans-serif !important;
   color: black;
+  touch-action: manipulation;
 }
 
 body {

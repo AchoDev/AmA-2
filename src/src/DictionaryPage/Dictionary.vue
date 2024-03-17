@@ -385,14 +385,39 @@ function getDict() {
 
 function saveAmaData(data: any) {
     words.value = [];
-    data.forEach((word: any) => {
+
+    console.log(data, "data")
+
+    data.tags.forEach((tag: any) => {
+        tags.value.push(tag["name"])
+    })
+
+    data.words.forEach((word: any) => {
+        let tag
+
+        tag = data.tags.find((tag: any) => tag["id"] === word["tag"])
+
+        if(tag) {
+            tag = tag["name"]
+            if(tag === 'any') tag = ''
+        } else {
+            tag = ''
+        }
+
+        console.log(word['de'], word['ar'])
+
+        let secondLangWord = word["de"] + (word["ar"] != '' ? `, ${word["ar"]}` : '')
+
+
         words.value.push({
-            mainLang: word.mainLang,
-            secondLang: word.secondLang,
-            notes: word.notes,
-            tag: word.tag
+            mainLang: word["sp"],
+            secondLang: secondLangWord,
+            notes: [],
+            tag: tag
         })
     })
+
+    save()
 }
 
 function save() {
