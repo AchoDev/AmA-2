@@ -9,10 +9,10 @@
 
     <platform name="ios">
         
-        <icon src="res/120.png"/>
-        <icon src="res/152.png" />
-        <icon src="res/167.png" />
-        <icon src="res/1024.png" />
+        <icon src="res/120.png" width="120" height="120" />
+        <icon src="res/152.png" width="152" height="152" />
+        <icon src="res/167.png" width="167" height="167" />
+        <icon src="res/1024.png" width="1024" height="1024" />
 
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
