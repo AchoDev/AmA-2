@@ -88,7 +88,7 @@
 
                 <a href="https://achodev.me/projects">Other projects</a>
 
-                <p>Free palestine &#x1f1f5;&#x1f1f8;!</p>
+                <!-- <p>Free palestine &#x1f1f5;&#x1f1f8;!</p> -->
             </div>
         </PopupContainer>
 
